@@ -1,0 +1,142 @@
+domain: identity
+title: Identity and Access
+rows:
+  - id: iam.role
+    concept: The object called a "role"
+    divergence: none
+    aws:
+      name: IAM role
+      url: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+    azure:
+      name: Azure role definition
+      url: https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions
+    gcp:
+      name: IAM role
+      url: https://docs.cloud.google.com/iam/docs/roles-overview
+    breaks_when: >
+      These are different categories of object. An AWS role is an identity you assume, with its
+      own temporary credentials issued by STS and a trust policy naming who may assume it. An
+      Azure or Google role is a named set of permissions that carries no credentials and does
+      nothing until assigned to a separate principal at a scope. The nearest AWS equivalent of
+      an Azure or Google role is a managed policy; the nearest Azure or Google equivalent of an
+      AWS role is a service principal or service account.
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
+    sources:
+      - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+    verified: '2026-09-09'
+
+  - id: iam.machine-identity
+    concept: Credentials for compute without stored secrets
+    divergence: partial
+    aws:
+      name: IAM role via instance profile
+      url: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html
+    azure:
+      name: Managed identity
+      url: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview
+    gcp:
+      name: Attached service account
+      url: https://docs.cloud.google.com/iam/docs/service-account-overview
+    breaks_when: >
+      Azure splits this into system-assigned, which is bound to one resource and deleted with
+      it, and user-assigned, which is a standalone resource that survives and can be shared;
+      "must outlive the VM" or "shared by several apps" selects user-assigned. AWS requires an
+      instance profile as a wrapper around the role, which the console creates invisibly and
+      which then appears unannounced in CLI questions. A Google service account is both an
+      identity and a resource, so using one requires a role on the service account itself,
+      typically Service Account User, separate from any permission the account holds.
+    exam_tags: [SAA-C03, DVA-C02, AZ-104, AZ-204, ACE]
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview
+      - https://docs.cloud.google.com/iam/docs/service-account-overview
+    verified: '2026-09-09'
+
+  - id: iam.evaluation
+    concept: How a permission decision is reached
+    divergence: none
+    aws:
+      name: Explicit deny, then SCP, then resource policy, then boundary, then session, then identity policy
+      url: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html
+    azure:
+      name: Deny assignment, then additive union of role assignments
+      url: https://learn.microsoft.com/en-us/azure/role-based-access-control/overview
+    gcp:
+      name: Deny policy, then additive union of allow policy bindings
+      url: https://docs.cloud.google.com/iam/docs/deny-overview
+    breaks_when: >
+      AWS layers six evaluation stages and a permission must survive all of them, with any
+      explicit deny final. Azure and Google are purely additive unions of what is granted at the
+      resource and every scope above it, which means you cannot narrow access by granting a
+      smaller role lower down. A Google user with Editor at the folder keeps Editor on every
+      project inside it no matter what you grant on the project. AWS engineers reach for an
+      explicit deny; Azure has no permissions boundary equivalent at all.
+    exam_tags: [SAA-C03, SCS-C02, AZ-104, AZ-500, ACE]
+    sources:
+      - https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html
+    verified: '2026-09-09'
+
+  - id: iam.two-role-systems
+    concept: Administering the directory versus administering resources
+    divergence: none
+    aws:
+      name: null
+      note: One IAM system covers both.
+    azure:
+      name: Microsoft Entra roles, separate from Azure RBAC roles
+      url: https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/custom-overview
+    gcp:
+      name: null
+      note: One IAM system covers both.
+    breaks_when: >
+      Azure alone runs two independent role systems. Entra roles such as Global Administrator
+      govern the identity tenant. Azure RBAC roles such as Owner and Contributor govern
+      resources. A Global Administrator has no rights over a virtual machine until they elevate
+      to User Access Administrator at the root management group, and that elevated state is
+      itself a common exam scenario. Neither AWS nor Google separates these.
+    exam_tags: [AZ-900, AZ-104, AZ-500, SC-300]
+    sources:
+      - https://learn.microsoft.com/en-us/azure/governance/management-groups/overview
+    verified: '2026-09-09'
+
+  - id: iam.workforce-sso
+    concept: Workforce single sign-on into the cloud
+    divergence: partial
+    aws:
+      name: IAM Identity Center
+      url: https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html
+      formerly: [AWS SSO]
+    azure:
+      name: Microsoft Entra ID
+      url: https://learn.microsoft.com/en-us/entra/fundamentals/whatis
+      formerly: [Azure Active Directory, Azure AD]
+    gcp:
+      name: Cloud Identity, or Workforce Identity Federation
+      url: https://docs.cloud.google.com/iam/docs/workforce-identity-federation
+    breaks_when: >
+      Entra ID is the identity system Azure is built on, so it is always present. AWS IAM
+      Identity Center is an optional layer added on top of per-account IAM, and IAM users still
+      exist underneath. Both were renamed recently enough that most third-party course material
+      still says Azure AD and AWS SSO, which is what candidates will have been taught.
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, ACE]
+    verified: '2026-09-09'
+
+  - id: iam.secrets
+    concept: Storing application secrets
+    divergence: partial
+    aws:
+      name: Secrets Manager, or SSM Parameter Store
+      url: https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html
+    azure:
+      name: Azure Key Vault
+      url: https://learn.microsoft.com/en-us/azure/key-vault/general/overview
+    gcp:
+      name: Secret Manager
+      url: https://docs.cloud.google.com/secret-manager/docs/overview
+    breaks_when: >
+      Azure Key Vault is one service holding secrets, keys and certificates, so it also occupies
+      the slot that AWS gives to KMS and Google gives to Cloud KMS. AWS splits the job in two,
+      and the split is tested: Secrets Manager rotates automatically and is billed per secret,
+      while Parameter Store is cheaper, has a free standard tier and does not rotate on its own.
+      "Automatic rotation" selects Secrets Manager.
+    exam_tags: [SAA-C03, DVA-C02, SCS-C02, AZ-104, AZ-500, ACE]
+    verified: '2026-09-09'

@@ -1,0 +1,149 @@
+domain: compute
+title: Compute and Containers
+rows:
+  - id: cmp.vm
+    concept: Infrastructure-as-a-service virtual machine
+    divergence: exact
+    aws:
+      name: Amazon EC2
+      url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html
+    azure:
+      name: Azure Virtual Machines
+      url: https://learn.microsoft.com/en-us/azure/virtual-machines/overview
+    gcp:
+      name: Compute Engine
+      url: https://docs.cloud.google.com/compute/docs/overview
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
+    verified: '2026-09-09'
+
+  - id: cmp.autoscale
+    concept: Horizontally scaling a pool of identical machines
+    divergence: partial
+    aws:
+      name: Auto Scaling group
+      url: https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-groups.html
+    azure:
+      name: Virtual Machine Scale Set
+      url: https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview
+    gcp:
+      name: Managed instance group
+      url: https://docs.cloud.google.com/compute/docs/instance-groups
+    breaks_when: >
+      A Google managed instance group is created as either zonal or regional, and the regional
+      form spreads instances across zones for you. An AWS Auto Scaling group achieves the same
+      thing by being given subnets in several availability zones, because the subnet is what
+      carries the zone. Note the acronym trap: AWS ASG means Auto Scaling group, while Azure ASG
+      means application security group, an unrelated networking object.
+    exam_tags: [SAA-C03, SOA-C03, AZ-104, ACE]
+    verified: '2026-09-09'
+
+  - id: cmp.functions
+    concept: Event-driven function as a service
+    divergence: partial
+    aws:
+      name: AWS Lambda
+      url: https://docs.aws.amazon.com/lambda/latest/dg/welcome.html
+    azure:
+      name: Azure Functions
+      url: https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview
+    gcp:
+      name: Cloud Run functions
+      url: https://docs.cloud.google.com/functions/docs/concepts/version-comparison
+      formerly: [Cloud Functions, Cloud Functions (2nd gen)]
+    breaks_when: >
+      Google renamed this. What was Cloud Functions (2nd gen) is now Cloud Run functions and is
+      deployed as a Cloud Run service, manageable through the Cloud Run Admin API, so the
+      boundary between functions and containers has effectively dissolved. What was Cloud
+      Functions (1st gen) is now Cloud Run functions (1st gen). Almost all third-party study
+      material still says Cloud Functions. Azure Functions additionally differ by hosting plan,
+      and the Consumption plan's cold starts and timeout ceiling are what scenario questions
+      turn on.
+    exam_tags: [CLF-C02, DVA-C02, AZ-900, AZ-204, CDL, ACE]
+    sources:
+      - https://docs.cloud.google.com/functions/docs/concepts/version-comparison
+    verified: '2026-09-09'
+
+  - id: cmp.serverless-containers
+    concept: Running a container without managing servers
+    divergence: partial
+    aws:
+      name: AWS Fargate
+      url: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html
+    azure:
+      name: Azure Container Apps
+      url: https://learn.microsoft.com/en-us/azure/container-apps/overview
+    gcp:
+      name: Cloud Run
+      url: https://docs.cloud.google.com/run/docs/overview/what-is-cloud-run
+    breaks_when: >
+      Fargate is a capacity mode for ECS or EKS rather than a standalone service, so you still
+      choose and configure an orchestrator around it. Cloud Run and Container Apps are complete
+      products you deploy a container image to directly. Cloud Run additionally scales to zero
+      by default and bills per request, which makes it the answer to "spiky traffic, pay nothing
+      when idle" in a way Fargate is not.
+    exam_tags: [SAA-C03, DVA-C02, AZ-204, ACE]
+    verified: '2026-09-09'
+
+  - id: cmp.kubernetes
+    concept: Managed Kubernetes
+    divergence: partial
+    aws:
+      name: Amazon EKS
+      url: https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html
+    azure:
+      name: Azure Kubernetes Service
+      url: https://learn.microsoft.com/en-us/azure/aks/what-is-aks
+    gcp:
+      name: Google Kubernetes Engine
+      url: https://docs.cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview
+    breaks_when: >
+      Control plane billing differs and is tested. AKS offers a Free tier where the control plane
+      is not charged, alongside paid tiers with an uptime guarantee. EKS charges per cluster
+      hour. GKE charges a cluster management fee, and its Autopilot mode removes node management
+      entirely and bills for the resources pods request rather than for nodes. Autopilot has no
+      direct equivalent in the other two. Pricing changes often, so confirm on the vendor page
+      before relying on a figure.
+    exam_tags: [SAA-C03, DVA-C02, AZ-104, AZ-204, ACE]
+    verified: '2026-09-09'
+
+  - id: cmp.paas
+    concept: Deploy code, platform manages the runtime
+    divergence: partial
+    aws:
+      name: AWS Elastic Beanstalk, or App Runner
+      url: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html
+    azure:
+      name: Azure App Service
+      url: https://learn.microsoft.com/en-us/azure/app-service/overview
+    gcp:
+      name: App Engine
+      url: https://docs.cloud.google.com/appengine/docs/an-overview-of-app-engine
+    breaks_when: >
+      Azure App Service is a mainstream, heavily used product with deployment slots and built-in
+      staging swaps that the other two do not match. Elastic Beanstalk is a thin orchestration
+      layer over EC2 resources you can still see and manage, which makes it more transparent and
+      less abstracted than the other two. App Engine's standard and flexible environments differ
+      sharply from each other in scaling behaviour and language support.
+    exam_tags: [CLF-C02, DVA-C02, AZ-900, AZ-204, CDL]
+    verified: '2026-09-09'
+
+  - id: cmp.spot
+    concept: Interruptible discounted capacity
+    divergence: exact
+    aws:
+      name: EC2 Spot Instances
+      url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html
+    azure:
+      name: Azure Spot Virtual Machines
+      url: https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms
+    gcp:
+      name: Spot VMs
+      url: https://docs.cloud.google.com/compute/docs/instances/spot
+      formerly: [Preemptible VMs]
+    shared_trap: >
+      The concept transfers cleanly, and the naming history is the trap. Google's older
+      preemptible VMs had a hard 24-hour maximum lifetime; Spot VMs do not, and material written
+      before the change still teaches the 24-hour limit. All three remain unsuitable for
+      anything that cannot tolerate reclamation at short notice.
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, CDL, ACE]
+    verified: '2026-09-09'

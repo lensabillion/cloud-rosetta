@@ -1,0 +1,117 @@
+domain: storage
+title: Storage
+rows:
+  - id: sto.object
+    concept: Object storage
+    divergence: partial
+    aws:
+      name: Amazon S3
+      url: https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html
+    azure:
+      name: Azure Blob Storage
+      url: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction
+    gcp:
+      name: Cloud Storage
+      url: https://docs.cloud.google.com/storage/docs/introduction
+    breaks_when: >
+      Azure adds a level the others do not have. Blobs live in a container, which lives in a
+      storage account, and the storage account is the unit that carries the globally unique DNS
+      name, the redundancy setting and the performance tier. AWS and Google go straight to a
+      bucket. Note that an Azure container here is a grouping of blobs and has nothing to do
+      with an OCI container image. Google buckets can also be created as dual-region or
+      multi-region, a placement option with no direct AWS or Azure equivalent.
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
+    verified: '2026-09-09'
+
+  - id: sto.archive-tier
+    concept: Cheapest archival storage tier
+    divergence: none
+    aws:
+      name: S3 Glacier Deep Archive
+      url: https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html
+    azure:
+      name: Archive access tier
+      url: https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview
+    gcp:
+      name: Archive storage class
+      url: https://docs.cloud.google.com/storage/docs/storage-classes
+    breaks_when: >
+      Retrieval behaviour differs fundamentally and decides questions. Google's Archive class is
+      online: it has the same millisecond first-byte latency as Standard and you simply pay more
+      to read it, with a 365-day minimum storage duration. AWS Glacier Flexible Retrieval and
+      Deep Archive are offline and need a restore job taking minutes to hours. The Azure Archive
+      tier is also offline and needs rehydration, which can take hours. So "archive but must be
+      readable instantly" is achievable natively on Google, needs Glacier Instant Retrieval on
+      AWS, and is not the Archive tier on Azure. Minimum durations also differ, and early
+      deletion is charged as if the object had been kept for the minimum.
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
+    sources:
+      - https://docs.cloud.google.com/storage/docs/storage-classes
+      - https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview
+    verified: '2026-09-09'
+
+  - id: sto.block
+    concept: Network-attached block storage for a VM
+    divergence: partial
+    aws:
+      name: Amazon EBS
+      url: https://docs.aws.amazon.com/ebs/latest/userguide/what-is-ebs.html
+    azure:
+      name: Azure managed disks
+      url: https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview
+    gcp:
+      name: Persistent Disk and Hyperdisk
+      url: https://docs.cloud.google.com/compute/docs/disks
+    breaks_when: >
+      Google Persistent Disk can be created as regional, replicating synchronously across two
+      zones in a region, which EBS cannot do; EBS volumes are strictly zonal and cross-zone
+      resilience is a snapshot-and-restore or replication-at-the-application-layer problem.
+      Google disks can also be resized and attached read-only to many instances at once, which
+      changes what architectures are available.
+    exam_tags: [SAA-C03, SOA-C03, AZ-104, ACE]
+    verified: '2026-09-09'
+
+  - id: sto.file
+    concept: Shared network file system
+    divergence: partial
+    aws:
+      name: Amazon EFS, or FSx
+      url: https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html
+    azure:
+      name: Azure Files
+      url: https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+    gcp:
+      name: Filestore
+      url: https://docs.cloud.google.com/filestore/docs/overview
+    breaks_when: >
+      Protocol support differs and is the deciding factor. Azure Files serves SMB and NFS, so it
+      is the natural answer for Windows workloads and can be mounted directly from on-premises.
+      EFS is NFS only, and Windows or Lustre workloads go to the separate FSx family. Filestore
+      is NFS only.
+    exam_tags: [SAA-C03, AZ-104, ACE]
+    verified: '2026-09-09'
+
+  - id: sto.redundancy
+    concept: Naming the replication and durability setting
+    divergence: none
+    aws:
+      name: Storage class, with zonal scope implied by the class
+      url: https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html
+    azure:
+      name: LRS, ZRS, GRS, GZRS, RA-GRS
+      url: https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy
+    gcp:
+      name: Location type, region, dual-region or multi-region
+      url: https://docs.cloud.google.com/storage/docs/locations
+    breaks_when: >
+      Azure exposes redundancy as an explicit, separately chosen four-letter setting on the
+      storage account, and AZ-104 tests the letters directly: LRS keeps three copies in one
+      datacentre, ZRS spreads across zones, GRS adds a second region asynchronously, GZRS
+      combines both, and the RA- prefix makes the secondary readable. AWS folds the choice into
+      the storage class, where One Zone-IA is the only single-zone option. Google folds it into
+      the bucket's location type. There is no cross-cloud vocabulary here at all, so these must
+      be learned separately per cloud.
+    exam_tags: [AZ-900, AZ-104, AZ-305]
+    sources:
+      - https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy
+    verified: '2026-09-09'
