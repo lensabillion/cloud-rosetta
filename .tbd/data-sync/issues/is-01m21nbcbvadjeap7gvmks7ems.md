@@ -5,7 +5,7 @@ title: Cross-cloud certification guide
 kind: epic
 status: open
 priority: 1
-version: 27
+version: 39
 labels:
   - guide
 dependencies: []
@@ -36,7 +36,19 @@ child_order_hints:
   - is-01m21q38ndk47h9v8b8nyygs3m
   - is-01m21q38twbdvb6mn97k5sja9x
   - is-01m21q390bwbc9bnggjbpwy79w
+  - is-01m23d4kcyx3g1a351p8kjgd1x
+  - is-01m23d4qedftpbhhyw59fnfhxx
+  - is-01m23d4w2vq300cn0nkw7f99jw
+  - is-01m23d513df18fs77zqqa7xxt1
+  - is-01m23d55dzmc9zps0vn8egxe3n
+  - is-01m23d59g6bprkxfbtht6srgw3
+  - is-01m23d5gqzb2mv6zn0dcjpkx1e
+  - is-01m23d5q1ffg33r07p9jm5nckt
+  - is-01m23d5vvwqqtd5gjfyb04xrce
+  - is-01m23d63pp1symbz6jbbspb5t0
+  - is-01m23d6b4svm19jzeq2svxrvzy
+  - is-01m2475s8239jjvptaawad0aph
 created_at: 2026-09-08T23:23:46.426Z
-updated_at: 2026-09-08T23:54:17.994Z
+updated_at: 2026-09-09T23:13:46.239Z
 ---
 Reference guide for AWS, Azure, and GCP covering service mappings, mental model differences, confusing terminology, and exam traps. Tuned to foundational and associate certifications. Delivered as Markdown in docs/ plus a published web guide.
