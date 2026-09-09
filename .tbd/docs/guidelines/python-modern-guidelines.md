@@ -1,0 +1,234 @@
+---
+title: Python Modern Guidelines
+description: Guidelines for modern Python projects using uv, with a few more opinionated practices
+author: Joshua Levy (github.com/jlevy) with LLM assistance
+category: python
+---
+# Python Modern Guidelines
+
+**Related**: `python-rules` (general Python coding rules), `python-cli-patterns` (for
+CLI tools).
+
+These are rules for a modern Python project using uv.
+
+## Support Only Modern Python Versions
+
+Write for Python 3.11-3.14. Do NOT write code to support earlier versions of Python.
+Always use modern Python practices appropriate for Python 3.11-3.13.
+
+Always use full type annotations, generics, and other modern practices.
+
+## Very Strongly Prefer `uv`!
+
+Unless there is a compelling reason for backward compatibility, use uv.
+Use `uv` for all Python package management and one-off use cases.
+Use `uvx` to run packages that may not be installed.
+Use modern uv commands: `uv sync`, `uv run ...`, etc.
+Prefer `uv add` over `uv pip install`.
+
+DO NOT use `pip`, `pipx`, `pyenv`, `twine`, `virtualenv`, or `poetry` or any other older
+Python packaging tools unless absolutely necessary.
+
+[Read the uv docs overview here](https://docs.astral.sh/uv/llms.txt) to find the
+appropriate docs.
+
+## Always Atomically Publish Files Completed in One Operation
+
+Always use atomic publication when one operation creates and completes an output file,
+whether the destination is new or replaced and whether the file is durable state, a
+report, an export, a cache entry, or a temporary artifact.
+A direct `Path.write_text`, `Path.write_bytes`, or truncating `open(..., "w")` can leave
+that path empty or partial if the process stops during the write.
+
+Strongly prefer [Strif](https://github.com/jlevy/strif) for this contract.
+Its `atomic_output_file` context manager gives any pathname-based producer a private
+path in the destination directory and installs that path only after the context exits
+successfully. For whole strings or byte buffers, use its `atomic_write_text` or
+`atomic_write_bytes` convenience function.
+
+```python
+from strif import atomic_output_file, atomic_write_text
+
+atomic_write_text("state/report.json", report_json, make_parents=True)
+
+# Use the context manager when the producer needs an output pathname.
+with atomic_output_file("state/report.pdf", make_parents=True) as staged_path:
+    render_pdf(staged_path)
+```
+
+Append and live streams intentionally expose incremental output and need their own
+primitives. A private staging file is not itself published output.
+Create-only output still needs staged publication, but its final commit must atomically
+refuse an existing destination rather than replace it.
+See `filesystem-rules` for these contracts.
+
+Do not pass `backup_suffix` when readers require uninterrupted destination visibility:
+Strif moves the old destination to the backup before installing the new one, so the
+destination is briefly absent.
+Strif provides atomic visibility but does not promise that the replacement survives
+power loss; use a durability-specific implementation when that is part of the contract.
+
+## String Abbreviations, Plurals, and Date, Time, and Time Delta Formats
+
+Use [prettyfmt](https://github.com/jlevy/prettyfmt) to format human friendly log outputs
+of more complex date, time, ages of items, or objects.
+It is small, recent, and has fewer dependencies than other libraries.
+
+```python
+# Docs from https://github.com/jlevy/prettyfmt:
+from prettyfmt import *
+
+# Simple abbreviations of objects:
+abbrev_obj({"a": "very " * 100 + "long", "b": 23})
+# -> "{a='very very very very very very very very very very very very ver…', b=23}"
+
+abbrev_obj(["word " * i for i in range(10)], field_max_len=10, list_max_len=4)
+# -> "['', 'word ', 'word word ', 'word word…', …]"
+
+# Abbreviate by character length.
+abbrev_str("very " * 100 + "long", 32)
+# -> 'very very very very very very v…'
+
+# Abbreviate by character length but don't break words.
+abbrev_on_words("very " * 100 + "long", 30)
+# -> 'very very very very very very…'
+
+# My favorite, abbreviate but don't break words and keep a few words
+# on the end since they might be useful.
+abbrev_phrase_in_middle("very " * 100 + "long", 40)
+# -> 'very very very very … very very very long'
+
+# This makes it very handy for cleaning up document titles.
+ugly_title = "A  Very\tVery Very Needlessly Long  {Strange} Document Title [final edited draft23]"
+# -> sanitize_title(ugly_title)
+'A Very Very Very Needlessly Long Strange Document Title final edited draft23'
+abbrev_phrase_in_middle(sanitize_title(ugly_title))
+# -> 'A Very Very Very Needlessly Long Strange … final edited draft23'
+
+# You can convert strings to cleaner titles:
+ugly_title = "A  Very\tVery Very Needlessly Long  {Strange} Document Title [final edited draft23]"
+sanitized = sanitize_title(ugly_title)
+# -> 'A Very Very Very Needlessly Long Strange Document Title final edited draft23'
+
+# Underscore and dash slugify based on this:
+slugify_snake("Crème Brûlée Recipe & Notes")
+# -> 'crème_brûlée_recipe_notes'
+
+slugify_snake("Crème Brûlée Recipe & Notes", ascii=True)
+# -> 'creme_brulee_recipe_notes'
+
+slugify_kebab("你好世界 Hello World")
+# -> '你好世界-hello-world'
+
+slugify_kebab("你好世界 Hello World", ascii=True)
+# -> 'ni-hao-shi-jie-hello-world'
+
+# Formatting durations. Good for logging runtimes:
+fmt_timedelta(3.33333)
+# -> '3s'
+fmt_timedelta(.33333)
+# -> '333ms'
+fmt_timedelta(.033333)
+# -> '33.33ms'
+fmt_timedelta(.0033333)
+# -> '3.33ms'
+fmt_timedelta(.00033333)
+# -> '333µs'
+fmt_timedelta(.000033333)
+# -> '33µs'
+fmt_timedelta(3333333)
+# -> '39d'
+
+# Ages in seconds or deltas.
+# Note we use a sensible single numeral to keep things brief, e.g.
+# "33 days ago" and not the messier "1 month and 3 days ago".
+# This is important in file listings, etc, where we want to optimize
+# for space and legibility.
+fmt_age(60 * 60 * 24 * 33)
+# -> '33 days ago'
+
+fmt_age(60 * 60 * 24 * 33, brief=True)
+# -> '33d ago'
+
+# Use fast lazy import of the minimal pluralizer library.
+plural(2, "banana")
+# -> 'bananas'
+
+# Simple plurals.
+fmt_count_items(23, "banana")
+# -> '23 bananas'
+
+fmt_count_items(1, "banana")
+# -> '1 banana'
+
+# Sizes
+fmt_size_human(12000000)
+# -> '11.4M'
+
+fmt_size_dual(12000000)
+# -> '11.4M (12000000 bytes)'
+
+# Helpful making __str__() methods or printing output:
+fmt_words("Hello", None, "", "world!")
+# -> 'Hello world!'
+
+fmt_paras(fmt_words("Hello", "world!"), "", "Goodbye.")
+# -> 'Hello world!\n\nGoodbye.'
+
+from dataclasses import dataclass
+from pathlib import Path
+
+# Example of `abbrev_obj` to customize __str__().
+# Allows sorting and truncating based on key and value.
+@dataclass
+class MyThing:
+   file_path: Path
+   title: str
+   url: str
+   body: str
+
+   def __str__(self) -> str:
+      return abbrev_obj(
+            self,
+            # Put an abbreviated title first, then the file path, then the url.
+            # The `body` field will be omitted.
+            key_filter={
+               "title": 64,
+               "file_path": 0,
+               "url": 128,
+            },
+      )
+
+str(MyThing(file_path="/tmp/file.txt", title="Something " + "blah " * 50, url="https://www.example.com", body="..."))
+# -> "MyThing(title='Something blah blah blah blah blah blah blah blah blah blah blah…', file_path=/tmp/file.txt, url=https://www.example.com)"
+```
+
+## Releasing (Tag-Triggered, No Changesets)
+
+For publishing Python packages to PyPI, follow the
+[`simple-modern-uv`](https://github.com/jlevy/simple-modern-uv) template’s model—it is
+the standard for tbd’s Python projects.
+The same clean principles as the TypeScript guidance apply: no changesets, releases cut
+from clean conventional commits.
+
+- **Dynamic versioning from the git tag** via
+  [`uv-dynamic-versioning`](https://github.com/ninoseki/uv-dynamic-versioning)—the tag
+  *is* the version (no manual `version =` bump in `pyproject.toml`, no version commit).
+- **Release/tag-triggered publish**: a `publish.yml` workflow runs on
+  `on: release: types: [published]` (or a `v*` tag), builds with `uv build`, and
+  publishes with `uv publish --trusted-publishing always`—**PyPI Trusted Publishing
+  (OIDC), no API token**.
+- **Supply-chain cool-off in CI**: set `UV_EXCLUDE_NEWER` to a 14-days-ago cutoff so the
+  build never resolves a brand-new (potentially yanked/compromised) release.
+- **Release notes** are written per `release-notes-guidelines` from the commits since
+  the last tag—there is no per-PR changeset file.
+- Expose the version at runtime with `importlib.metadata.version("<pkg>")`.
+
+So a release is just: clean commits → create the GitHub release/tag `vX.Y.Z` → CI builds
+and publishes.
+See `template/docs/publishing.md` in `simple-modern-uv` for the first-time
+Trusted Publisher setup.
+
+<!-- This document follows common-doc-guidelines.md.
+See github.com/jlevy/practical-prose and review guidelines before editing.
+-->
