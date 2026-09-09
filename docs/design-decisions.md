@@ -100,22 +100,56 @@ lifetime total and a growth rate, the guide uses both.
 
 ### Assignment
 
-- **Roboto** for headings and display. Its slightly warmer, more humanist curves separate from
-  the body text at 24px and above.
-- **Inter** for body text, tables, and interface controls. It was drawn for screen reading at
-  small sizes, and it ships tabular figures, which matters because this guide is mostly tables
-  where digits need to line up.
-- **Roboto Mono** for code, service identifiers, and exam codes. Same superfamily as Roboto, so
-  this adds no third voice.
+Four cuts drawn from those two families. Every one is a real variable font served by Google
+Fonts, confirmed by requesting weight ranges and checking that ranges came back.
+
+| Role | Face | Why this one |
+| --- | --- | --- |
+| Display | **Roboto Serif**, 800 | Headline, the hero figure, decoder headwords, row titles. See below |
+| Micro-labels | **Roboto**, 700, uppercase | Column labels, badges, tabs. A grotesque stays legible at 10px where a serif silts up |
+| Text | **Inter**, 400 to 600 | Body, tables, panels, controls. Drawn for screen reading at small sizes, ships tabular figures, and this guide is mostly digits in columns |
+| Identifiers | **Roboto Mono**, 400 to 500 | Exam codes, dates, row ids. Things that must not be mistaken for prose |
+
+**Why a serif carries the display.** The first build set Roboto against Inter, which was the
+honest reading of the usage evidence and a weak piece of design: two neutral grotesques at text
+size are effectively one typeface, so the pairing bought nothing but an extra request. Roboto
+Serif fixes that without leaving the two families the evidence supported, since it belongs to the
+Roboto superfamily.
+
+It also fits the content. The decoder is a dictionary, and a dictionary sets its headwords with
+authority. "Role", "Resource group" and "Availability set" standing at 27px in a serif read as
+entries to be looked up, which is exactly what they are. Every cloud vendor's documentation is
+set in a grotesque, so a serif also puts visible distance between this and the material it
+corrects.
+
+### The Scale
+
+One scale, roughly a major third through the middle and opening up at display. Every size on the
+page comes from it, replacing the eleven ad hoc values the first build accumulated.
+
+| Token | Size | Used for |
+| --- | --- | --- |
+| `--t-micro` | 10px | Uppercase labels, badges, tags |
+| `--t-mini` | 11.5px | Metadata, verification stamps |
+| `--t-small` | 13px | Panel prose, notes |
+| `--t-base` | 15px | Body |
+| `--t-lede` | 17.5px | Opening paragraphs |
+| `--t-h3` | 21px | Row concept titles |
+| `--t-h2` | 27px | Decoder headwords |
+| `--t-h1` | 42px | Page title |
+| `--t-hero` | 84px | The finding |
+
+Leading tightens as size grows, from 1.62 at body to 0.82 at the hero figure. Tracking is
+negative at display, zero in text, and positive only for uppercase, which is the one place
+letter-spacing genuinely belongs. `font-optical-sizing: auto` is set and the optical size axis is
+requested for Roboto Serif; browsers apply it where the served font carries the axis.
 
 ### Caveats
 
-Both faces are neutral grotesques, so the heading and body contrast is modest by design. That
-is a deliberate trade: the request was for the two most-liked faces, and the two most-liked
-faces happen to be stylistic neighbours. A stronger pairing would put a serif against a sans,
-but no serif comes close to these two on the usage evidence.
-
-Both are served from Google Fonts, which the publishing target permits.
+The usage evidence pointed at two grotesques, and the honest thing to say is that following it
+literally produced a worse page than following it in spirit. Roboto Serif keeps the project
+inside the researched families while giving the display real separation from the text. Anyone who
+wants the strict reading can swap `--serif` for `--sans` in one line.
 
 ## Colour and Accessibility
 
