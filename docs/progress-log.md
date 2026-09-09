@@ -114,3 +114,19 @@ mapping breaks.
 - Contributor credit file.
 
 <!-- This document follows common-doc-guidelines.md. -->
+
+## 2026-09-10
+
+### Learning Experience Review
+
+Completed the review begun on September 9 at baseline `2fc0c8e`. Inspected the generated site
+at desktop and phone widths, the GitHub reading surfaces, content generators, and selected
+claims against vendor documentation. The dataset validator passes, but this does not establish
+factual correctness. Recorded 14 findings covering accuracy, beginner orientation, usability,
+architecture, flashcards, sources, and reproducible publishing.
+
+The [review](reviews/2026-09-09-learning-experience-review.md) contains evidence, acceptance
+criteria, a GitHub-first learning proposal, and a participant-validation protocol. Created 12
+implementation beads, extended three existing beads, and recorded dependencies. Added a
+[three-provider network-scope diagram proposal](assets/network-scope-review.svg), visually
+checked in the browser. Review task: `cloud-0apf`. Product fixes and learner testing remain open.

@@ -96,3 +96,17 @@ supporting page.
 | 2026-09-09 | "You just created the most boring, the most bare minimum HTML, no creativity whatsoever" | Accepted. The first build was a competent utilitarian layout, which under-read a request that had asked for visual appeal and creativity twice. Rebuilt around the Rosetta Stone idea: three vendor scripts held in a fixed column spine down the whole page, with a visible fracture drawn between columns wherever the translation fails. Tracked as cloud-kml6 |
 
 <!-- This document follows common-doc-guidelines.md. -->
+
+## R7. Learning Experience Review, September 2026
+
+| # | Requirement | Status | Bead |
+| --- | --- | --- | --- |
+| R7.1 | Review existing UI, usability, and information presentation | done | cloud-0apf |
+| R7.2 | Record evidence and suggested fixes in tbd | done | cloud-0apf |
+| R7.3 | Suggest creative representations and GitHub-native delivery | done | cloud-0apf |
+| R7.4 | Define and demonstrate a professional architecture diagram standard | done | cloud-0apf |
+| R7.5 | Implement the reviewed architecture improvements throughout the guide | open | cloud-wkcf |
+| R7.6 | Validate learning for people starting from zero and useful novelty for practitioners | open | cloud-22js |
+
+Review evidence and the prioritized backlog are in
+[the learning experience review](reviews/2026-09-09-learning-experience-review.md).
