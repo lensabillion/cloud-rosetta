@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" font-family="Roboto, Helvetica, Arial, sans-serif">
+<rect width="1200" height="1500" fill="#16211F"/>
+<text x="56" y="86" fill="#FBFBF9" font-size="52" font-weight="900" letter-spacing="-1.6">Cloud Rosetta</text>
+<text x="56" y="122" fill="#93A6A1" font-size="19">What breaks when you assume AWS, Azure and Google Cloud work the same way.</text>
+<line x1="56" y1="148" x2="1144" y2="148" stroke="#334742"/>
+<text x="56" y="184" fill="#E5A057" font-size="14" font-weight="700" letter-spacing="2.6">THE DIFFERENCES THAT ACTUALLY HURT</text>
+<text x="420" y="216" fill="#E0A05B" font-size="12" font-weight="700" letter-spacing="2">AWS</text>
+<text x="700" y="216" fill="#77B4E4" font-size="12" font-weight="700" letter-spacing="2">AZURE</text>
+<text x="950" y="216" fill="#6DC195" font-size="12" font-weight="700" letter-spacing="2">GOOGLE CLOUD</text>
+<line x1="56" y1="226" x2="1144" y2="226" stroke="#243733"/>
+<text x="56" y="246" fill="#EDF2EF" font-size="15" font-weight="500">High availability versus read scaling on a r</text>
+<text x="420" y="246" fill="#B9C8C4" font-size="13">Multi-AZ deployment, versus re</text>
+<text x="700" y="246" fill="#B9C8C4" font-size="13">Zone-redundant configuration, </text>
+<text x="950" y="246" fill="#B9C8C4" font-size="13">Regional instance, versus read</text>
+<line x1="56" y1="266" x2="1144" y2="266" stroke="#243733"/>
+<text x="56" y="286" fill="#EDF2EF" font-size="15" font-weight="500">The primary workload isolation boundary</text>
+<text x="420" y="286" fill="#B9C8C4" font-size="13">Account</text>
+<text x="700" y="286" fill="#B9C8C4" font-size="13">Subscription</text>
+<text x="950" y="286" fill="#B9C8C4" font-size="13">Project</text>
+<line x1="56" y1="306" x2="1144" y2="306" stroke="#243733"/>
+<text x="56" y="326" fill="#EDF2EF" font-size="15" font-weight="500">Grouping container below the isolation bound</text>
+<text x="420" y="326" fill="#B9C8C4" font-size="13">Resource group</text>
+<text x="700" y="326" fill="#B9C8C4" font-size="13">Resource group</text>
+<text x="950" y="326" fill="#B9C8C4" font-size="13">no equivalent</text>
+<line x1="56" y1="346" x2="1144" y2="346" stroke="#243733"/>
+<text x="56" y="366" fill="#EDF2EF" font-size="15" font-weight="500">Scope of the virtual network object</text>
+<text x="420" y="366" fill="#B9C8C4" font-size="13">VPC, regional</text>
+<text x="700" y="366" fill="#B9C8C4" font-size="13">Virtual network, regional</text>
+<text x="950" y="366" fill="#B9C8C4" font-size="13">VPC network, global</text>
+<line x1="56" y1="386" x2="1144" y2="386" stroke="#243733"/>
+<text x="56" y="406" fill="#EDF2EF" font-size="15" font-weight="500">Independent failure domain within a region</text>
+<text x="420" y="406" fill="#B9C8C4" font-size="13">Availability Zone</text>
+<text x="700" y="406" fill="#B9C8C4" font-size="13">Availability zone</text>
+<text x="950" y="406" fill="#B9C8C4" font-size="13">Zone</text>
+<line x1="56" y1="426" x2="1144" y2="426" stroke="#243733"/>
+<text x="56" y="446" fill="#EDF2EF" font-size="15" font-weight="500">Organization-wide preventive guardrail</text>
+<text x="420" y="446" fill="#B9C8C4" font-size="13">Service control policy</text>
+<text x="700" y="446" fill="#B9C8C4" font-size="13">Azure Policy</text>
+<text x="950" y="446" fill="#B9C8C4" font-size="13">Organization policy constraint</text>
+<line x1="56" y1="466" x2="1144" y2="466" stroke="#243733"/>
+<text x="56" y="486" fill="#EDF2EF" font-size="15" font-weight="500">The object called a "role"</text>
+<text x="420" y="486" fill="#B9C8C4" font-size="13">IAM role</text>
+<text x="700" y="486" fill="#B9C8C4" font-size="13">Azure role definition</text>
+<text x="950" y="486" fill="#B9C8C4" font-size="13">IAM role</text>
+<line x1="56" y1="506" x2="1144" y2="506" stroke="#243733"/>
+<text x="56" y="526" fill="#EDF2EF" font-size="15" font-weight="500">Credentials for compute without stored secre</text>
+<text x="420" y="526" fill="#B9C8C4" font-size="13">IAM role via instance profile</text>
+<text x="700" y="526" fill="#B9C8C4" font-size="13">Managed identity</text>
+<text x="950" y="526" fill="#B9C8C4" font-size="13">Attached service account</text>
+<line x1="56" y1="546" x2="1144" y2="546" stroke="#243733"/>
+<text x="56" y="566" fill="#EDF2EF" font-size="15" font-weight="500">How a permission decision is reached</text>
+<text x="420" y="566" fill="#B9C8C4" font-size="13">Explicit deny, then SCP, then </text>
+<text x="700" y="566" fill="#B9C8C4" font-size="13">Deny assignment, then additive</text>
+<text x="950" y="566" fill="#B9C8C4" font-size="13">Deny policy, then additive uni</text>
+<line x1="56" y1="586" x2="1144" y2="586" stroke="#243733"/>
+<text x="56" y="606" fill="#EDF2EF" font-size="15" font-weight="500">Administering the directory versus administe</text>
+<text x="420" y="606" fill="#B9C8C4" font-size="13">no equivalent</text>
+<text x="700" y="606" fill="#B9C8C4" font-size="13">Microsoft Entra roles, separat</text>
+<text x="950" y="606" fill="#B9C8C4" font-size="13">no equivalent</text>
+<line x1="56" y1="626" x2="1144" y2="626" stroke="#243733"/>
+<text x="56" y="646" fill="#EDF2EF" font-size="15" font-weight="500">Instance-level traffic filtering</text>
+<text x="420" y="646" fill="#B9C8C4" font-size="13">Security group</text>
+<text x="700" y="646" fill="#B9C8C4" font-size="13">Network security group</text>
+<text x="950" y="646" fill="#B9C8C4" font-size="13">VPC firewall rule</text>
+<line x1="56" y1="666" x2="1144" y2="666" stroke="#243733"/>
+<text x="56" y="686" fill="#EDF2EF" font-size="15" font-weight="500">Reaching a managed service without traversin</text>
+<text x="420" y="686" fill="#B9C8C4" font-size="13">VPC endpoint, gateway or inter</text>
+<text x="700" y="686" fill="#B9C8C4" font-size="13">Private endpoint, and separate</text>
+<text x="950" y="686" fill="#B9C8C4" font-size="13">Private Service Connect, and s</text>
+<line x1="56" y1="706" x2="1144" y2="706" stroke="#243733"/>
+<text x="56" y="726" fill="#EDF2EF" font-size="15" font-weight="500">Cheapest archival storage tier</text>
+<text x="420" y="726" fill="#B9C8C4" font-size="13">S3 Glacier Deep Archive</text>
+<text x="700" y="726" fill="#B9C8C4" font-size="13">Archive access tier</text>
+<text x="950" y="726" fill="#B9C8C4" font-size="13">Archive storage class</text>
+<line x1="56" y1="746" x2="1144" y2="746" stroke="#243733"/>
+<text x="56" y="766" fill="#EDF2EF" font-size="15" font-weight="500">Naming the replication and durability settin</text>
+<text x="420" y="766" fill="#B9C8C4" font-size="13">Storage class, with zonal scop</text>
+<text x="700" y="766" fill="#B9C8C4" font-size="13">LRS, ZRS, GRS, GZRS, RA-GRS</text>
+<text x="950" y="766" fill="#B9C8C4" font-size="13">Location type, region, dual-re</text>
+<line x1="56" y1="802" x2="1144" y2="802" stroke="#334742"/>
+<text x="56" y="832" fill="#E28C82" font-size="14" font-weight="700" letter-spacing="2.6">SAME WORD, DIFFERENT KIND OF THING</text>
+<text x="56" y="870" fill="#EDF2EF" font-size="16" font-weight="700">Role</text>
+<text x="420" y="870" fill="#B9C8C4" font-size="13" font-style="italic">identity</text>
+<text x="700" y="870" fill="#B9C8C4" font-size="13" font-style="italic">permission set</text>
+<text x="950" y="870" fill="#B9C8C4" font-size="13" font-style="italic">permission set</text>
+<text x="56" y="908" fill="#EDF2EF" font-size="16" font-weight="700">Resource group</text>
+<text x="420" y="908" fill="#B9C8C4" font-size="13" font-style="italic">saved view</text>
+<text x="700" y="908" fill="#B9C8C4" font-size="13" font-style="italic">ownership container</text>
+<text x="950" y="908" fill="#B9C8C4" font-size="13" font-style="italic">—</text>
+<text x="56" y="946" fill="#EDF2EF" font-size="16" font-weight="700">Policy</text>
+<text x="420" y="946" fill="#B9C8C4" font-size="13" font-style="italic">permissions document</text>
+<text x="700" y="946" fill="#B9C8C4" font-size="13" font-style="italic">configuration governance engin</text>
+<text x="950" y="946" fill="#B9C8C4" font-size="13" font-style="italic">two different things</text>
+<text x="56" y="984" fill="#EDF2EF" font-size="16" font-weight="700">ASG</text>
+<text x="420" y="984" fill="#B9C8C4" font-size="13" font-style="italic">compute</text>
+<text x="700" y="984" fill="#B9C8C4" font-size="13" font-style="italic">networking</text>
+<text x="950" y="984" fill="#B9C8C4" font-size="13" font-style="italic">—</text>
+<text x="56" y="1022" fill="#EDF2EF" font-size="16" font-weight="700">Container</text>
+<text x="420" y="1022" fill="#B9C8C4" font-size="13" font-style="italic">compute packaging</text>
+<text x="700" y="1022" fill="#B9C8C4" font-size="13" font-style="italic">storage grouping</text>
+<text x="950" y="1022" fill="#B9C8C4" font-size="13" font-style="italic">compute packaging</text>
+<text x="56" y="1060" fill="#EDF2EF" font-size="16" font-weight="700">Availability set</text>
+<text x="420" y="1060" fill="#B9C8C4" font-size="13" font-style="italic">no equivalent</text>
+<text x="700" y="1060" fill="#B9C8C4" font-size="13" font-style="italic">intra-datacentre placement</text>
+<text x="950" y="1060" fill="#B9C8C4" font-size="13" font-style="italic">no equivalent</text>
+<text x="56" y="1098" fill="#EDF2EF" font-size="16" font-weight="700">Endpoint</text>
+<text x="420" y="1098" fill="#B9C8C4" font-size="13" font-style="italic">private connectivity</text>
+<text x="700" y="1098" fill="#B9C8C4" font-size="13" font-style="italic">private connectivity, two vari</text>
+<text x="950" y="1098" fill="#B9C8C4" font-size="13" font-style="italic">private connectivity</text>
+<line x1="56" y1="1434" x2="1144" y2="1434" stroke="#334742"/>
+<text x="56" y="1464" fill="#93A6A1" font-size="13">github.com — Cloud Rosetta &#183; generated from the dataset on 2026-09-09 &#183; CC BY 4.0</text>
+</svg>

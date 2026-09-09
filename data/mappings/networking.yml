@@ -1,0 +1,177 @@
+domain: networking
+title: Networking
+rows:
+  - id: net.firewall.instance
+    concept: Instance-level traffic filtering
+    divergence: none
+    bite: serious
+    aws:
+      name: Security group
+      url: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html
+    azure:
+      name: Network security group
+      url: https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview
+    gcp:
+      name: VPC firewall rule
+      url: https://docs.cloud.google.com/firewall/docs/firewalls
+    breaks_when: >
+      An AWS security group cannot express a deny rule. It allows only, so blocking one specific
+      address is impossible and requires a network ACL instead; this is the most reliably tested
+      networking fact in the AWS catalogue. NSGs and Google firewall rules both support deny and
+      evaluate by priority, lowest number first. Google rules attach to the VPC network rather
+      than to an instance and select targets by network tag or service account, so an engineer
+      arriving from AWS looks for a firewall on the machine and does not find one. Google also
+      has implied rules that cannot be deleted: allow all egress, deny all ingress.
+    exam_tags: [CLF-C02, SAA-C03, AZ-104, AZ-700, ACE]
+    sources:
+      - https://docs.cloud.google.com/firewall/docs/firewalls
+    verified: '2026-09-09'
+
+  - id: net.firewall.subnet
+    concept: Stateless subnet-level filtering
+    divergence: none
+    bite: regular
+    aws:
+      name: Network ACL
+      url: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html
+    azure:
+      name: null
+      note: An NSG on the subnet fills this position but is stateful.
+    gcp:
+      name: null
+      note: No stateless layer. Firewall rules are always stateful.
+    breaks_when: >
+      Only AWS has a stateless filter, and statelessness is the whole point of the exam question.
+      Allowing traffic inbound on a network ACL does not allow the reply outbound, so return
+      traffic needs its own rule covering ephemeral ports. The symptom in a scenario is traffic
+      arriving while responses never come back. Azure NSGs applied at the subnet look similar
+      but are stateful, so they do not reproduce this behaviour or this failure mode.
+    exam_tags: [SAA-C03, SOA-C03]
+    verified: '2026-09-09'
+
+  - id: net.private-service-access
+    concept: Reaching a managed service without traversing the internet
+    divergence: none
+    bite: serious
+    aws:
+      name: VPC endpoint, gateway or interface
+      url: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
+    azure:
+      name: Private endpoint, and separately service endpoint
+      url: https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview
+    gcp:
+      name: Private Service Connect, and separately Private Google Access
+      url: https://docs.cloud.google.com/vpc/docs/private-service-connect
+    breaks_when: >
+      Azure's service endpoint and private endpoint sound like synonyms and are not. A service
+      endpoint keeps traffic on the Microsoft backbone while the service keeps its public IP and
+      nothing enters your address space. A private endpoint puts a network interface with a
+      private IP from your subnet in front of the service, so it becomes addressable inside the
+      VNet and reachable from on-premises over ExpressRoute or VPN, which service endpoints
+      cannot do. "Must be reachable from on-premises" or "must have a private IP" selects
+      private endpoint. The AWS pair has the same shape: a gateway endpoint is a route table
+      entry, is free, and serves only S3 and DynamoDB, while an interface endpoint is a real
+      network interface, works for most services, and is billed hourly plus data.
+    exam_tags: [SAA-C03, AZ-104, AZ-700, AZ-500, ACE]
+    sources:
+      - https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview
+    verified: '2026-09-09'
+
+  - id: net.lb.l7-global
+    concept: Global layer 7 load balancing
+    divergence: partial
+    bite: regular
+    aws:
+      name: CloudFront, or Global Accelerator for layer 4
+      url: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html
+    azure:
+      name: Azure Front Door
+      url: https://learn.microsoft.com/en-us/azure/frontdoor/front-door-overview
+    gcp:
+      name: Global external Application Load Balancer
+      url: https://docs.cloud.google.com/load-balancing/docs/https
+    breaks_when: >
+      Google's global external Application Load Balancer uses a single anycast IP worldwide
+      natively, so one address serves every region. AWS and Azure reach the same outcome by
+      placing a separate global service in front of regional load balancers. Do not confuse
+      Azure Front Door with Traffic Manager: Traffic Manager is DNS only, hands out an answer and
+      then leaves the path, and therefore cannot terminate TLS, rewrite a header or fail over a
+      live connection. Any question mentioning header-based routing or TLS offload at the edge
+      is a Front Door question. Route 53 occupies the same DNS-only position in AWS.
+    exam_tags: [SAA-C03, AZ-104, AZ-305, AZ-700, ACE]
+    verified: '2026-09-09'
+
+  - id: net.lb.l7-regional
+    concept: Regional layer 7 load balancing
+    divergence: exact
+    bite: tip
+    aws:
+      name: Application Load Balancer
+      url: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html
+    azure:
+      name: Application Gateway
+      url: https://learn.microsoft.com/en-us/azure/application-gateway/overview
+    gcp:
+      name: Regional external Application Load Balancer
+      url: https://docs.cloud.google.com/load-balancing/docs/application-load-balancer
+    exam_tags: [SAA-C03, AZ-104, ACE]
+    verified: '2026-09-09'
+
+  - id: net.peering
+    concept: Connecting two virtual networks
+    divergence: exact
+    bite: regular
+    aws:
+      name: VPC peering
+      url: https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html
+    azure:
+      name: Virtual network peering
+      url: https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview
+    gcp:
+      name: VPC Network Peering
+      url: https://docs.cloud.google.com/vpc/docs/vpc-peering
+    shared_trap: >
+      Behaviour matches closely, and the shared constraint is the tested one: peering is
+      non-transitive in all three clouds, and overlapping address ranges are refused everywhere.
+      If A peers with B and B peers with C, A cannot reach C, and the intended answer is a
+      transit construct: Transit Gateway, Virtual WAN, or Network Connectivity Center.
+    exam_tags: [SAA-C03, AZ-104, AZ-700, ACE]
+    verified: '2026-09-09'
+
+  - id: net.nat
+    concept: Outbound internet for private instances
+    divergence: partial
+    bite: regular
+    aws:
+      name: NAT gateway
+      url: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html
+    azure:
+      name: Azure NAT Gateway
+      url: https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview
+    gcp:
+      name: Cloud NAT
+      url: https://docs.cloud.google.com/nat/docs/overview
+    breaks_when: >
+      An AWS NAT gateway is a zonal resource, so a zone-resilient design needs one per zone and
+      pays for each, which turns up as both a cost question and an availability question. Cloud
+      NAT is a software-defined feature of the network rather than an appliance in the data
+      path, so there is nothing to place in a subnet or size. The three are billed on different
+      shapes, which matters in cost-optimisation scenarios.
+    exam_tags: [SAA-C03, SOA-C03, AZ-104, ACE]
+    verified: '2026-09-09'
+
+  - id: net.hybrid-private
+    concept: Private circuit to on-premises
+    divergence: exact
+    bite: tip
+    aws:
+      name: AWS Direct Connect
+      url: https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html
+    azure:
+      name: Azure ExpressRoute
+      url: https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction
+    gcp:
+      name: Cloud Interconnect
+      url: https://docs.cloud.google.com/network-connectivity/docs/interconnect
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
+    verified: '2026-09-09'

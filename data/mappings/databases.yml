@@ -1,0 +1,133 @@
+domain: databases
+title: Databases and Analytics
+rows:
+  - id: db.managed-relational
+    concept: Managed relational database
+    divergence: partial
+    bite: regular
+    aws:
+      name: Amazon RDS
+      url: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html
+    azure:
+      name: Azure SQL Database, or Azure Database for PostgreSQL and MySQL
+      url: https://learn.microsoft.com/en-us/azure/azure-sql/database/sql-database-paas-overview
+    gcp:
+      name: Cloud SQL
+      url: https://docs.cloud.google.com/sql/docs/introduction
+    breaks_when: >
+      Azure splits by engine into separate products, whereas RDS and Cloud SQL are one product
+      with an engine choice. Azure SQL Database is also not simply hosted SQL Server: it is a
+      platform service with its own feature set, distinct from Azure SQL Managed Instance, which
+      is the closer match for lifting an existing SQL Server across. Picking between Database,
+      Managed Instance and SQL on a VM is a recurring AZ-305 question.
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, AZ-305, CDL, ACE]
+    verified: '2026-09-09'
+
+  - id: db.ha-vs-readscale
+    concept: High availability versus read scaling on a relational database
+    divergence: partial
+    bite: serious
+    aws:
+      name: Multi-AZ deployment, versus read replica
+      url: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
+    azure:
+      name: Zone-redundant configuration, versus geo-replica
+      url: https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla
+    gcp:
+      name: Regional instance, versus read replica
+      url: https://docs.cloud.google.com/sql/docs/mysql/high-availability
+    breaks_when: >
+      The classic RDS trap, and it transfers. A Multi-AZ standby is synchronous, is not
+      readable, and exists purely to fail over. A read replica is asynchronous, is readable, and
+      does not provide automatic failover. Any question about surviving a zone failure wants the
+      standby; any question about offloading reporting queries wants the replica. Answering with
+      the wrong one is the intended failure, and the two are frequently offered together.
+    exam_tags: [CLF-C02, SAA-C03, SOA-C03, AZ-104, AZ-305, ACE]
+    verified: '2026-09-09'
+
+  - id: db.key-value
+    concept: Managed key-value or document NoSQL
+    divergence: none
+    bite: regular
+    aws:
+      name: Amazon DynamoDB
+      url: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html
+    azure:
+      name: Azure Cosmos DB
+      url: https://learn.microsoft.com/en-us/azure/cosmos-db/introduction
+    gcp:
+      name: Firestore, or Bigtable
+      url: https://docs.cloud.google.com/firestore/docs/overview
+    breaks_when: >
+      These are not interchangeable. Cosmos DB is a multi-model database with several APIs and
+      five tunable consistency levels, and it is globally distributed by configuration. DynamoDB
+      is a single model with eventual or strongly consistent reads, and global tables are a
+      separate feature. Google splits the space in two: Firestore is document-oriented for
+      application data, while Bigtable is a wide-column store for very high write throughput and
+      time series, with no equivalent split elsewhere. Choosing Firestore where Bigtable is
+      wanted, or the reverse, is the standard Google distractor.
+    exam_tags: [SAA-C03, DVA-C02, AZ-204, AZ-305, ACE]
+    verified: '2026-09-09'
+
+  - id: db.warehouse
+    concept: Analytical data warehouse
+    divergence: partial
+    bite: regular
+    aws:
+      name: Amazon Redshift
+      url: https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html
+    azure:
+      name: Microsoft Fabric, or Azure Synapse Analytics
+      url: https://learn.microsoft.com/en-us/fabric/data-warehouse/data-warehousing
+      maturity: superseded
+      note: Synapse is superseded by Fabric for new work, and the DP-203 exam that covered it is retired.
+    gcp:
+      name: BigQuery
+      url: https://docs.cloud.google.com/bigquery/docs/introduction
+    breaks_when: >
+      BigQuery is serverless with storage and compute separated and no cluster to provision,
+      which makes it the answer to "no infrastructure to manage" in a way a provisioned Redshift
+      cluster is not, though Redshift Serverless narrows the gap. Microsoft's warehouse story
+      moved into Fabric, and the Azure data engineering certification path moved with it, so
+      material referencing Synapse and the retired DP-203 exam is teaching a superseded shape.
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, DP-900, CDL, ACE]
+    verified: '2026-09-09'
+
+  - id: db.cache
+    concept: Managed in-memory cache
+    divergence: exact
+    bite: tip
+    aws:
+      name: Amazon ElastiCache
+      url: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html
+    azure:
+      name: Azure Cache for Redis
+      url: https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview
+    gcp:
+      name: Memorystore
+      url: https://docs.cloud.google.com/memorystore/docs/redis/redis-overview
+    exam_tags: [SAA-C03, DVA-C02, AZ-204, ACE]
+    verified: '2026-09-09'
+
+  - id: db.streaming
+    concept: Streaming ingestion and pub/sub messaging
+    divergence: none
+    bite: regular
+    aws:
+      name: Amazon Kinesis Data Streams, and separately SNS and SQS
+      url: https://docs.aws.amazon.com/streams/latest/dev/introduction.html
+    azure:
+      name: Azure Event Hubs, and separately Service Bus and Event Grid
+      url: https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-about
+    gcp:
+      name: Pub/Sub
+      url: https://docs.cloud.google.com/pubsub/docs/overview
+    breaks_when: >
+      Google collapses into one product what the other two split across several. Pub/Sub covers
+      both high-throughput streaming and topic fan-out. AWS separates ordered, replayable
+      streams in Kinesis from queues in SQS and fan-out in SNS. Azure separates Event Hubs for
+      telemetry streams, Service Bus for enterprise queues with transactions and sessions, and
+      Event Grid for reactive event routing. Mapping SQS to Pub/Sub is defensible; mapping it to
+      Event Hubs is not, and the intended Azure answer for a queue is nearly always Service Bus.
+    exam_tags: [SAA-C03, DVA-C02, AZ-204, AZ-305, ACE]
+    verified: '2026-09-09'

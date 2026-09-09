@@ -1,0 +1,156 @@
+domain: hierarchy
+title: Resource Hierarchy and Scoping
+rows:
+  - id: hier.isolation-boundary
+    concept: The primary workload isolation boundary
+    divergence: partial
+    bite: serious
+    aws:
+      name: Account
+      url: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html
+    azure:
+      name: Subscription
+      url: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/initial-subscriptions
+    gcp:
+      name: Project
+      url: https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy
+    breaks_when: >
+      An AWS account is simultaneously the isolation boundary, the billing boundary and the
+      identity boundary. Azure and Google Cloud split those across three different objects: an
+      Entra tenant holds identity, a subscription or billing account holds spend, and the
+      subscription or project holds resources. Assuming one object does all three is the single
+      most common cross-cloud modelling error.
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
+    sources:
+      - https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy
+    verified: '2026-09-09'
+
+  - id: hier.grouping-above
+    concept: Grouping container above the isolation boundary
+    divergence: partial
+    bite: regular
+    aws:
+      name: Organizational unit
+      url: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html
+    azure:
+      name: Management group
+      url: https://learn.microsoft.com/en-us/azure/governance/management-groups/overview
+    gcp:
+      name: Folder
+      url: https://docs.cloud.google.com/resource-manager/docs/creating-managing-folders
+    breaks_when: >
+      Nesting depth differs and is tested. AWS allows five levels of OUs below a root. Azure
+      allows six levels of management groups, excluding the root and subscription levels, with
+      10,000 management groups per directory. Google allows ten levels of folders, with at most
+      300 direct child folders per parent. The Azure root management group cannot be moved or
+      deleted, its ID equals the tenant ID, and Azure Resource Manager caches the hierarchy for
+      up to 30 minutes so a move can appear not to have happened.
+    exam_tags: [SAA-C03, AZ-104, AZ-305, ACE]
+    sources:
+      - https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html
+      - https://learn.microsoft.com/en-us/azure/governance/management-groups/overview
+      - https://docs.cloud.google.com/resource-manager/docs/limits
+    verified: '2026-09-09'
+
+  - id: hier.grouping-below
+    concept: Grouping container below the isolation boundary
+    divergence: none
+    bite: serious
+    aws:
+      name: Resource group
+      url: https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html
+      note: A tag-driven view over resources. Optional, and unrelated to the Azure object of the same name.
+    azure:
+      name: Resource group
+      url: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview
+      note: Mandatory. Every resource lives in exactly one.
+    gcp:
+      name: null
+      note: No equivalent. Labels and separate projects do this job.
+    breaks_when: >
+      Two clouds use the identical phrase for unrelated things and the third has neither. An
+      Azure resource group is compulsory, sits below the billing boundary, and deleting it
+      destroys every resource inside without a per-resource prompt. An AWS resource group is an
+      optional tag query that owns nothing and deleting it destroys nothing. Google has no
+      construct at this level at all. The closest AWS analogue to the Azure object is a
+      CloudFormation stack.
+    exam_tags: [AZ-900, AZ-104, SAA-C03]
+    sources:
+      - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview
+    verified: '2026-09-09'
+
+  - id: hier.virtual-network-scope
+    concept: Scope of the virtual network object
+    divergence: none
+    bite: serious
+    aws:
+      name: VPC, regional
+      url: https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html
+    azure:
+      name: Virtual network, regional
+      url: https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview
+    gcp:
+      name: VPC network, global
+      url: https://docs.cloud.google.com/vpc/docs/vpc
+    breaks_when: >
+      A Google VPC is a global object spanning every region and carries no CIDR of its own; the
+      subnets hold the ranges and are regional. One Google VPC can contain instances in Tokyo
+      and Frankfurt that route to each other over Google's backbone with no peering. AWS and
+      Azure networks are regional, so the same design needs peering or a transit construct.
+      An AWS subnet additionally lives in exactly one availability zone, whereas Azure and
+      Google subnets are regional and span zones.
+    exam_tags: [SAA-C03, AZ-104, AZ-700, ACE]
+    sources:
+      - https://docs.cloud.google.com/vpc/docs/vpc
+    verified: '2026-09-09'
+
+  - id: hier.failure-domain
+    concept: Independent failure domain within a region
+    divergence: partial
+    bite: serious
+    aws:
+      name: Availability Zone
+      url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
+    azure:
+      name: Availability zone
+      url: https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview
+    gcp:
+      name: Zone
+      url: https://docs.cloud.google.com/compute/docs/regions-zones
+    breaks_when: >
+      Azure additionally has an availability set, which is not a zone. An availability set uses
+      fault domains and update domains inside a single datacentre and protects against rack
+      failure and host patching, not against a datacentre outage. Any question naming a
+      datacentre-level failure wants zones, and the availability set is a deliberate distractor.
+      AWS also shuffles zone names per account, so us-east-1a in two accounts is generally not
+      the same physical zone; the stable identifier is the AZ ID such as use1-az1.
+    exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, ACE]
+    sources:
+      - https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview
+    verified: '2026-09-09'
+
+  - id: hier.org-guardrail
+    concept: Organization-wide preventive guardrail
+    divergence: partial
+    bite: serious
+    aws:
+      name: Service control policy
+      url: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html
+    azure:
+      name: Azure Policy
+      url: https://learn.microsoft.com/en-us/azure/governance/policy/overview
+    gcp:
+      name: Organization policy constraint
+      url: https://docs.cloud.google.com/resource-manager/docs/organization-policy/overview
+    breaks_when: >
+      An SCP sets a ceiling on what IAM may grant and never grants anything itself; if the SCP
+      allows an action and no IAM policy grants it, the answer is still no. Azure Policy is a
+      different kind of engine: it evaluates resource configuration at write time and can deny a
+      deployment RBAC would have permitted, so it answers "is this configuration allowed" rather
+      than "may this principal act". A maximum of ten SCPs attach to any root, OU or account, and
+      when SCPs are enabled every entity must have at least one attached at all times.
+    exam_tags: [SAA-C03, SAP-C02, AZ-104, AZ-305, ACE]
+    sources:
+      - https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html
+      - https://learn.microsoft.com/en-us/azure/governance/policy/overview
+    verified: '2026-09-09'

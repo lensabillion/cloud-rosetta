@@ -1,0 +1,1493 @@
+{
+  "generated": "2026-09-09",
+  "licence": "CC BY 4.0",
+  "mappings": [
+    {
+      "id": "cmp.vm",
+      "concept": "Infrastructure-as-a-service virtual machine",
+      "divergence": "exact",
+      "bite": "tip",
+      "aws": {
+        "name": "Amazon EC2",
+        "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html"
+      },
+      "azure": {
+        "name": "Azure Virtual Machines",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/overview"
+      },
+      "gcp": {
+        "name": "Compute Engine",
+        "url": "https://docs.cloud.google.com/compute/docs/overview"
+      },
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "AZ-104",
+        "CDL",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "compute"
+    },
+    {
+      "id": "cmp.autoscale",
+      "concept": "Horizontally scaling a pool of identical machines",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "Auto Scaling group",
+        "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-groups.html"
+      },
+      "azure": {
+        "name": "Virtual Machine Scale Set",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview"
+      },
+      "gcp": {
+        "name": "Managed instance group",
+        "url": "https://docs.cloud.google.com/compute/docs/instance-groups"
+      },
+      "breaks_when": "A Google managed instance group is created as either zonal or regional, and the regional form spreads instances across zones for you. An AWS Auto Scaling group achieves the same thing by being given subnets in several availability zones, because the subnet is what carries the zone. Note the acronym trap: AWS ASG means Auto Scaling group, while Azure ASG means application security group, an unrelated networking object.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "SOA-C03",
+        "AZ-104",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "compute"
+    },
+    {
+      "id": "cmp.functions",
+      "concept": "Event-driven function as a service",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "AWS Lambda",
+        "url": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html"
+      },
+      "azure": {
+        "name": "Azure Functions",
+        "url": "https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview"
+      },
+      "gcp": {
+        "name": "Cloud Run functions",
+        "url": "https://docs.cloud.google.com/functions/docs/concepts/version-comparison",
+        "formerly": [
+          "Cloud Functions",
+          "Cloud Functions (2nd gen)"
+        ]
+      },
+      "breaks_when": "Google renamed this. What was Cloud Functions (2nd gen) is now Cloud Run functions and is deployed as a Cloud Run service, manageable through the Cloud Run Admin API, so the boundary between functions and containers has effectively dissolved. What was Cloud Functions (1st gen) is now Cloud Run functions (1st gen). Almost all third-party study material still says Cloud Functions. Azure Functions additionally differ by hosting plan, and the Consumption plan's cold starts and timeout ceiling are what scenario questions turn on.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "DVA-C02",
+        "AZ-900",
+        "AZ-204",
+        "CDL",
+        "ACE"
+      ],
+      "sources": [
+        "https://docs.cloud.google.com/functions/docs/concepts/version-comparison"
+      ],
+      "verified": "2026-09-09",
+      "domain": "compute"
+    },
+    {
+      "id": "cmp.serverless-containers",
+      "concept": "Running a container without managing servers",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "AWS Fargate",
+        "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html"
+      },
+      "azure": {
+        "name": "Azure Container Apps",
+        "url": "https://learn.microsoft.com/en-us/azure/container-apps/overview"
+      },
+      "gcp": {
+        "name": "Cloud Run",
+        "url": "https://docs.cloud.google.com/run/docs/overview/what-is-cloud-run"
+      },
+      "breaks_when": "Fargate is a capacity mode for ECS or EKS rather than a standalone service, so you still choose and configure an orchestrator around it. Cloud Run and Container Apps are complete products you deploy a container image to directly. Cloud Run additionally scales to zero by default and bills per request, which makes it the answer to \"spiky traffic, pay nothing when idle\" in a way Fargate is not.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "DVA-C02",
+        "AZ-204",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "compute"
+    },
+    {
+      "id": "cmp.kubernetes",
+      "concept": "Managed Kubernetes",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "Amazon EKS",
+        "url": "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html"
+      },
+      "azure": {
+        "name": "Azure Kubernetes Service",
+        "url": "https://learn.microsoft.com/en-us/azure/aks/what-is-aks"
+      },
+      "gcp": {
+        "name": "Google Kubernetes Engine",
+        "url": "https://docs.cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview"
+      },
+      "breaks_when": "Control plane billing differs and is tested. AKS offers a Free tier where the control plane is not charged, alongside paid tiers with an uptime guarantee. EKS charges per cluster hour. GKE charges a cluster management fee, and its Autopilot mode removes node management entirely and bills for the resources pods request rather than for nodes. Autopilot has no direct equivalent in the other two. Pricing changes often, so confirm on the vendor page before relying on a figure.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "DVA-C02",
+        "AZ-104",
+        "AZ-204",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "compute"
+    },
+    {
+      "id": "cmp.paas",
+      "concept": "Deploy code, platform manages the runtime",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "AWS Elastic Beanstalk, or App Runner",
+        "url": "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html"
+      },
+      "azure": {
+        "name": "Azure App Service",
+        "url": "https://learn.microsoft.com/en-us/azure/app-service/overview"
+      },
+      "gcp": {
+        "name": "App Engine",
+        "url": "https://docs.cloud.google.com/appengine/docs/an-overview-of-app-engine"
+      },
+      "breaks_when": "Azure App Service is a mainstream, heavily used product with deployment slots and built-in staging swaps that the other two do not match. Elastic Beanstalk is a thin orchestration layer over EC2 resources you can still see and manage, which makes it more transparent and less abstracted than the other two. App Engine's standard and flexible environments differ sharply from each other in scaling behaviour and language support.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "DVA-C02",
+        "AZ-900",
+        "AZ-204",
+        "CDL"
+      ],
+      "verified": "2026-09-09",
+      "domain": "compute"
+    },
+    {
+      "id": "cmp.spot",
+      "concept": "Interruptible discounted capacity",
+      "divergence": "exact",
+      "bite": "regular",
+      "aws": {
+        "name": "EC2 Spot Instances",
+        "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html"
+      },
+      "azure": {
+        "name": "Azure Spot Virtual Machines",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms"
+      },
+      "gcp": {
+        "name": "Spot VMs",
+        "url": "https://docs.cloud.google.com/compute/docs/instances/spot",
+        "formerly": [
+          "Preemptible VMs"
+        ]
+      },
+      "shared_trap": "The concept transfers cleanly, and the naming history is the trap. Google's older preemptible VMs had a hard 24-hour maximum lifetime; Spot VMs do not, and material written before the change still teaches the 24-hour limit. All three remain unsuitable for anything that cannot tolerate reclamation at short notice.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "CDL",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "compute"
+    },
+    {
+      "id": "db.managed-relational",
+      "concept": "Managed relational database",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "Amazon RDS",
+        "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html"
+      },
+      "azure": {
+        "name": "Azure SQL Database, or Azure Database for PostgreSQL and MySQL",
+        "url": "https://learn.microsoft.com/en-us/azure/azure-sql/database/sql-database-paas-overview"
+      },
+      "gcp": {
+        "name": "Cloud SQL",
+        "url": "https://docs.cloud.google.com/sql/docs/introduction"
+      },
+      "breaks_when": "Azure splits by engine into separate products, whereas RDS and Cloud SQL are one product with an engine choice. Azure SQL Database is also not simply hosted SQL Server: it is a platform service with its own feature set, distinct from Azure SQL Managed Instance, which is the closer match for lifting an existing SQL Server across. Picking between Database, Managed Instance and SQL on a VM is a recurring AZ-305 question.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "AZ-104",
+        "AZ-305",
+        "CDL",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "databases"
+    },
+    {
+      "id": "db.ha-vs-readscale",
+      "concept": "High availability versus read scaling on a relational database",
+      "divergence": "partial",
+      "bite": "serious",
+      "aws": {
+        "name": "Multi-AZ deployment, versus read replica",
+        "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html"
+      },
+      "azure": {
+        "name": "Zone-redundant configuration, versus geo-replica",
+        "url": "https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla"
+      },
+      "gcp": {
+        "name": "Regional instance, versus read replica",
+        "url": "https://docs.cloud.google.com/sql/docs/mysql/high-availability"
+      },
+      "breaks_when": "The classic RDS trap, and it transfers. A Multi-AZ standby is synchronous, is not readable, and exists purely to fail over. A read replica is asynchronous, is readable, and does not provide automatic failover. Any question about surviving a zone failure wants the standby; any question about offloading reporting queries wants the replica. Answering with the wrong one is the intended failure, and the two are frequently offered together.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "SOA-C03",
+        "AZ-104",
+        "AZ-305",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "databases"
+    },
+    {
+      "id": "db.key-value",
+      "concept": "Managed key-value or document NoSQL",
+      "divergence": "none",
+      "bite": "regular",
+      "aws": {
+        "name": "Amazon DynamoDB",
+        "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html"
+      },
+      "azure": {
+        "name": "Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/introduction"
+      },
+      "gcp": {
+        "name": "Firestore, or Bigtable",
+        "url": "https://docs.cloud.google.com/firestore/docs/overview"
+      },
+      "breaks_when": "These are not interchangeable. Cosmos DB is a multi-model database with several APIs and five tunable consistency levels, and it is globally distributed by configuration. DynamoDB is a single model with eventual or strongly consistent reads, and global tables are a separate feature. Google splits the space in two: Firestore is document-oriented for application data, while Bigtable is a wide-column store for very high write throughput and time series, with no equivalent split elsewhere. Choosing Firestore where Bigtable is wanted, or the reverse, is the standard Google distractor.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "DVA-C02",
+        "AZ-204",
+        "AZ-305",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "databases"
+    },
+    {
+      "id": "db.warehouse",
+      "concept": "Analytical data warehouse",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "Amazon Redshift",
+        "url": "https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html"
+      },
+      "azure": {
+        "name": "Microsoft Fabric, or Azure Synapse Analytics",
+        "url": "https://learn.microsoft.com/en-us/fabric/data-warehouse/data-warehousing",
+        "maturity": "superseded",
+        "note": "Synapse is superseded by Fabric for new work, and the DP-203 exam that covered it is retired."
+      },
+      "gcp": {
+        "name": "BigQuery",
+        "url": "https://docs.cloud.google.com/bigquery/docs/introduction"
+      },
+      "breaks_when": "BigQuery is serverless with storage and compute separated and no cluster to provision, which makes it the answer to \"no infrastructure to manage\" in a way a provisioned Redshift cluster is not, though Redshift Serverless narrows the gap. Microsoft's warehouse story moved into Fabric, and the Azure data engineering certification path moved with it, so material referencing Synapse and the retired DP-203 exam is teaching a superseded shape.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "DP-900",
+        "CDL",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "databases"
+    },
+    {
+      "id": "db.cache",
+      "concept": "Managed in-memory cache",
+      "divergence": "exact",
+      "bite": "tip",
+      "aws": {
+        "name": "Amazon ElastiCache",
+        "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html"
+      },
+      "azure": {
+        "name": "Azure Cache for Redis",
+        "url": "https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview"
+      },
+      "gcp": {
+        "name": "Memorystore",
+        "url": "https://docs.cloud.google.com/memorystore/docs/redis/redis-overview"
+      },
+      "exam_tags": [
+        "SAA-C03",
+        "DVA-C02",
+        "AZ-204",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "databases"
+    },
+    {
+      "id": "db.streaming",
+      "concept": "Streaming ingestion and pub/sub messaging",
+      "divergence": "none",
+      "bite": "regular",
+      "aws": {
+        "name": "Amazon Kinesis Data Streams, and separately SNS and SQS",
+        "url": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html"
+      },
+      "azure": {
+        "name": "Azure Event Hubs, and separately Service Bus and Event Grid",
+        "url": "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-about"
+      },
+      "gcp": {
+        "name": "Pub/Sub",
+        "url": "https://docs.cloud.google.com/pubsub/docs/overview"
+      },
+      "breaks_when": "Google collapses into one product what the other two split across several. Pub/Sub covers both high-throughput streaming and topic fan-out. AWS separates ordered, replayable streams in Kinesis from queues in SQS and fan-out in SNS. Azure separates Event Hubs for telemetry streams, Service Bus for enterprise queues with transactions and sessions, and Event Grid for reactive event routing. Mapping SQS to Pub/Sub is defensible; mapping it to Event Hubs is not, and the intended Azure answer for a queue is nearly always Service Bus.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "DVA-C02",
+        "AZ-204",
+        "AZ-305",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "databases"
+    },
+    {
+      "id": "hier.isolation-boundary",
+      "concept": "The primary workload isolation boundary",
+      "divergence": "partial",
+      "bite": "serious",
+      "aws": {
+        "name": "Account",
+        "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html"
+      },
+      "azure": {
+        "name": "Subscription",
+        "url": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/initial-subscriptions"
+      },
+      "gcp": {
+        "name": "Project",
+        "url": "https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy"
+      },
+      "breaks_when": "An AWS account is simultaneously the isolation boundary, the billing boundary and the identity boundary. Azure and Google Cloud split those across three different objects: an Entra tenant holds identity, a subscription or billing account holds spend, and the subscription or project holds resources. Assuming one object does all three is the single most common cross-cloud modelling error.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "AZ-104",
+        "CDL",
+        "ACE"
+      ],
+      "sources": [
+        "https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy"
+      ],
+      "verified": "2026-09-09",
+      "domain": "hierarchy"
+    },
+    {
+      "id": "hier.grouping-above",
+      "concept": "Grouping container above the isolation boundary",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "Organizational unit",
+        "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html"
+      },
+      "azure": {
+        "name": "Management group",
+        "url": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+      },
+      "gcp": {
+        "name": "Folder",
+        "url": "https://docs.cloud.google.com/resource-manager/docs/creating-managing-folders"
+      },
+      "breaks_when": "Nesting depth differs and is tested. AWS allows five levels of OUs below a root. Azure allows six levels of management groups, excluding the root and subscription levels, with 10,000 management groups per directory. Google allows ten levels of folders, with at most 300 direct child folders per parent. The Azure root management group cannot be moved or deleted, its ID equals the tenant ID, and Azure Resource Manager caches the hierarchy for up to 30 minutes so a move can appear not to have happened.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "AZ-104",
+        "AZ-305",
+        "ACE"
+      ],
+      "sources": [
+        "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html",
+        "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview",
+        "https://docs.cloud.google.com/resource-manager/docs/limits"
+      ],
+      "verified": "2026-09-09",
+      "domain": "hierarchy"
+    },
+    {
+      "id": "hier.grouping-below",
+      "concept": "Grouping container below the isolation boundary",
+      "divergence": "none",
+      "bite": "serious",
+      "aws": {
+        "name": "Resource group",
+        "url": "https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html",
+        "note": "A tag-driven view over resources. Optional, and unrelated to the Azure object of the same name."
+      },
+      "azure": {
+        "name": "Resource group",
+        "url": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview",
+        "note": "Mandatory. Every resource lives in exactly one."
+      },
+      "gcp": {
+        "name": null,
+        "note": "No equivalent. Labels and separate projects do this job."
+      },
+      "breaks_when": "Two clouds use the identical phrase for unrelated things and the third has neither. An Azure resource group is compulsory, sits below the billing boundary, and deleting it destroys every resource inside without a per-resource prompt. An AWS resource group is an optional tag query that owns nothing and deleting it destroys nothing. Google has no construct at this level at all. The closest AWS analogue to the Azure object is a CloudFormation stack.\n",
+      "exam_tags": [
+        "AZ-900",
+        "AZ-104",
+        "SAA-C03"
+      ],
+      "sources": [
+        "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview"
+      ],
+      "verified": "2026-09-09",
+      "domain": "hierarchy"
+    },
+    {
+      "id": "hier.virtual-network-scope",
+      "concept": "Scope of the virtual network object",
+      "divergence": "none",
+      "bite": "serious",
+      "aws": {
+        "name": "VPC, regional",
+        "url": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html"
+      },
+      "azure": {
+        "name": "Virtual network, regional",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview"
+      },
+      "gcp": {
+        "name": "VPC network, global",
+        "url": "https://docs.cloud.google.com/vpc/docs/vpc"
+      },
+      "breaks_when": "A Google VPC is a global object spanning every region and carries no CIDR of its own; the subnets hold the ranges and are regional. One Google VPC can contain instances in Tokyo and Frankfurt that route to each other over Google's backbone with no peering. AWS and Azure networks are regional, so the same design needs peering or a transit construct. An AWS subnet additionally lives in exactly one availability zone, whereas Azure and Google subnets are regional and span zones.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "AZ-104",
+        "AZ-700",
+        "ACE"
+      ],
+      "sources": [
+        "https://docs.cloud.google.com/vpc/docs/vpc"
+      ],
+      "verified": "2026-09-09",
+      "domain": "hierarchy"
+    },
+    {
+      "id": "hier.failure-domain",
+      "concept": "Independent failure domain within a region",
+      "divergence": "partial",
+      "bite": "serious",
+      "aws": {
+        "name": "Availability Zone",
+        "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html"
+      },
+      "azure": {
+        "name": "Availability zone",
+        "url": "https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview"
+      },
+      "gcp": {
+        "name": "Zone",
+        "url": "https://docs.cloud.google.com/compute/docs/regions-zones"
+      },
+      "breaks_when": "Azure additionally has an availability set, which is not a zone. An availability set uses fault domains and update domains inside a single datacentre and protects against rack failure and host patching, not against a datacentre outage. Any question naming a datacentre-level failure wants zones, and the availability set is a deliberate distractor. AWS also shuffles zone names per account, so us-east-1a in two accounts is generally not the same physical zone; the stable identifier is the AZ ID such as use1-az1.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "AZ-104",
+        "ACE"
+      ],
+      "sources": [
+        "https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview"
+      ],
+      "verified": "2026-09-09",
+      "domain": "hierarchy"
+    },
+    {
+      "id": "hier.org-guardrail",
+      "concept": "Organization-wide preventive guardrail",
+      "divergence": "partial",
+      "bite": "serious",
+      "aws": {
+        "name": "Service control policy",
+        "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html"
+      },
+      "azure": {
+        "name": "Azure Policy",
+        "url": "https://learn.microsoft.com/en-us/azure/governance/policy/overview"
+      },
+      "gcp": {
+        "name": "Organization policy constraint",
+        "url": "https://docs.cloud.google.com/resource-manager/docs/organization-policy/overview"
+      },
+      "breaks_when": "An SCP sets a ceiling on what IAM may grant and never grants anything itself; if the SCP allows an action and no IAM policy grants it, the answer is still no. Azure Policy is a different kind of engine: it evaluates resource configuration at write time and can deny a deployment RBAC would have permitted, so it answers \"is this configuration allowed\" rather than \"may this principal act\". A maximum of ten SCPs attach to any root, OU or account, and when SCPs are enabled every entity must have at least one attached at all times.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "SAP-C02",
+        "AZ-104",
+        "AZ-305",
+        "ACE"
+      ],
+      "sources": [
+        "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html",
+        "https://learn.microsoft.com/en-us/azure/governance/policy/overview"
+      ],
+      "verified": "2026-09-09",
+      "domain": "hierarchy"
+    },
+    {
+      "id": "iam.role",
+      "concept": "The object called a \"role\"",
+      "divergence": "none",
+      "bite": "serious",
+      "aws": {
+        "name": "IAM role",
+        "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html"
+      },
+      "azure": {
+        "name": "Azure role definition",
+        "url": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
+      },
+      "gcp": {
+        "name": "IAM role",
+        "url": "https://docs.cloud.google.com/iam/docs/roles-overview"
+      },
+      "breaks_when": "These are different categories of object. An AWS role is an identity you assume, with its own temporary credentials issued by STS and a trust policy naming who may assume it. An Azure or Google role is a named set of permissions that carries no credentials and does nothing until assigned to a separate principal at a scope. The nearest AWS equivalent of an Azure or Google role is a managed policy; the nearest Azure or Google equivalent of an AWS role is a service principal or service account.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "AZ-104",
+        "CDL",
+        "ACE"
+      ],
+      "sources": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html"
+      ],
+      "verified": "2026-09-09",
+      "domain": "identity"
+    },
+    {
+      "id": "iam.machine-identity",
+      "concept": "Credentials for compute without stored secrets",
+      "divergence": "partial",
+      "bite": "serious",
+      "aws": {
+        "name": "IAM role via instance profile",
+        "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html"
+      },
+      "azure": {
+        "name": "Managed identity",
+        "url": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"
+      },
+      "gcp": {
+        "name": "Attached service account",
+        "url": "https://docs.cloud.google.com/iam/docs/service-account-overview"
+      },
+      "breaks_when": "Azure splits this into system-assigned, which is bound to one resource and deleted with it, and user-assigned, which is a standalone resource that survives and can be shared; \"must outlive the VM\" or \"shared by several apps\" selects user-assigned. AWS requires an instance profile as a wrapper around the role, which the console creates invisibly and which then appears unannounced in CLI questions. A Google service account is both an identity and a resource, so using one requires a role on the service account itself, typically Service Account User, separate from any permission the account holds.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "DVA-C02",
+        "AZ-104",
+        "AZ-204",
+        "ACE"
+      ],
+      "sources": [
+        "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview",
+        "https://docs.cloud.google.com/iam/docs/service-account-overview"
+      ],
+      "verified": "2026-09-09",
+      "domain": "identity"
+    },
+    {
+      "id": "iam.evaluation",
+      "concept": "How a permission decision is reached",
+      "divergence": "none",
+      "bite": "serious",
+      "aws": {
+        "name": "Explicit deny, then SCP, then resource policy, then boundary, then session, then identity policy",
+        "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html"
+      },
+      "azure": {
+        "name": "Deny assignment, then additive union of role assignments",
+        "url": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+      },
+      "gcp": {
+        "name": "Deny policy, then additive union of allow policy bindings",
+        "url": "https://docs.cloud.google.com/iam/docs/deny-overview"
+      },
+      "breaks_when": "AWS layers six evaluation stages and a permission must survive all of them, with any explicit deny final. Azure and Google are purely additive unions of what is granted at the resource and every scope above it, which means you cannot narrow access by granting a smaller role lower down. A Google user with Editor at the folder keeps Editor on every project inside it no matter what you grant on the project. AWS engineers reach for an explicit deny; Azure has no permissions boundary equivalent at all.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "SCS-C02",
+        "AZ-104",
+        "AZ-500",
+        "ACE"
+      ],
+      "sources": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html"
+      ],
+      "verified": "2026-09-09",
+      "domain": "identity"
+    },
+    {
+      "id": "iam.two-role-systems",
+      "concept": "Administering the directory versus administering resources",
+      "divergence": "none",
+      "bite": "serious",
+      "aws": {
+        "name": null,
+        "note": "One IAM system covers both."
+      },
+      "azure": {
+        "name": "Microsoft Entra roles, separate from Azure RBAC roles",
+        "url": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/custom-overview"
+      },
+      "gcp": {
+        "name": null,
+        "note": "One IAM system covers both."
+      },
+      "breaks_when": "Azure alone runs two independent role systems. Entra roles such as Global Administrator govern the identity tenant. Azure RBAC roles such as Owner and Contributor govern resources. A Global Administrator has no rights over a virtual machine until they elevate to User Access Administrator at the root management group, and that elevated state is itself a common exam scenario. Neither AWS nor Google separates these.\n",
+      "exam_tags": [
+        "AZ-900",
+        "AZ-104",
+        "AZ-500",
+        "SC-300"
+      ],
+      "sources": [
+        "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+      ],
+      "verified": "2026-09-09",
+      "domain": "identity"
+    },
+    {
+      "id": "iam.workforce-sso",
+      "concept": "Workforce single sign-on into the cloud",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "IAM Identity Center",
+        "url": "https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html",
+        "formerly": [
+          "AWS SSO"
+        ]
+      },
+      "azure": {
+        "name": "Microsoft Entra ID",
+        "url": "https://learn.microsoft.com/en-us/entra/fundamentals/whatis",
+        "formerly": [
+          "Azure Active Directory",
+          "Azure AD"
+        ]
+      },
+      "gcp": {
+        "name": "Cloud Identity, or Workforce Identity Federation",
+        "url": "https://docs.cloud.google.com/iam/docs/workforce-identity-federation"
+      },
+      "breaks_when": "Entra ID is the identity system Azure is built on, so it is always present. AWS IAM Identity Center is an optional layer added on top of per-account IAM, and IAM users still exist underneath. Both were renamed recently enough that most third-party course material still says Azure AD and AWS SSO, which is what candidates will have been taught.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "AZ-104",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "identity"
+    },
+    {
+      "id": "iam.secrets",
+      "concept": "Storing application secrets",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "Secrets Manager, or SSM Parameter Store",
+        "url": "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html"
+      },
+      "azure": {
+        "name": "Azure Key Vault",
+        "url": "https://learn.microsoft.com/en-us/azure/key-vault/general/overview"
+      },
+      "gcp": {
+        "name": "Secret Manager",
+        "url": "https://docs.cloud.google.com/secret-manager/docs/overview"
+      },
+      "breaks_when": "Azure Key Vault is one service holding secrets, keys and certificates, so it also occupies the slot that AWS gives to KMS and Google gives to Cloud KMS. AWS splits the job in two, and the split is tested: Secrets Manager rotates automatically and is billed per secret, while Parameter Store is cheaper, has a free standard tier and does not rotate on its own. \"Automatic rotation\" selects Secrets Manager.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "DVA-C02",
+        "SCS-C02",
+        "AZ-104",
+        "AZ-500",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "identity"
+    },
+    {
+      "id": "net.firewall.instance",
+      "concept": "Instance-level traffic filtering",
+      "divergence": "none",
+      "bite": "serious",
+      "aws": {
+        "name": "Security group",
+        "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html"
+      },
+      "azure": {
+        "name": "Network security group",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+      },
+      "gcp": {
+        "name": "VPC firewall rule",
+        "url": "https://docs.cloud.google.com/firewall/docs/firewalls"
+      },
+      "breaks_when": "An AWS security group cannot express a deny rule. It allows only, so blocking one specific address is impossible and requires a network ACL instead; this is the most reliably tested networking fact in the AWS catalogue. NSGs and Google firewall rules both support deny and evaluate by priority, lowest number first. Google rules attach to the VPC network rather than to an instance and select targets by network tag or service account, so an engineer arriving from AWS looks for a firewall on the machine and does not find one. Google also has implied rules that cannot be deleted: allow all egress, deny all ingress.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-104",
+        "AZ-700",
+        "ACE"
+      ],
+      "sources": [
+        "https://docs.cloud.google.com/firewall/docs/firewalls"
+      ],
+      "verified": "2026-09-09",
+      "domain": "networking"
+    },
+    {
+      "id": "net.firewall.subnet",
+      "concept": "Stateless subnet-level filtering",
+      "divergence": "none",
+      "bite": "regular",
+      "aws": {
+        "name": "Network ACL",
+        "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html"
+      },
+      "azure": {
+        "name": null,
+        "note": "An NSG on the subnet fills this position but is stateful."
+      },
+      "gcp": {
+        "name": null,
+        "note": "No stateless layer. Firewall rules are always stateful."
+      },
+      "breaks_when": "Only AWS has a stateless filter, and statelessness is the whole point of the exam question. Allowing traffic inbound on a network ACL does not allow the reply outbound, so return traffic needs its own rule covering ephemeral ports. The symptom in a scenario is traffic arriving while responses never come back. Azure NSGs applied at the subnet look similar but are stateful, so they do not reproduce this behaviour or this failure mode.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "SOA-C03"
+      ],
+      "verified": "2026-09-09",
+      "domain": "networking"
+    },
+    {
+      "id": "net.private-service-access",
+      "concept": "Reaching a managed service without traversing the internet",
+      "divergence": "none",
+      "bite": "serious",
+      "aws": {
+        "name": "VPC endpoint, gateway or interface",
+        "url": "https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html"
+      },
+      "azure": {
+        "name": "Private endpoint, and separately service endpoint",
+        "url": "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"
+      },
+      "gcp": {
+        "name": "Private Service Connect, and separately Private Google Access",
+        "url": "https://docs.cloud.google.com/vpc/docs/private-service-connect"
+      },
+      "breaks_when": "Azure's service endpoint and private endpoint sound like synonyms and are not. A service endpoint keeps traffic on the Microsoft backbone while the service keeps its public IP and nothing enters your address space. A private endpoint puts a network interface with a private IP from your subnet in front of the service, so it becomes addressable inside the VNet and reachable from on-premises over ExpressRoute or VPN, which service endpoints cannot do. \"Must be reachable from on-premises\" or \"must have a private IP\" selects private endpoint. The AWS pair has the same shape: a gateway endpoint is a route table entry, is free, and serves only S3 and DynamoDB, while an interface endpoint is a real network interface, works for most services, and is billed hourly plus data.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "AZ-104",
+        "AZ-700",
+        "AZ-500",
+        "ACE"
+      ],
+      "sources": [
+        "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"
+      ],
+      "verified": "2026-09-09",
+      "domain": "networking"
+    },
+    {
+      "id": "net.lb.l7-global",
+      "concept": "Global layer 7 load balancing",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "CloudFront, or Global Accelerator for layer 4",
+        "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html"
+      },
+      "azure": {
+        "name": "Azure Front Door",
+        "url": "https://learn.microsoft.com/en-us/azure/frontdoor/front-door-overview"
+      },
+      "gcp": {
+        "name": "Global external Application Load Balancer",
+        "url": "https://docs.cloud.google.com/load-balancing/docs/https"
+      },
+      "breaks_when": "Google's global external Application Load Balancer uses a single anycast IP worldwide natively, so one address serves every region. AWS and Azure reach the same outcome by placing a separate global service in front of regional load balancers. Do not confuse Azure Front Door with Traffic Manager: Traffic Manager is DNS only, hands out an answer and then leaves the path, and therefore cannot terminate TLS, rewrite a header or fail over a live connection. Any question mentioning header-based routing or TLS offload at the edge is a Front Door question. Route 53 occupies the same DNS-only position in AWS.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "AZ-104",
+        "AZ-305",
+        "AZ-700",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "networking"
+    },
+    {
+      "id": "net.lb.l7-regional",
+      "concept": "Regional layer 7 load balancing",
+      "divergence": "exact",
+      "bite": "tip",
+      "aws": {
+        "name": "Application Load Balancer",
+        "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html"
+      },
+      "azure": {
+        "name": "Application Gateway",
+        "url": "https://learn.microsoft.com/en-us/azure/application-gateway/overview"
+      },
+      "gcp": {
+        "name": "Regional external Application Load Balancer",
+        "url": "https://docs.cloud.google.com/load-balancing/docs/application-load-balancer"
+      },
+      "exam_tags": [
+        "SAA-C03",
+        "AZ-104",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "networking"
+    },
+    {
+      "id": "net.peering",
+      "concept": "Connecting two virtual networks",
+      "divergence": "exact",
+      "bite": "regular",
+      "aws": {
+        "name": "VPC peering",
+        "url": "https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html"
+      },
+      "azure": {
+        "name": "Virtual network peering",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview"
+      },
+      "gcp": {
+        "name": "VPC Network Peering",
+        "url": "https://docs.cloud.google.com/vpc/docs/vpc-peering"
+      },
+      "shared_trap": "Behaviour matches closely, and the shared constraint is the tested one: peering is non-transitive in all three clouds, and overlapping address ranges are refused everywhere. If A peers with B and B peers with C, A cannot reach C, and the intended answer is a transit construct: Transit Gateway, Virtual WAN, or Network Connectivity Center.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "AZ-104",
+        "AZ-700",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "networking"
+    },
+    {
+      "id": "net.nat",
+      "concept": "Outbound internet for private instances",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "NAT gateway",
+        "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html"
+      },
+      "azure": {
+        "name": "Azure NAT Gateway",
+        "url": "https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview"
+      },
+      "gcp": {
+        "name": "Cloud NAT",
+        "url": "https://docs.cloud.google.com/nat/docs/overview"
+      },
+      "breaks_when": "An AWS NAT gateway is a zonal resource, so a zone-resilient design needs one per zone and pays for each, which turns up as both a cost question and an availability question. Cloud NAT is a software-defined feature of the network rather than an appliance in the data path, so there is nothing to place in a subnet or size. The three are billed on different shapes, which matters in cost-optimisation scenarios.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "SOA-C03",
+        "AZ-104",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "networking"
+    },
+    {
+      "id": "net.hybrid-private",
+      "concept": "Private circuit to on-premises",
+      "divergence": "exact",
+      "bite": "tip",
+      "aws": {
+        "name": "AWS Direct Connect",
+        "url": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html"
+      },
+      "azure": {
+        "name": "Azure ExpressRoute",
+        "url": "https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction"
+      },
+      "gcp": {
+        "name": "Cloud Interconnect",
+        "url": "https://docs.cloud.google.com/network-connectivity/docs/interconnect"
+      },
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "AZ-104",
+        "CDL",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "networking"
+    },
+    {
+      "id": "sto.object",
+      "concept": "Object storage",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "Amazon S3",
+        "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html"
+      },
+      "azure": {
+        "name": "Azure Blob Storage",
+        "url": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction"
+      },
+      "gcp": {
+        "name": "Cloud Storage",
+        "url": "https://docs.cloud.google.com/storage/docs/introduction"
+      },
+      "breaks_when": "Azure adds a level the others do not have. Blobs live in a container, which lives in a storage account, and the storage account is the unit that carries the globally unique DNS name, the redundancy setting and the performance tier. AWS and Google go straight to a bucket. Note that an Azure container here is a grouping of blobs and has nothing to do with an OCI container image. Google buckets can also be created as dual-region or multi-region, a placement option with no direct AWS or Azure equivalent.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "AZ-104",
+        "CDL",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "storage"
+    },
+    {
+      "id": "sto.archive-tier",
+      "concept": "Cheapest archival storage tier",
+      "divergence": "none",
+      "bite": "serious",
+      "aws": {
+        "name": "S3 Glacier Deep Archive",
+        "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html"
+      },
+      "azure": {
+        "name": "Archive access tier",
+        "url": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+      },
+      "gcp": {
+        "name": "Archive storage class",
+        "url": "https://docs.cloud.google.com/storage/docs/storage-classes"
+      },
+      "breaks_when": "Retrieval behaviour differs fundamentally and decides questions. Google's Archive class is online: it has the same millisecond first-byte latency as Standard and you simply pay more to read it, with a 365-day minimum storage duration. AWS Glacier Flexible Retrieval and Deep Archive are offline and need a restore job taking minutes to hours. The Azure Archive tier is also offline and needs rehydration, which can take hours. So \"archive but must be readable instantly\" is achievable natively on Google, needs Glacier Instant Retrieval on AWS, and is not the Archive tier on Azure. Minimum durations also differ, and early deletion is charged as if the object had been kept for the minimum.\n",
+      "exam_tags": [
+        "CLF-C02",
+        "SAA-C03",
+        "AZ-900",
+        "AZ-104",
+        "CDL",
+        "ACE"
+      ],
+      "sources": [
+        "https://docs.cloud.google.com/storage/docs/storage-classes",
+        "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+      ],
+      "verified": "2026-09-09",
+      "domain": "storage"
+    },
+    {
+      "id": "sto.block",
+      "concept": "Network-attached block storage for a VM",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "Amazon EBS",
+        "url": "https://docs.aws.amazon.com/ebs/latest/userguide/what-is-ebs.html"
+      },
+      "azure": {
+        "name": "Azure managed disks",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview"
+      },
+      "gcp": {
+        "name": "Persistent Disk and Hyperdisk",
+        "url": "https://docs.cloud.google.com/compute/docs/disks"
+      },
+      "breaks_when": "Google Persistent Disk can be created as regional, replicating synchronously across two zones in a region, which EBS cannot do; EBS volumes are strictly zonal and cross-zone resilience is a snapshot-and-restore or replication-at-the-application-layer problem. Google disks can also be resized and attached read-only to many instances at once, which changes what architectures are available.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "SOA-C03",
+        "AZ-104",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "storage"
+    },
+    {
+      "id": "sto.file",
+      "concept": "Shared network file system",
+      "divergence": "partial",
+      "bite": "regular",
+      "aws": {
+        "name": "Amazon EFS, or FSx",
+        "url": "https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html"
+      },
+      "azure": {
+        "name": "Azure Files",
+        "url": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction"
+      },
+      "gcp": {
+        "name": "Filestore",
+        "url": "https://docs.cloud.google.com/filestore/docs/overview"
+      },
+      "breaks_when": "Protocol support differs and is the deciding factor. Azure Files serves SMB and NFS, so it is the natural answer for Windows workloads and can be mounted directly from on-premises. EFS is NFS only, and Windows or Lustre workloads go to the separate FSx family. Filestore is NFS only.\n",
+      "exam_tags": [
+        "SAA-C03",
+        "AZ-104",
+        "ACE"
+      ],
+      "verified": "2026-09-09",
+      "domain": "storage"
+    },
+    {
+      "id": "sto.redundancy",
+      "concept": "Naming the replication and durability setting",
+      "divergence": "none",
+      "bite": "serious",
+      "aws": {
+        "name": "Storage class, with zonal scope implied by the class",
+        "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html"
+      },
+      "azure": {
+        "name": "LRS, ZRS, GRS, GZRS, RA-GRS",
+        "url": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+      },
+      "gcp": {
+        "name": "Location type, region, dual-region or multi-region",
+        "url": "https://docs.cloud.google.com/storage/docs/locations"
+      },
+      "breaks_when": "Azure exposes redundancy as an explicit, separately chosen four-letter setting on the storage account, and AZ-104 tests the letters directly: LRS keeps three copies in one datacentre, ZRS spreads across zones, GRS adds a second region asynchronously, GZRS combines both, and the RA- prefix makes the secondary readable. AWS folds the choice into the storage class, where One Zone-IA is the only single-zone option. Google folds it into the bucket's location type. There is no cross-cloud vocabulary here at all, so these must be learned separately per cloud.\n",
+      "exam_tags": [
+        "AZ-900",
+        "AZ-104",
+        "AZ-305"
+      ],
+      "sources": [
+        "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+      ],
+      "verified": "2026-09-09",
+      "domain": "storage"
+    }
+  ],
+  "terms": [
+    {
+      "term": "Role",
+      "severity": "high",
+      "aws": {
+        "meaning": "An assumable identity with its own temporary credentials issued by STS, and a trust policy naming who may assume it.",
+        "category": "identity",
+        "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html"
+      },
+      "azure": {
+        "meaning": "A named set of permissions, meaningless until assigned to a separate principal at a scope.",
+        "category": "permission set",
+        "url": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
+      },
+      "gcp": {
+        "meaning": "A named collection of permissions, bound to a member at a resource node.",
+        "category": "permission set",
+        "url": "https://docs.cloud.google.com/iam/docs/roles-overview"
+      },
+      "why_it_hurts": "An AWS role is a thing you become; the other two are lists of verbs pinned to somebody else. Different categories of object behind one word. The nearest AWS equivalent of an Azure or Google role is a managed policy, and the nearest Azure or Google equivalent of an AWS role is a service principal or service account.\n",
+      "see_also": [
+        "Policy",
+        "Service account",
+        "Principal"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Resource group",
+      "severity": "high",
+      "aws": {
+        "meaning": "An optional, tag-driven query that produces a view over resources. It owns nothing.",
+        "category": "saved view",
+        "url": "https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html"
+      },
+      "azure": {
+        "meaning": "A mandatory lifecycle container. Every resource is in exactly one, and deleting the group deletes everything inside.",
+        "category": "ownership container",
+        "url": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview"
+      },
+      "why_it_hurts": "Identical phrase, unrelated concepts, and one of them is destructive. Deleting an Azure resource group destroys every resource in it without a per-resource prompt. Deleting an AWS resource group destroys nothing. Google has no construct at this level at all.\n",
+      "see_also": [
+        "Stack",
+        "Project"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Policy",
+      "severity": "high",
+      "aws": {
+        "meaning": "A JSON document listing actions, resources and conditions, attached to an identity or a resource.",
+        "category": "permissions document",
+        "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html"
+      },
+      "azure": {
+        "meaning": "Azure Policy is a governance engine evaluating resource configuration at write time. It is not the permissions system.",
+        "category": "configuration governance engine",
+        "url": "https://learn.microsoft.com/en-us/azure/governance/policy/overview"
+      },
+      "gcp": {
+        "meaning": "Either an IAM allow policy, which is a list of role bindings, or an organization policy, which is a configuration constraint.",
+        "category": "two different things",
+        "url": "https://docs.cloud.google.com/iam/docs/policies"
+      },
+      "why_it_hurts": "In AWS, policy is how permissions work. In Azure, permissions are RBAC and Azure Policy is a separate system answering a different question. A scenario about enforcing a required configuration is an Azure Policy answer and every RBAC option is a distractor. Google uses the word for both of its systems, so context decides.\n",
+      "see_also": [
+        "Role",
+        "Service control policy"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "ASG",
+      "severity": "high",
+      "aws": {
+        "meaning": "Auto Scaling group. A pool of identical instances scaled by policy.",
+        "category": "compute",
+        "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-groups.html"
+      },
+      "azure": {
+        "meaning": "Application security group. A named group of network interfaces that NSG rules can reference instead of listing addresses.",
+        "category": "networking",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
+      },
+      "why_it_hurts": "One acronym, two services, different domains entirely, and both are common enough that the abbreviation gets used unqualified in study notes and team chat. Expand it every time.\n",
+      "see_also": [
+        "Security group"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Container",
+      "severity": "high",
+      "azure": {
+        "meaning": "In Blob Storage, a grouping of blobs inside a storage account. Roughly what the other clouds call a bucket.",
+        "category": "storage grouping",
+        "url": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction"
+      },
+      "aws": {
+        "meaning": "An OCI container image or running container. The storage equivalent is a bucket.",
+        "category": "compute packaging"
+      },
+      "gcp": {
+        "meaning": "An OCI container image or running container. The storage equivalent is a bucket.",
+        "category": "compute packaging"
+      },
+      "why_it_hurts": "Azure uses the word for both meanings in the same portal. \"Create a container\" in a storage context means a blob grouping and has nothing to do with Docker, Kubernetes or Container Apps. Reading it as a compute object sends the whole answer wrong.\n",
+      "see_also": [
+        "Bucket",
+        "Storage account"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Availability set",
+      "severity": "high",
+      "azure": {
+        "meaning": "A grouping using fault domains and update domains inside a single datacentre, protecting against rack failure and host patching.",
+        "category": "intra-datacentre placement",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
+      },
+      "aws": {
+        "meaning": "No such construct. Spreading across datacentres means using several Availability Zones, and placement groups solve a different problem.",
+        "category": "no equivalent"
+      },
+      "gcp": {
+        "meaning": "No such construct. Spread placement policies exist for physical separation, but the failure domain you design against is the zone.",
+        "category": "no equivalent"
+      },
+      "why_it_hurts": "It sounds like an availability zone and is not one. An availability set does not protect against a datacentre outage; an availability zone does. AWS and Google have no equivalent construct, so there is nothing to translate it to. Any question naming a datacentre-level failure wants zones, and the availability set is a deliberately placed wrong answer.\n",
+      "see_also": [
+        "Availability zone",
+        "Fault domain"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Endpoint",
+      "severity": "high",
+      "aws": {
+        "meaning": "A VPC endpoint. Gateway endpoints are free route table entries serving only S3 and DynamoDB; interface endpoints are billed network interfaces serving most services.",
+        "category": "private connectivity",
+        "url": "https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html"
+      },
+      "azure": {
+        "meaning": "Two unrelated things. A service endpoint keeps traffic on the backbone while the service keeps its public IP. A private endpoint puts a private IP from your subnet in front of the service.",
+        "category": "private connectivity, two variants",
+        "url": "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"
+      },
+      "gcp": {
+        "meaning": "Private Service Connect endpoints, plus Private Google Access as a separate subnet setting.",
+        "category": "private connectivity",
+        "url": "https://docs.cloud.google.com/vpc/docs/private-service-connect"
+      },
+      "why_it_hurts": "The Azure pair is the worst naming collision in cloud networking. Service endpoint and private endpoint sound like synonyms and behave differently: only the private endpoint gives the service an address inside your network and only it works from on-premises over ExpressRoute or VPN.\n",
+      "see_also": [
+        "Private Link",
+        "Service endpoint"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Project",
+      "severity": "medium",
+      "gcp": {
+        "meaning": "The mandatory container for all resources, with an immutable ID that can never be reused, plus a mutable name and an assigned number.",
+        "category": "isolation boundary",
+        "url": "https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects"
+      },
+      "aws": {
+        "meaning": "Not a platform concept. The equivalent boundary is an account.",
+        "category": "not applicable"
+      },
+      "azure": {
+        "meaning": "Not a platform concept. The equivalent boundary is a subscription, or a resource group for lifecycle.",
+        "category": "not applicable"
+      },
+      "why_it_hurts": "Google projects are created far more freely than AWS accounts or Azure subscriptions, so the same word invites the wrong sense of weight. The ID, name and number are three different fields and questions exploit the difference; the ID is permanent and is not reusable even after the project is deleted.\n",
+      "see_also": [
+        "Account",
+        "Subscription"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Account",
+      "severity": "medium",
+      "aws": {
+        "meaning": "The isolation, billing and identity boundary all at once. Identified by a 12-digit number.",
+        "category": "boundary",
+        "url": "https://docs.aws.amazon.com/accounts/latest/reference/welcome.html"
+      },
+      "azure": {
+        "meaning": "Usually means a sign-in identity. A storage account is something else entirely, and a billing account something else again.",
+        "category": "overloaded"
+      },
+      "gcp": {
+        "meaning": "Usually a user identity. A billing account is a separate payable object linked to projects. A service account is a machine identity.",
+        "category": "overloaded"
+      },
+      "why_it_hurts": "Only in AWS does \"the account\" name the thing workloads live in. Saying \"put it in another account\" is a clear instruction on AWS and an ambiguous one everywhere else. Azure's storage account is a resource, not an identity, despite the name.\n",
+      "see_also": [
+        "Project",
+        "Subscription",
+        "Service account"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Security group",
+      "severity": "medium",
+      "aws": {
+        "meaning": "A stateful allow-only filter attached to a network interface. It cannot deny.",
+        "category": "instance firewall",
+        "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html"
+      },
+      "azure": {
+        "meaning": "Network security group, a stateful filter with allow and deny rules evaluated by priority, attachable to a subnet, a NIC, or both.",
+        "category": "subnet or instance firewall",
+        "url": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+      },
+      "gcp": {
+        "meaning": "No object by this name. VPC firewall rules do the job, attached to the network and targeted by tag or service account.",
+        "category": "network firewall"
+      },
+      "why_it_hurts": "The AWS object cannot deny anything, which people consistently forget, and Azure's similarly named object can. In Entra ID, \"security group\" additionally means a directory group of users, a third unrelated sense.\n",
+      "see_also": [
+        "ASG",
+        "Network ACL",
+        "Firewall rule"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Tag",
+      "severity": "medium",
+      "aws": {
+        "meaning": "A key-value label for billing, search and access control conditions.",
+        "category": "metadata"
+      },
+      "azure": {
+        "meaning": "A key-value label for billing and search, usable as a condition in Azure Policy.",
+        "category": "metadata"
+      },
+      "gcp": {
+        "meaning": "Two different things. Labels are key-value metadata for billing. Network tags are strings that select firewall rule targets and affect routing. Tags proper are a third, IAM-governed construct.",
+        "category": "metadata and network selector",
+        "url": "https://docs.cloud.google.com/vpc/docs/add-remove-network-tags"
+      },
+      "why_it_hurts": "A Google network tag is not metadata; it changes traffic behaviour by selecting which firewall rules apply. Treating it as a cosmetic label is how people accidentally expose or isolate an instance.\n",
+      "see_also": [
+        "Label",
+        "Firewall rule"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Zone",
+      "severity": "medium",
+      "aws": {
+        "meaning": "Availability Zone, one or more discrete datacentres with independent power and cooling. Names are shuffled per account.",
+        "category": "failure domain"
+      },
+      "azure": {
+        "meaning": "Availability zone, the same idea, but not present in every region and opted into per resource.",
+        "category": "failure domain"
+      },
+      "gcp": {
+        "meaning": "A deployment area within a region, named like us-central1-a.",
+        "category": "failure domain"
+      },
+      "why_it_hurts": "Broadly the same concept, with two traps. AWS shuffles zone names per account, so us-east-1a is not the same physical place in two accounts; use the AZ ID such as use1-az1 when physical identity matters. Azure zones are not available in every region. The word also means a DNS zone in all three clouds.\n",
+      "see_also": [
+        "Availability set",
+        "Region"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Service account",
+      "severity": "medium",
+      "gcp": {
+        "meaning": "A machine identity that is simultaneously an identity and a resource. You grant it roles, and you grant others roles on it.",
+        "category": "identity and resource",
+        "url": "https://docs.cloud.google.com/iam/docs/service-account-overview"
+      },
+      "azure": {
+        "meaning": "Not the term used. The equivalent is a service principal, or a managed identity that wraps one.",
+        "category": "identity"
+      },
+      "aws": {
+        "meaning": "Not the term used. The equivalent is an IAM role assumed by a service.",
+        "category": "identity"
+      },
+      "why_it_hurts": "The dual nature is the part candidates report failing. Using a Google service account requires a role on the service account itself, typically Service Account User, which is entirely separate from whatever permissions that service account holds.\n",
+      "see_also": [
+        "Role",
+        "Managed identity",
+        "Principal"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Image",
+      "severity": "low",
+      "aws": {
+        "meaning": "Amazon Machine Image, an AMI. Regional, and must be copied to be used in another region.",
+        "category": "VM template"
+      },
+      "azure": {
+        "meaning": "A managed image, or a version published in an Azure Compute Gallery for replication and versioning.",
+        "category": "VM template"
+      },
+      "gcp": {
+        "meaning": "A custom image, which is a global resource usable from any region without copying.",
+        "category": "VM template"
+      },
+      "why_it_hurts": "Scope differs. Google images are global; AMIs are regional and need explicit copying, which is a step people forget in multi-region designs and which exam questions test directly.\n",
+      "see_also": [
+        "Snapshot"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Stack",
+      "severity": "low",
+      "aws": {
+        "meaning": "A CloudFormation stack, the set of resources created and deleted together from one template.",
+        "category": "deployment unit"
+      },
+      "azure": {
+        "meaning": "A deployment, from an ARM template or Bicep file. Azure Stack is an unrelated hybrid hardware product.",
+        "category": "deployment unit"
+      },
+      "gcp": {
+        "meaning": "A deployment, or a Terraform state in practice.",
+        "category": "deployment unit"
+      },
+      "why_it_hurts": "Azure Stack is a distinct product line for on-premises hardware and has nothing to do with template deployments, so the word points at very different things depending on context.\n",
+      "see_also": [
+        "Resource group"
+      ],
+      "verified": "2026-09-09"
+    },
+    {
+      "term": "Reserved instance",
+      "severity": "low",
+      "aws": {
+        "meaning": "A billing commitment for capacity. Savings Plans are the newer, more flexible commitment.",
+        "category": "discount"
+      },
+      "azure": {
+        "meaning": "A reservation, purchased for one or three years.",
+        "category": "discount"
+      },
+      "gcp": {
+        "meaning": "A committed use discount. Google also applies automatic sustained use discounts with no commitment, which the other two do not have.",
+        "category": "discount"
+      },
+      "why_it_hurts": "Google's sustained use discount applies automatically for running an instance a large part of the month, with nothing purchased. There is no AWS or Azure equivalent, and it is a free mark on Cloud Digital Leader and Associate Cloud Engineer.\n",
+      "see_also": [
+        "Spot"
+      ],
+      "verified": "2026-09-09"
+    }
+  ]
+}
