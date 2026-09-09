@@ -4,6 +4,7 @@ rows:
   - id: net.firewall.instance
     concept: Instance-level traffic filtering
     divergence: none
+    bite: serious
     aws:
       name: Security group
       url: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html
@@ -29,6 +30,7 @@ rows:
   - id: net.firewall.subnet
     concept: Stateless subnet-level filtering
     divergence: none
+    bite: regular
     aws:
       name: Network ACL
       url: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html
@@ -50,6 +52,7 @@ rows:
   - id: net.private-service-access
     concept: Reaching a managed service without traversing the internet
     divergence: none
+    bite: serious
     aws:
       name: VPC endpoint, gateway or interface
       url: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
@@ -77,6 +80,7 @@ rows:
   - id: net.lb.l7-global
     concept: Global layer 7 load balancing
     divergence: partial
+    bite: regular
     aws:
       name: CloudFront, or Global Accelerator for layer 4
       url: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html
@@ -100,6 +104,7 @@ rows:
   - id: net.lb.l7-regional
     concept: Regional layer 7 load balancing
     divergence: exact
+    bite: tip
     aws:
       name: Application Load Balancer
       url: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html
@@ -115,6 +120,7 @@ rows:
   - id: net.peering
     concept: Connecting two virtual networks
     divergence: exact
+    bite: regular
     aws:
       name: VPC peering
       url: https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html
@@ -135,6 +141,7 @@ rows:
   - id: net.nat
     concept: Outbound internet for private instances
     divergence: partial
+    bite: regular
     aws:
       name: NAT gateway
       url: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html
@@ -156,6 +163,7 @@ rows:
   - id: net.hybrid-private
     concept: Private circuit to on-premises
     divergence: exact
+    bite: tip
     aws:
       name: AWS Direct Connect
       url: https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html

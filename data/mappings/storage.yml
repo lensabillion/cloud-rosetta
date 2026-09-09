@@ -4,6 +4,7 @@ rows:
   - id: sto.object
     concept: Object storage
     divergence: partial
+    bite: regular
     aws:
       name: Amazon S3
       url: https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html
@@ -26,6 +27,7 @@ rows:
   - id: sto.archive-tier
     concept: Cheapest archival storage tier
     divergence: none
+    bite: serious
     aws:
       name: S3 Glacier Deep Archive
       url: https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html
@@ -53,6 +55,7 @@ rows:
   - id: sto.block
     concept: Network-attached block storage for a VM
     divergence: partial
+    bite: regular
     aws:
       name: Amazon EBS
       url: https://docs.aws.amazon.com/ebs/latest/userguide/what-is-ebs.html
@@ -74,6 +77,7 @@ rows:
   - id: sto.file
     concept: Shared network file system
     divergence: partial
+    bite: regular
     aws:
       name: Amazon EFS, or FSx
       url: https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html
@@ -94,6 +98,7 @@ rows:
   - id: sto.redundancy
     concept: Naming the replication and durability setting
     divergence: none
+    bite: serious
     aws:
       name: Storage class, with zonal scope implied by the class
       url: https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html

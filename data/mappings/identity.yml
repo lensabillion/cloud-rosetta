@@ -4,6 +4,7 @@ rows:
   - id: iam.role
     concept: The object called a "role"
     divergence: none
+    bite: serious
     aws:
       name: IAM role
       url: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
@@ -28,6 +29,7 @@ rows:
   - id: iam.machine-identity
     concept: Credentials for compute without stored secrets
     divergence: partial
+    bite: serious
     aws:
       name: IAM role via instance profile
       url: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html
@@ -54,6 +56,7 @@ rows:
   - id: iam.evaluation
     concept: How a permission decision is reached
     divergence: none
+    bite: serious
     aws:
       name: Explicit deny, then SCP, then resource policy, then boundary, then session, then identity policy
       url: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html
@@ -78,6 +81,7 @@ rows:
   - id: iam.two-role-systems
     concept: Administering the directory versus administering resources
     divergence: none
+    bite: serious
     aws:
       name: null
       note: One IAM system covers both.
@@ -101,6 +105,7 @@ rows:
   - id: iam.workforce-sso
     concept: Workforce single sign-on into the cloud
     divergence: partial
+    bite: regular
     aws:
       name: IAM Identity Center
       url: https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html
@@ -123,6 +128,7 @@ rows:
   - id: iam.secrets
     concept: Storing application secrets
     divergence: partial
+    bite: regular
     aws:
       name: Secrets Manager, or SSM Parameter Store
       url: https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html

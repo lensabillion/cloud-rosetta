@@ -53,6 +53,14 @@
         },
         "note": {
           "type": "string"
+        },
+        "maturity": {
+          "enum": [
+            "current",
+            "legacy",
+            "superseded"
+          ],
+          "description": "Lifecycle state. 'legacy' means still sold but no longer the default choice. 'superseded' means a newer product has taken its place. Adopted from og-aws's product maturity table so readers do not study a dead product."
         }
       }
     },
@@ -62,6 +70,7 @@
         "id",
         "concept",
         "divergence",
+        "bite",
         "aws",
         "azure",
         "gcp",
@@ -85,6 +94,14 @@
             "none"
           ],
           "description": "exact: the mental model transfers. partial: it maps but behaves differently in a way that changes answers. none: no honest equivalent."
+        },
+        "bite": {
+          "enum": [
+            "serious",
+            "regular",
+            "tip"
+          ],
+          "description": "How badly the difference bites, graded by consequence, following the og-aws legend. 'serious' where risks or costs are significant: critical security risk, meaningful financial cost, or an architectural choice that is fundamentally difficult to correct. 'regular' where the consequence is something not working, breaking, or not scaling gracefully. 'tip' for an important or often overlooked detail with no failure attached. Independent of `divergence`, which measures how far the mapping transfers rather than what it costs you."
         },
         "aws": {
           "$ref": "#/$defs/provider"

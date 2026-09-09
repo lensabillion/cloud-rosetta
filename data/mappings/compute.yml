@@ -4,6 +4,7 @@ rows:
   - id: cmp.vm
     concept: Infrastructure-as-a-service virtual machine
     divergence: exact
+    bite: tip
     aws:
       name: Amazon EC2
       url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html
@@ -19,6 +20,7 @@ rows:
   - id: cmp.autoscale
     concept: Horizontally scaling a pool of identical machines
     divergence: partial
+    bite: regular
     aws:
       name: Auto Scaling group
       url: https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-groups.html
@@ -40,6 +42,7 @@ rows:
   - id: cmp.functions
     concept: Event-driven function as a service
     divergence: partial
+    bite: regular
     aws:
       name: AWS Lambda
       url: https://docs.aws.amazon.com/lambda/latest/dg/welcome.html
@@ -66,6 +69,7 @@ rows:
   - id: cmp.serverless-containers
     concept: Running a container without managing servers
     divergence: partial
+    bite: regular
     aws:
       name: AWS Fargate
       url: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html
@@ -87,6 +91,7 @@ rows:
   - id: cmp.kubernetes
     concept: Managed Kubernetes
     divergence: partial
+    bite: regular
     aws:
       name: Amazon EKS
       url: https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html
@@ -109,6 +114,7 @@ rows:
   - id: cmp.paas
     concept: Deploy code, platform manages the runtime
     divergence: partial
+    bite: regular
     aws:
       name: AWS Elastic Beanstalk, or App Runner
       url: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html
@@ -130,6 +136,7 @@ rows:
   - id: cmp.spot
     concept: Interruptible discounted capacity
     divergence: exact
+    bite: regular
     aws:
       name: EC2 Spot Instances
       url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html

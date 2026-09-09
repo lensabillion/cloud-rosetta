@@ -4,6 +4,7 @@ rows:
   - id: db.managed-relational
     concept: Managed relational database
     divergence: partial
+    bite: regular
     aws:
       name: Amazon RDS
       url: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html
@@ -25,6 +26,7 @@ rows:
   - id: db.ha-vs-readscale
     concept: High availability versus read scaling on a relational database
     divergence: partial
+    bite: serious
     aws:
       name: Multi-AZ deployment, versus read replica
       url: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
@@ -46,6 +48,7 @@ rows:
   - id: db.key-value
     concept: Managed key-value or document NoSQL
     divergence: none
+    bite: regular
     aws:
       name: Amazon DynamoDB
       url: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html
@@ -69,12 +72,15 @@ rows:
   - id: db.warehouse
     concept: Analytical data warehouse
     divergence: partial
+    bite: regular
     aws:
       name: Amazon Redshift
       url: https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html
     azure:
       name: Microsoft Fabric, or Azure Synapse Analytics
       url: https://learn.microsoft.com/en-us/fabric/data-warehouse/data-warehousing
+      maturity: superseded
+      note: Synapse is superseded by Fabric for new work, and the DP-203 exam that covered it is retired.
     gcp:
       name: BigQuery
       url: https://docs.cloud.google.com/bigquery/docs/introduction
@@ -90,6 +96,7 @@ rows:
   - id: db.cache
     concept: Managed in-memory cache
     divergence: exact
+    bite: tip
     aws:
       name: Amazon ElastiCache
       url: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html
@@ -105,6 +112,7 @@ rows:
   - id: db.streaming
     concept: Streaming ingestion and pub/sub messaging
     divergence: none
+    bite: regular
     aws:
       name: Amazon Kinesis Data Streams, and separately SNS and SQS
       url: https://docs.aws.amazon.com/streams/latest/dev/introduction.html

@@ -4,6 +4,7 @@ rows:
   - id: hier.isolation-boundary
     concept: The primary workload isolation boundary
     divergence: partial
+    bite: serious
     aws:
       name: Account
       url: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html
@@ -27,6 +28,7 @@ rows:
   - id: hier.grouping-above
     concept: Grouping container above the isolation boundary
     divergence: partial
+    bite: regular
     aws:
       name: Organizational unit
       url: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html
@@ -53,6 +55,7 @@ rows:
   - id: hier.grouping-below
     concept: Grouping container below the isolation boundary
     divergence: none
+    bite: serious
     aws:
       name: Resource group
       url: https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html
@@ -79,6 +82,7 @@ rows:
   - id: hier.virtual-network-scope
     concept: Scope of the virtual network object
     divergence: none
+    bite: serious
     aws:
       name: VPC, regional
       url: https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html
@@ -103,6 +107,7 @@ rows:
   - id: hier.failure-domain
     concept: Independent failure domain within a region
     divergence: partial
+    bite: serious
     aws:
       name: Availability Zone
       url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
@@ -127,6 +132,7 @@ rows:
   - id: hier.org-guardrail
     concept: Organization-wide preventive guardrail
     divergence: partial
+    bite: serious
     aws:
       name: Service control policy
       url: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html

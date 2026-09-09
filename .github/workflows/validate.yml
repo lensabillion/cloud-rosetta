@@ -1,0 +1,56 @@
+name: Validate data
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly, so staleness surfaces without anyone pushing.
+    - cron: '0 6 * * 1'
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyyaml jsonschema
+
+      - name: Validate dataset
+        run: python scripts/validate.py
+
+      - name: Build site
+        run: python scripts/build.py
+
+      - name: Fail if site/ is out of date with data/
+        run: |
+          if ! git diff --quiet -- site/; then
+            echo "site/ does not match data/. Run: python scripts/build.py"
+            git diff --stat -- site/
+            exit 1
+          fi
+
+  links:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check vendor links still resolve
+        run: |
+          grep -rhoE 'https://[^ "'"'"'<>)]+' data/ \
+            | sort -u > urls.txt
+          echo "Checking $(wc -l < urls.txt) unique links"
+          fail=0
+          while read -r url; do
+            code=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 20 "$url" || echo 000)
+            case "$code" in
+              2*|3*) ;;
+              *) echo "  $code  $url"; fail=1 ;;
+            esac
+          done < urls.txt
+          exit $fail
