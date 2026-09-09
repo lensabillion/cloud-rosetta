@@ -1,0 +1,59 @@
+---
+title: tbd Workflow (Brief)
+description: Condensed tbd workflow guide for agents
+---
+**`tbd` helps humans and agents ship code with greater speed, quality, and discipline.**
+
+1. **Beads**: Git-native issue tracking (tasks, bugs, features).
+   Never lose work across sessions.
+2. **Spec-Driven Workflows**: Plan features → break into beads → implement
+   systematically.
+3. **Shortcuts**: Reusable instruction templates for common workflows.
+4. **Guidelines**: Coding rules and best practices.
+
+Users speak naturally; you run tbd for them rather than returning commands for them to
+execute. For “Show my beads in a browser,” start `tbd web --open` with the agent
+platform’s long-running process facility, wait for its loopback URL, report that URL,
+and keep the process running.
+For a project outside the current working directory, use `tbd web <path> --open`; the
+path may be the repository or one of its subdirectories.
+The browser is a live, read-only viewer, not an editor.
+Make every bead change yourself with ordinary `tbd` commands; the page updates from the
+resulting local state.
+Do not sync implicitly.
+
+## Core Commands
+
+```bash
+tbd ready              # Find beads ready to start
+tbd show <id1> [<id2> …]  # View bead details (several in one call, never a loop)
+tbd create "title"     # Create new bead
+tbd close <id>         # Mark complete
+tbd close <id1> <id2>  # Close several at once (one call, never a loop)
+tbd list --spec <path> # Where things stand on a spec
+tbd sync               # Sync with remote
+tbd web --open         # Open the live, read-only bead viewer
+```
+
+## Quick Actions
+
+| Need | Command |
+| --- | --- |
+| Found a bug | `tbd create "..." --type=bug` |
+| Show beads in a browser | `tbd web --open` (run it yourself and keep it running) |
+| Plan a feature | `tbd shortcut new-plan-spec` |
+| Set up Linear / add my Linear key | `tbd shortcut setup-linear` |
+| Commit code | `tbd shortcut code-review-and-commit` |
+| Create a PR | `tbd shortcut create-or-update-pr-simple` |
+| TypeScript review | `tbd guidelines typescript-rules` |
+
+## Session Protocol
+
+**Before ending ANY session:**
+
+1. Commit and push: `git add . && git commit && git push`
+2. Watch CI: `gh pr checks <PR> --watch 2>&1`
+3. Update beads: `tbd close <id1> <id2> … --reason="..."` (bulk per shared reason, not a
+   loop)
+4. Sync: `tbd sync`
+5. Confirm CI passed before declaring “done”
