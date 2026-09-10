@@ -285,3 +285,54 @@ def dataset_json(domains: list[dict], terms: list[dict]) -> str:
         indent=2,
         ensure_ascii=False,
     )
+
+
+# --------------------------------------------------------------------------- exams
+
+LEVELS = ["foundational", "associate", "professional", "expert", "specialty"]
+PROVIDER_NAME = {"aws": "AWS", "azure": "Azure", "gcp": "Google Cloud"}
+
+
+def exams_block(exams: list[dict]) -> str:
+    """The exam table, generated from the registry so a retirement is recorded once.
+
+    An exam retiring and a product retiring are separate events; the registry
+    tracks only the exam, and retired entries stay listed rather than vanishing,
+    because course material still sells them.
+    """
+    current = [e for e in exams if e["status"] == "current"]
+    retired = [e for e in exams if e["status"] != "current"]
+
+    out = ["<!-- BEGIN EXAMS. Generated from data/exams.yml by scripts/build.py -->", ""]
+    out += [f"## Current Exams ({len(current)})", ""]
+
+    for provider in ("aws", "azure", "gcp"):
+        rows = [e for e in current if e["provider"] == provider]
+        if not rows:
+            continue
+        rows.sort(key=lambda e: (LEVELS.index(e["level"]), e["code"]))
+        out += [f"### {PROVIDER_NAME[provider]}", "",
+                "| Code | Certification | Level | Verified |", "| --- | --- | --- | --- |"]
+        for e in rows:
+            out.append(f"| `{e['code']}` | [{e['name']}]({e['url']}) | {e['level']} | {e['verified']} |")
+        out.append("")
+
+    out += [f"## Retired ({len(retired)})", "",
+            "Listed rather than deleted, because course material for them is still on sale.", "",
+            "| Code | Certification | Cloud | Note |", "| --- | --- | --- | --- |"]
+    for e in sorted(retired, key=lambda e: e["code"]):
+        note = " ".join(str(e.get("note", "Retired.")).split())
+        out.append(f"| `{e['code']}` | [{e['name']}]({e['url']}) | {PROVIDER_NAME[e['provider']]} | {note} |")
+
+    out += ["", "<!-- END EXAMS -->"]
+    return "\n".join(out)
+
+
+def splice_exams(path: pathlib.Path, block: str) -> None:
+    text = path.read_text(encoding="utf-8")
+    start, end = "<!-- BEGIN EXAMS", "<!-- END EXAMS -->"
+    if start not in text or end not in text:
+        raise SystemExit(f"{path}: missing BEGIN/END EXAMS markers")
+    head = text[: text.index(start)]
+    tail = text[text.index(end) + len(end):]
+    path.write_text(head + block + tail, encoding="utf-8")

@@ -1,0 +1,156 @@
+exams:
+- code: CLF-C02
+  name: AWS Certified Cloud Practitioner
+  provider: aws
+  level: foundational
+  status: current
+  url: https://aws.amazon.com/certification/certified-cloud-practitioner/
+  verified: '2026-09-10'
+- code: DVA-C02
+  name: AWS Certified Developer - Associate
+  provider: aws
+  level: associate
+  status: current
+  url: https://aws.amazon.com/certification/certified-developer-associate/
+  verified: '2026-09-10'
+- code: SAA-C03
+  name: AWS Certified Solutions Architect - Associate
+  provider: aws
+  level: associate
+  status: current
+  url: https://aws.amazon.com/certification/certified-solutions-architect-associate/
+  verified: '2026-09-10'
+- code: SOA-C03
+  name: AWS Certified CloudOps Engineer - Associate
+  provider: aws
+  level: associate
+  status: current
+  url: https://aws.amazon.com/certification/certified-cloudops-engineer-associate/
+  verified: '2026-09-10'
+- code: SAP-C02
+  name: AWS Certified Solutions Architect - Professional
+  provider: aws
+  level: professional
+  status: current
+  url: https://aws.amazon.com/certification/certified-solutions-architect-professional/
+  verified: '2026-09-10'
+- code: SCS-C02
+  name: AWS Certified Security - Specialty (SCS-C02)
+  provider: aws
+  level: specialty
+  status: retired
+  retired_on: '2025-12-01'
+  url: https://aws.amazon.com/certification/certified-security-specialty/
+  note: Exam version superseded by SCS-C03. The certification itself is current.
+  verified: '2026-09-10'
+- code: SCS-C03
+  name: AWS Certified Security - Specialty
+  provider: aws
+  level: specialty
+  status: current
+  url: https://aws.amazon.com/certification/certified-security-specialty/
+  note: Simplified Chinese, Spanish (Latin America) and Portuguese (Brazil) language versions retire after
+    31 December 2026.
+  verified: '2026-09-10'
+- code: AZ-900
+  name: Azure Fundamentals
+  provider: azure
+  level: foundational
+  status: current
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/
+  verified: '2026-09-10'
+- code: DP-900
+  name: Azure Data Fundamentals
+  provider: azure
+  level: foundational
+  status: current
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-data-fundamentals/
+  verified: '2026-09-10'
+- code: AZ-104
+  name: Azure Administrator Associate
+  provider: azure
+  level: associate
+  status: current
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/
+  verified: '2026-09-10'
+- code: AZ-204
+  name: Azure Developer Associate
+  provider: azure
+  level: associate
+  status: retired
+  retired_on: '2026-07-31'
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-developer/
+  verified: '2026-09-10'
+  note: Certification and renewal assessment retired; the page carries a retirement banner.
+- code: AZ-500
+  name: Azure Security Engineer Associate
+  provider: azure
+  level: associate
+  status: retired
+  retired_on: '2026-08-31'
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-security-engineer/
+  verified: '2026-09-10'
+  note: Certification and renewal assessment retired; the page carries a retirement banner.
+- code: AZ-700
+  name: Azure Network Engineer Associate
+  provider: azure
+  level: associate
+  status: current
+  url: https://learn.microsoft.com/en-us/credentials/certifications/azure-network-engineer-associate/
+  verified: '2026-09-10'
+- code: SC-300
+  name: Identity and Access Administrator Associate
+  provider: azure
+  level: associate
+  status: current
+  url: https://learn.microsoft.com/en-us/credentials/certifications/identity-and-access-administrator/
+  verified: '2026-09-10'
+- code: AZ-305
+  name: Designing Microsoft Azure Infrastructure Solutions (exam toward Architect Expert)
+  provider: azure
+  level: expert
+  status: current
+  url: https://learn.microsoft.com/en-us/credentials/certifications/exams/az-305/
+  verified: '2026-09-10'
+- code: CDL
+  name: Cloud Digital Leader
+  provider: gcp
+  level: foundational
+  status: current
+  url: https://cloud.google.com/learn/certification/cloud-digital-leader
+  verified: '2026-09-10'
+- code: GENAI-L
+  name: Google Cloud Generative AI Leader
+  provider: gcp
+  level: foundational
+  status: current
+  url: https://cloud.google.com/learn/certification/generative-ai-leader
+  verified: '2026-09-10'
+- code: ACE
+  name: Associate Cloud Engineer
+  provider: gcp
+  level: associate
+  status: current
+  url: https://cloud.google.com/learn/certification/cloud-engineer
+  verified: '2026-09-10'
+- code: ADP
+  name: Google Cloud Associate Data Practitioner
+  provider: gcp
+  level: associate
+  status: current
+  url: https://cloud.google.com/learn/certification/data-practitioner
+  verified: '2026-09-10'
+- code: PCA
+  name: Google Cloud Professional Cloud Architect
+  provider: gcp
+  level: professional
+  status: current
+  url: https://cloud.google.com/learn/certification/cloud-architect
+  verified: '2026-09-10'
+- code: PDE
+  name: Google Cloud Professional Data Engineer
+  provider: gcp
+  level: professional
+  status: current
+  url: https://cloud.google.com/learn/certification/data-engineer
+  verified: '2026-09-10'

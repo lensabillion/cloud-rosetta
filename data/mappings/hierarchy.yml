@@ -14,7 +14,7 @@ rows:
     gcp:
       name: Project
       url: https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy
-    breaks_when: >
+    breaks_when: >-
       An AWS account is simultaneously the isolation boundary, the billing boundary and the
       identity boundary. Azure and Google Cloud split those across three different objects: an
       Entra tenant holds identity, a subscription or billing account holds spend, and the
@@ -38,7 +38,7 @@ rows:
     gcp:
       name: Folder
       url: https://docs.cloud.google.com/resource-manager/docs/creating-managing-folders
-    breaks_when: >
+    breaks_when: >-
       Nesting depth differs and is tested. AWS allows five levels of OUs below a root. Azure
       allows six levels of management groups, excluding the root and subscription levels, with
       10,000 management groups per directory. Google allows ten levels of folders, with at most
@@ -59,25 +59,25 @@ rows:
     aws:
       name: Resource group
       url: https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html
-      note: A tag-driven view over resources. Optional, and unrelated to the Azure object of the same name.
+      note: Optional resource grouping; deleting the group does not delete members.
     azure:
       name: Resource group
       url: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview
-      note: Mandatory. Every resource lives in exactly one.
+      note: Lifecycle container for resources deployed at resource-group scope.
     gcp:
       name: null
       note: No equivalent. Labels and separate projects do this job.
-    breaks_when: >
-      Two clouds use the identical phrase for unrelated things and the third has neither. An
-      Azure resource group is compulsory, sits below the billing boundary, and deleting it
-      destroys every resource inside without a per-resource prompt. An AWS resource group is an
-      optional tag query that owns nothing and deleting it destroys nothing. Google has no
-      construct at this level at all. The closest AWS analogue to the Azure object is a
-      CloudFormation stack.
+    breaks_when: >-
+      An Azure resource group is a lifecycle and management scope for resources deployed at
+      resource-group scope. Deleting the group initiates deletion of its contents, subject to
+      locks, dependencies, and service behavior. An AWS Resource Group is a grouping/query
+      construct; deleting that group does not delete its member resources. Google projects and
+      labels provide different grouping boundaries. Not every Azure resource type is deployed at
+      resource-group scope.
     exam_tags: [AZ-900, AZ-104, SAA-C03]
     sources:
       - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview
-    verified: '2026-09-09'
+    verified: '2026-09-10'
 
   - id: hier.virtual-network-scope
     concept: Scope of the virtual network object
@@ -92,13 +92,13 @@ rows:
     gcp:
       name: VPC network, global
       url: https://docs.cloud.google.com/vpc/docs/vpc
-    breaks_when: >
+    breaks_when: >-
       A Google VPC is a global object spanning every region and carries no CIDR of its own; the
       subnets hold the ranges and are regional. One Google VPC can contain instances in Tokyo
       and Frankfurt that route to each other over Google's backbone with no peering. AWS and
-      Azure networks are regional, so the same design needs peering or a transit construct.
-      An AWS subnet additionally lives in exactly one availability zone, whereas Azure and
-      Google subnets are regional and span zones.
+      Azure networks are regional, so the same design needs peering or a transit construct. An
+      AWS subnet additionally lives in exactly one availability zone, whereas Azure and Google
+      subnets are regional and span zones.
     exam_tags: [SAA-C03, AZ-104, AZ-700, ACE]
     sources:
       - https://docs.cloud.google.com/vpc/docs/vpc
@@ -117,7 +117,7 @@ rows:
     gcp:
       name: Zone
       url: https://docs.cloud.google.com/compute/docs/regions-zones
-    breaks_when: >
+    breaks_when: >-
       Azure additionally has an availability set, which is not a zone. An availability set uses
       fault domains and update domains inside a single datacentre and protects against rack
       failure and host patching, not against a datacentre outage. Any question naming a
@@ -142,13 +142,13 @@ rows:
     gcp:
       name: Organization policy constraint
       url: https://docs.cloud.google.com/resource-manager/docs/organization-policy/overview
-    breaks_when: >
+    breaks_when: >-
       An SCP sets a ceiling on what IAM may grant and never grants anything itself; if the SCP
       allows an action and no IAM policy grants it, the answer is still no. Azure Policy is a
       different kind of engine: it evaluates resource configuration at write time and can deny a
       deployment RBAC would have permitted, so it answers "is this configuration allowed" rather
-      than "may this principal act". A maximum of ten SCPs attach to any root, OU or account, and
-      when SCPs are enabled every entity must have at least one attached at all times.
+      than "may this principal act". A maximum of ten SCPs attach to any root, OU or account,
+      and when SCPs are enabled every entity must have at least one attached at all times.
     exam_tags: [SAA-C03, SAP-C02, AZ-104, AZ-305, ACE]
     sources:
       - https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="980" viewBox="0 0 1440 980" style="max-width:100%;height:auto" role="img" aria-labelledby="title desc">
+<title id="title">Three clouds: network membership and geographic scope</title>
+<desc id="desc">Each provider's virtual network contains subnets. An AWS subnet is located in one availability zone within a region. Azure and Google Cloud subnets have regional scope. AWS VPCs and Azure virtual networks are regional; Google VPC networks are global. Arrows show membership and location, not traffic or ownership of geography.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#526475"/></marker></defs>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#172b3a}.eyebrow{font-size:13px;font-weight:700;letter-spacing:2px}.title{font-size:38px;font-weight:700}.sub{font-size:18px;fill:#526475}.provider{font-size:25px;font-weight:700}.node{font-size:23px;font-weight:700}.small{font-size:17px;fill:#526475}.label{font-size:16px;fill:#526475}.note{font-size:17px;fill:#334e60}</style>
+<rect width="1440" height="980" fill="#f4f7fa"/>
+<text x="56" y="52" class="eyebrow">CLOUD ROSETTA / ARCHITECTURE STUDY 01</text>
+<text x="56" y="108" class="title">Network membership and geography are different.</text>
+<text x="56" y="146" class="sub">Use this mental model before translating a network design between providers.</text>
+<path d="M56 188H112" stroke="#526475" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="126" y="194" class="label">contains</text>
+<path d="M266 188H322" stroke="#526475" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<text x="336" y="194" class="label">located in</text>
+<text x="560" y="194" class="label">Relationship diagram · not a traffic path or complete deployment</text>
+<rect x="56" y="234" width="424" height="638" rx="16" fill="#fff" stroke="#d6e0e7"/>
+<rect x="56" y="234" width="424" height="7" rx="3" fill="#ad6500"/>
+<text x="82" y="283" class="provider">AWS</text>
+<rect x="82" y="314" width="372" height="100" rx="9" fill="#f7fafc" stroke="#b9cbd7"/>
+<text x="102" y="350" class="node">VPC</text>
+<text x="102" y="379" class="small">Regional network</text>
+<rect x="82" y="480" width="372" height="80" rx="9" fill="#f7fafc" stroke="#b9cbd7"/>
+<text x="102" y="516" class="node">Subnet</text>
+<text x="102" y="545" class="small">Network member</text>
+<rect x="82" y="628" width="372" height="92" rx="9" fill="#f7fafc" stroke="#b9cbd7"/>
+<text x="102" y="664" class="node">One availability zone</text>
+<text x="102" y="693" class="small">within one region</text>
+<path d="M268 414V470" fill="none" stroke="#526475" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="282" y="449" class="label">contains</text>
+<path d="M268 560V618" fill="none" stroke="#526475" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<text x="282" y="596" class="label">located in</text>
+<text x="82" y="768" class="note">A subnet cannot span zones.</text>
+<text x="82" y="795" class="note">Use subnets in multiple zones</text>
+<text x="82" y="822" class="note">when the workload needs them.</text>
+<rect x="508" y="234" width="424" height="638" rx="16" fill="#fff" stroke="#d6e0e7"/>
+<rect x="508" y="234" width="424" height="7" rx="3" fill="#196caf"/>
+<text x="534" y="283" class="provider">Microsoft Azure</text>
+<rect x="534" y="314" width="372" height="100" rx="9" fill="#f7fafc" stroke="#b9cbd7"/>
+<text x="554" y="350" class="node">Virtual network</text>
+<text x="554" y="379" class="small">Regional network</text>
+<rect x="534" y="480" width="372" height="80" rx="9" fill="#f7fafc" stroke="#b9cbd7"/>
+<text x="554" y="516" class="node">Subnet</text>
+<text x="554" y="545" class="small">Network member</text>
+<rect x="534" y="628" width="372" height="92" rx="9" fill="#f7fafc" stroke="#b9cbd7"/>
+<text x="554" y="664" class="node">Region</text>
+<text x="554" y="693" class="small">not pinned to one zone</text>
+<path d="M720 414V470" fill="none" stroke="#526475" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="734" y="449" class="label">contains</text>
+<path d="M720 560V618" fill="none" stroke="#526475" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<text x="734" y="596" class="label">located in</text>
+<text x="534" y="768" class="note">The subnet has regional scope.</text>
+<text x="534" y="795" class="note">Place zonal workload resources</text>
+<text x="534" y="822" class="note">separately from subnet membership.</text>
+<rect x="960" y="234" width="424" height="638" rx="16" fill="#fff" stroke="#d6e0e7"/>
+<rect x="960" y="234" width="424" height="7" rx="3" fill="#247957"/>
+<text x="986" y="283" class="provider">Google Cloud</text>
+<rect x="986" y="314" width="372" height="100" rx="9" fill="#f7fafc" stroke="#b9cbd7"/>
+<text x="1006" y="350" class="node">VPC network</text>
+<text x="1006" y="379" class="small">Global network</text>
+<rect x="986" y="480" width="372" height="80" rx="9" fill="#f7fafc" stroke="#b9cbd7"/>
+<text x="1006" y="516" class="node">Subnet</text>
+<text x="1006" y="545" class="small">Network member</text>
+<rect x="986" y="628" width="372" height="92" rx="9" fill="#f7fafc" stroke="#b9cbd7"/>
+<text x="1006" y="664" class="node">Region</text>
+<text x="1006" y="693" class="small">not pinned to one zone</text>
+<path d="M1172 414V470" fill="none" stroke="#526475" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="1186" y="449" class="label">contains</text>
+<path d="M1172 560V618" fill="none" stroke="#526475" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+<text x="1186" y="596" class="label">located in</text>
+<text x="986" y="768" class="note">One global VPC can contain</text>
+<text x="986" y="795" class="note">subnets in multiple regions.</text>
+<text x="986" y="822" class="note">A region is not owned by a VPC.</text>
+<text x="56" y="922" class="small">Scope: common VPC/VNet subnet model. Resource ownership, routing, firewall policy, and special deployment modes are omitted.</text>
+<text x="56" y="953" class="small">Review proposal · 9 September 2026 · Vendor sources and text explanation in the accompanying review · CC BY 4.0</text>
+</svg>

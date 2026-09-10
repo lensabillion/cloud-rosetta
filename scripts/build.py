@@ -58,6 +58,13 @@ def load_mappings() -> list[dict]:
     return domains
 
 
+def load_exams() -> list[dict]:
+    path = DATA / "exams.yml"
+    if not path.exists():
+        return []
+    return (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("exams", [])
+
+
 def load_terms() -> list[dict]:
     terms: list[dict] = []
     for path in sorted((DATA / "terms").glob("*.yml")):
@@ -363,6 +370,9 @@ def build(out: pathlib.Path) -> None:
     dist = ROOT / "dist"
     dist.mkdir(exist_ok=True)
     surfaces.splice_readme(ROOT / "README.md", surfaces.readme_block(domains, terms))
+    exams = load_exams()
+    if exams:
+        surfaces.splice_exams(ROOT / "docs" / "10-exam-map.md", surfaces.exams_block(exams))
     (dist / "poster.svg").write_text(surfaces.poster_svg(domains, terms), encoding="utf-8")
     (dist / "drills.tsv").write_text(surfaces.drills_tsv(domains, terms), encoding="utf-8")
     (dist / "rosetta.json").write_text(surfaces.dataset_json(domains, terms), encoding="utf-8")
@@ -377,6 +387,9 @@ def build(out: pathlib.Path) -> None:
     print(f"wrote {chapter.relative_to(ROOT)}")
     print(f"wrote README.md generated block, dist/poster.svg, dist/rosetta.json")
     print(f"wrote dist/drills.tsv  {drill_lines} flashcards")
+    if exams:
+        live = sum(1 for e in exams if e["status"] == "current")
+        print(f"wrote docs/10-exam-map.md exam table  {live} current, {len(exams) - live} retired")
 
 
 PAGE = pathlib.Path(__file__).with_name("template.html").read_text(encoding="utf-8")

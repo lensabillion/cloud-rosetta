@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml jsonschema
 
+      - name: Check house YAML style
+        run: python scripts/fmt.py --check
+
       - name: Validate dataset
         run: python scripts/validate.py
 
@@ -42,7 +45,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check vendor links still resolve
         run: |
-          grep -rhoE 'https://[^ "'"'"'<>)]+' data/ \
+          # data/schema holds JSON Schema $id values, which are identifier URIs
+          # rather than references to follow. Everything else must resolve.
+          grep -rhoE 'https://[^ "'"'"'<>)]+' data/ --exclude-dir=schema \
             | sort -u > urls.txt
           echo "Checking $(wc -l < urls.txt) unique links"
           fail=0
