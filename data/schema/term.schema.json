@@ -1,43 +1,88 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/OWNER/all-cloud/data/schema/term.schema.json",
+  "$id": "https://raw.githubusercontent.com/lensabillion/cloud-rosetta/main/data/schema/term.schema.json",
   "title": "Cloud Rosetta terminology file",
   "type": "object",
-  "required": ["terms"],
+  "required": [
+    "terms"
+  ],
   "additionalProperties": false,
   "properties": {
-    "terms": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/term" } }
+    "terms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/term"
+      }
+    }
   },
   "$defs": {
     "sense": {
       "type": "object",
-      "required": ["meaning", "category"],
+      "required": [
+        "meaning",
+        "category"
+      ],
       "additionalProperties": false,
       "properties": {
-        "meaning": { "type": "string", "minLength": 20 },
+        "meaning": {
+          "type": "string",
+          "minLength": 20
+        },
         "category": {
           "type": "string",
           "description": "What kind of thing this is. The collision is usually a category mismatch, e.g. identity vs permission set."
         },
-        "url": { "type": "string", "format": "uri" }
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
       }
     },
     "term": {
       "type": "object",
-      "required": ["term", "severity", "why_it_hurts", "verified"],
+      "required": [
+        "term",
+        "severity",
+        "why_it_hurts",
+        "verified"
+      ],
       "additionalProperties": false,
       "properties": {
-        "term": { "type": "string" },
+        "term": {
+          "type": "string"
+        },
         "severity": {
-          "enum": ["high", "medium", "low"],
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
           "description": "high: the word denotes different categories of thing per cloud. medium: same category, materially different behaviour. low: cosmetic naming difference."
         },
-        "aws": { "$ref": "#/$defs/sense" },
-        "azure": { "$ref": "#/$defs/sense" },
-        "gcp": { "$ref": "#/$defs/sense" },
-        "why_it_hurts": { "type": "string", "minLength": 40 },
-        "see_also": { "type": "array", "items": { "type": "string" } },
-        "verified": { "type": "string", "format": "date" }
+        "aws": {
+          "$ref": "#/$defs/sense"
+        },
+        "azure": {
+          "$ref": "#/$defs/sense"
+        },
+        "gcp": {
+          "$ref": "#/$defs/sense"
+        },
+        "why_it_hurts": {
+          "type": "string",
+          "minLength": 40
+        },
+        "see_also": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "verified": {
+          "type": "string",
+          "format": "date"
+        }
       }
     }
   }

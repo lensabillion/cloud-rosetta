@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/OWNER/all-cloud/data/schema/mapping.schema.json",
+  "$id": "https://raw.githubusercontent.com/lensabillion/cloud-rosetta/main/data/schema/mapping.schema.json",
   "title": "Cloud Rosetta mapping file",
   "type": "object",
   "required": [
