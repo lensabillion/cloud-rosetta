@@ -8,7 +8,7 @@ associate certifications and at anyone who has to work in a second cloud. Every 
 graded by how far the equivalence can be trusted, and any mapping that is not exact has to say
 what actually differs before it is allowed into the dataset.
 
-**[Open the guide](https://claude.ai/code/artifact/0ce56412-64e7-4747-92bd-94e45cd97f4b)** ·
+**[Open the guide](https://lensabillion.github.io/cloud-rosetta/)** ·
 [Read the chapters](docs/) · [Browse the data](data/)
 
 ---

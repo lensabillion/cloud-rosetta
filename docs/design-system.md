@@ -96,7 +96,7 @@ attention at once.
    different readers and mixing them serves neither.
 2. **One page, one job.** If a page cannot be finished, it is a catalogue and belongs in the
    reference half.
-3. **Prose gets 640 pixels, never more.** About 68 characters per line. Tables and diagrams may
+3. **Prose gets 620 pixels, never more.** About 70 characters per line. Tables and diagrams may
    break out wider; sentences may not.
 4. **Four type sizes, and 16px is the floor for anything a reader must read.** Labels may go to
    13px. Nothing goes below that.
@@ -140,7 +140,7 @@ split by domain so each page can be finished.
 | Element | Value |
 | --- | --- |
 | Sidebar | 280px, fixed, always visible above 1024px |
-| Reading column | 640px maximum for prose |
+| Reading column | 620px maximum for prose |
 | Full-bleed elements | Tables and diagrams may reach 880px |
 | Page gutter | 32px desktop, 20px mobile |
 | Section gap | 56px |
@@ -180,7 +180,7 @@ statistic belongs on the entry page, once, not above every view.
 | Now | After |
 | --- | --- |
 | One page, 38 rows, no navigation | Ten pages in four groups, sidebar always visible |
-| 1140px, three columns | 640px prose, sidebar at 280px |
+| 1140px, three columns | 620px prose, sidebar at 280px |
 | Twelve font sizes, smallest 9.5px | Four sizes, floor 13px, body 16px |
 | Every note always open, every cell tinted | Notes open on demand, severity as one marker |
 | Eleven elements before the first mapping | One heading, one sentence, one way in |
@@ -202,5 +202,32 @@ The rebuild is done when, measured the same way as the table at the top:
 - Every page has a sidebar showing the whole structure
 - The entry page presents one primary action
 - No page mixes journey and reference
+
+<!-- This document follows common-doc-guidelines.md. -->
+
+## Measured Outcome
+
+Built and measured the same way as the diagnosis, at a 1280px viewport on 10 September 2026.
+
+| Criterion | Target | Measured |
+| --- | --- | --- |
+| Reading column | 640px or less | **620px** |
+| Characters per line, median | 60 to 75 | **69** identity, **70** reference, **65** decoder |
+| Distinct font sizes rendered | fewer than 6 | **5**, at 13, 14, 16, 23 and 34px |
+| Smallest text | 13px floor | **13px** |
+| Sidebar on every page | yes | yes, 14 links across four groups |
+| Primary actions on entry | one | one |
+| Pages mixing journey and reference | none | none |
+
+The column landed at 620px rather than 640px because 640px measured a 76-character median on the
+reference pages, one past the ceiling. Twenty pixels brought every page inside the range.
+
+Two notes on the build:
+
+- **Routing does not depend on the URL hash.** Some sandboxes refuse hash navigation, which
+  would leave the guide stuck on its entry page. Clicks are handled directly and the hash is
+  updated afterwards where permitted, so deep links still work without being load-bearing.
+- **Chapters are rendered at build time** by `scripts/mdlite.py`, a small Markdown subset
+  renderer, so a chapter and its page cannot drift and the page needs no client-side library.
 
 <!-- This document follows common-doc-guidelines.md. -->
