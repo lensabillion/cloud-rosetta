@@ -16,11 +16,12 @@ substitute for backups and a tested restore procedure.
 
 ## Read the Deployment Type
 
+<!-- diagram: multiaz -->
+
+The other two clouds draw the same distinction with different names:
+
 | Deployment | Read from the secondary? | What to check |
 | --- | --- | --- |
-| RDS Multi-AZ DB instance | No | Standby exists for failover |
-| RDS Multi-AZ DB cluster | Yes, two readable standbys | Supported engines and versions; standby can take over |
-| Ordinary RDS read replica | Yes | Asynchronous lag and promotion process; not automatic HA by itself |
 | Azure SQL Database | Tier-dependent | Zone redundancy, read scale-out, and Hyperscale configuration |
 | Azure SQL active geo-replication | Yes | Asynchronous copy; failover orchestration is a separate decision |
 | Cloud SQL for MySQL regional HA | HA standby is not a read endpoint | Automatic failover; add read replicas separately when needed |

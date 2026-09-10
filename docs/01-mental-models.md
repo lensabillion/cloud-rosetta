@@ -7,39 +7,13 @@ contains what, and about which things are global.
 Verified against vendor documentation on 9 September 2026. Numeric quotas change; the
 citations point at the pages that stay current.
 
-## The Three Questions Every Cloud Answers Differently
+## Three Boundaries, One Object or Three
 
-1. **What is the isolation boundary?** The thing you put a workload inside so it cannot
-   accidentally reach another workload.
-2. **What is the billing boundary?** The thing an invoice is drawn around.
-3. **What is the identity boundary?** The thing that holds users and decides who they are.
+Every cloud answers three questions: what isolates a workload, what an invoice is drawn
+around, and what holds the users. **AWS answers "the account" to all three. Azure and Google
+split the answers across different objects**, and that split causes most cross-cloud confusion.
 
-AWS answers "the account" to all three. Azure and Google Cloud split the answers across
-different objects, and that split is the source of most cross-cloud confusion.
-
-| Question | AWS | Azure | Google Cloud |
-| --- | --- | --- | --- |
-| Isolation boundary | Account | Subscription, loosely; resource group for lifecycle | Project |
-| Billing boundary | Account, consolidated at the organization | Subscription | Billing account, linked to projects |
-| Identity boundary | Account, or IAM Identity Center across the organization | Microsoft Entra ID tenant | Cloud Identity or Workspace domain, at the organization |
-
-The line that matters: **in AWS these three collapse into one object, and in the other two
-they do not.** An Azure tenant can hold many subscriptions, and a Google billing account can
-pay for projects across several folders. Nothing in AWS behaves that way, because the account
-is simultaneously the wall, the invoice, and the user directory.
-
-## The Hierarchies Side by Side
-
-```
-AWS                     Azure                        Google Cloud
-───                     ─────                        ────────────
-Organization            Entra ID tenant              Organization
-  └ Root                  └ Root management group      └ Folder
-     └ OU                    └ Management group           └ Folder
-        └ OU                    └ Subscription               └ Project
-           └ Account               └ Resource group             └ Resource
-              └ Resource              └ Resource
-```
+<!-- diagram: hierarchy -->
 
 Verified structural limits:
 
@@ -85,27 +59,15 @@ over resources. Two clouds, one phrase, two unrelated concepts, one of which is 
 
 ## Global, Regional, Zonal
 
-Where a resource lives decides what happens when infrastructure fails, and it is the highest
-frequency trap in the whole subject.
+Where a resource lives decides what happens when infrastructure fails. It is the highest
+frequency trap in the subject.
 
-| Resource | AWS | Azure | Google Cloud |
-| --- | --- | --- | --- |
-| Virtual network | **Regional** | **Regional** | **Global** |
-| Subnet | **Zonal**, one AZ | **Regional** | **Regional** |
-| Virtual machine | Zonal | Zonal | Zonal |
-| Managed disk or volume | Zonal | Zonal | Zonal, or regional if replicated |
-| Object storage bucket | Regional, global namespace | Regional, global namespace | Regional, dual-region, or multi-region; global namespace |
-| Load balancer | Regional, except CloudFront and Global Accelerator | Regional, except Front Door and Traffic Manager | Regional or global, chosen at creation |
-| IAM identities | Global | Global | Global |
+<!-- diagram: scope -->
 
-The two rows to burn in:
-
-- **A Google VPC is a global object.** One VPC spans every region. Subnets inside it are
-  regional. A virtual machine in Tokyo and one in Frankfurt can sit in the same VPC and route
-  to each other over Google's backbone without peering. Nothing in AWS or Azure works this way.
-- **An AWS subnet lives in exactly one availability zone.** Azure subnets are regional and
-  span the zones. This means "spread across zones" is a subnet-design problem in AWS and a
-  resource-placement problem in Azure.
+A Google VPC spans every region, so a machine in Tokyo and one in Frankfurt can sit in the same
+network and route over Google's backbone with no peering. Nothing in AWS or Azure works that
+way. And because an AWS subnet lives in exactly one zone, "spread across zones" is a
+subnet-design problem there and a resource-placement problem in Azure.
 
 ## Zones Are Not the Same Word
 

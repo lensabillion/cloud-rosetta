@@ -9,16 +9,14 @@ a request. A **scope** is the resource or collection to which a grant applies.
 
 ## Same Word, Different Object
 
-| Question | AWS IAM role | Azure RBAC role | Google IAM role |
-| --- | --- | --- | --- |
-| What is it? | An assumable identity | A set of permissions | A set of permissions |
-| What happens when used? | A session receives temporary credentials | A principal receives a role assignment at a scope | A principal receives a role binding on a resource |
-| Useful comparison | A workload identity, approximately | An AWS managed policy, approximately | An AWS managed policy, approximately |
+<!-- diagram: role -->
 
-These comparisons explain the categories; they do not imply interchangeable trust or
-credential mechanisms. [AWS roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html),
-[Azure role definitions](https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions),
-[Google roles](https://docs.cloud.google.com/iam/docs/roles-overview).
+The nearest translation runs the other way from the name: an Azure or Google role is closest to
+an **AWS managed policy**, and an AWS role is closest to a **service principal or service
+account**. The categories match; the trust and credential mechanisms do not.
+[AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) ·
+[Azure](https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions) ·
+[Google](https://docs.cloud.google.com/iam/docs/roles-overview)
 
 ## Directory Administration Is Not Workload Access
 

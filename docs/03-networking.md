@@ -1,8 +1,7 @@
 # Networking
 
-Second only to identity as a source of lost marks, and the chapter with the most false friends.
-Three clouds use the word "firewall" for objects that attach at different layers, evaluate in
-different orders, and have different defaults.
+Second only to identity as a source of lost marks. Three clouds use "firewall" for objects that
+attach at different layers, evaluate in different orders, and default differently.
 
 ## The Network Container
 
@@ -14,13 +13,13 @@ different orders, and have different defaults.
 | Default on creation | A default VPC per region | None | A default VPC with auto-mode subnets in every region |
 | Address planning | CIDR per VPC, then per subnet | Address space per VNet, then per subnet | Subnets carry the ranges; the VPC itself has none |
 
-The Google row is the one to internalise. A Google VPC has no CIDR of its own. The subnets carry
-the ranges, and because the VPC is global, one network can hold subnets in every region that
-route to each other with no peering. Auto-mode VPCs create a subnet in every region
-automatically, which is convenient and almost always the wrong answer in a design question,
-where custom mode is expected.
+A Google VPC has no CIDR of its own; the subnets carry the ranges. Auto-mode VPCs create a subnet
+in every region for you, which is convenient and almost always the wrong answer in a design
+question, where custom mode is expected.
 
 ## Firewalling: The Big Divergence
+
+<!-- diagram: firewall -->
 
 | | AWS security group | AWS network ACL | Azure NSG | Google VPC firewall rule |
 | --- | --- | --- | --- | --- |
@@ -34,28 +33,16 @@ where custom mode is expected.
 
 Four traps live in that table.
 
-**An AWS security group cannot deny.** It only allows. Anyone asking you to block one specific
-address is describing a network ACL, because a security group has no vocabulary for it. This is
-the most reliably tested networking fact in the AWS catalogue.
+- **An AWS security group cannot deny.** Blocking one specific address is a network ACL job. This
+  is the most reliably tested networking fact in the AWS catalogue.
+- **A network ACL is stateless.** Allowing traffic in does not allow the reply out; return traffic
+  needs its own rule on ephemeral ports. The symptom is traffic arriving and no response coming back.
+- **Google rules have implied entries** that cannot be deleted: allow all egress, deny all ingress.
+- **Azure NSGs can attach at both levels at once**, subnet then interface inbound and the reverse
+  outbound. Traffic must pass both. Built-in rules sit above anything you write.
 
-**A network ACL is stateless.** Allowing inbound traffic does not allow the reply out. Return
-traffic needs its own rule on ephemeral ports. A security group, being stateful, handles this
-for you. Symptom in a question: traffic arrives but responses never come back.
-
-**Google firewall rules attach to the network, not the machine.** You scope them with target
-network tags or target service accounts. Someone carrying AWS habits looks for the firewall
-attached to the instance and does not find one. Google also has **implied rules** that always
-exist and cannot be deleted: implied allow for egress, implied deny for ingress.
-
-**Azure NSGs can attach at two levels at once.** With an NSG on the subnet and another on the
-network interface, inbound traffic is evaluated at the subnet first and then the interface, and
-outbound in the reverse order. Traffic must pass both. Azure also ships built-in rules that
-permit traffic within the VNet and from the load balancer, and deny everything else inbound,
-sitting at priorities above anything you write.
-
-**Azure application security group** is a way to name a group of network interfaces so NSG rules
-can reference them by name instead of by address. Its abbreviation, ASG, collides with the AWS
-Auto Scaling Group and has nothing to do with it.
+Note the acronym: an Azure **application security group** names a set of interfaces so NSG rules
+can reference them by name. It has nothing to do with an AWS Auto Scaling group.
 
 ## Getting Traffic In and Out
 
@@ -82,13 +69,12 @@ that is a recurring cost and availability question.
 | To on-premises, private circuit | Direct Connect | ExpressRoute | Cloud Interconnect, Dedicated or Partner |
 | To on-premises, over internet | Site-to-Site VPN | VPN Gateway | Cloud VPN, HA VPN or Classic VPN |
 
-Peering is non-transitive in all three clouds. If A peers with B and B peers with C, A cannot
-reach C. Every "we added a third network and it stopped working" scenario resolves to a transit
-construct: Transit Gateway, Virtual WAN, or Network Connectivity Center.
+Peering is non-transitive everywhere. If A peers with B and B peers with C, A cannot reach C, and
+the answer is a transit construct: Transit Gateway, Virtual WAN, or Network Connectivity Center.
 
 ## Reaching Managed Services Privately
 
-The most confusingly named area in the entire subject, and Azure is the main offender.
+The worst naming in the subject, and Azure is the main offender.
 
 | Concept | AWS | Azure | Google Cloud |
 | --- | --- | --- | --- |
@@ -148,10 +134,8 @@ Points that decide questions:
 | Domain registration | Route 53 Domains | App Service Domains | Cloud Domains |
 | Health-checked failover | Route 53 health checks | Traffic Manager probes | Load balancer health checks |
 
-Route 53 is the odd one: a single service doing registration, authoritative DNS, health
-checking, and traffic policy. Azure splits those across Azure DNS, Traffic Manager, and App
-Service Domains, so an Azure question about weighted routing goes to Traffic Manager rather than
-to the DNS service.
+Route 53 is one service doing registration, DNS, health checks and traffic policy. Azure splits
+those three ways, so a weighted-routing question there goes to Traffic Manager, not Azure DNS.
 
 ## Drill
 
