@@ -4,6 +4,60 @@ What has been done, in order, with the reasoning. Kept current as work lands rat
 at the end. Requirements are numbered in [requirements.md](requirements.md); beads are tracked in
 `tbd`.
 
+## 2026-09-10
+
+### An External Review, and What It Corrected
+
+A review of the guide was carried out on the `codex/address-guide-review` branch, recorded in
+[reviews/2026-09-09-learning-experience-review.md](reviews/2026-09-09-learning-experience-review.md)
+with fourteen findings. It was right about the substance. Four factual errors were confirmed
+against vendor documentation rather than accepted on trust:
+
+| Claim | Was | Correct | Source |
+| --- | --- | --- | --- |
+| AWS associate passing score | 700 | 720 | [AWS scoring policy](https://aws.amazon.com/certification/policies/after-testing/) |
+| Google foundational and associate validity | 2 years | 3 years | [Google policy](https://support.google.com/cloud-certification/answer/9750149?hl=en) |
+| Google professional validity | 3 years | 2 years | Same |
+| AZ-500 status | listed active | retired 31 August 2026 | [Credential page](https://learn.microsoft.com/en-us/credentials/certifications/azure-security-engineer/) |
+
+Three more were right on inspection: RDS Multi-AZ DB clusters do serve reads from standbys, so
+the blanket "a standby is not readable" was wrong; Google separates Cloud Identity super
+administrator from Organization Administrator, so "Azure alone runs two role systems" was too
+strong; and EKS Auto Mode and AKS Automatic mean GKE Autopilot no longer has no counterpart.
+
+### What Needed Fixing in the Delivery
+
+The corrections arrived alongside problems worth naming, because they are the kind that recur.
+
+**A YAML round-trip reformatted every mapping file**, producing 1,196 lines of diff for about
+twenty real row changes and turning readable folded blocks into wrapped quoted strings. Since
+contributors edit this YAML by hand, its shape is part of the product. Rather than reformat by
+hand, `scripts/fmt.py` now emits the house style, `scripts/validate.py` fails when a file drifts
+from it, and continuous integration runs the check. Formatting is now reproducible instead of
+hand-maintained, and the same diff is 380 lines of visible prose changes.
+
+The formatter refuses to write when reformatting would alter the parsed data, and that guard
+paid for itself twice on its first run: once on a trailing-newline difference, and once on
+`textwrap` breaking `us-east-1a` into `us- east-1a` at the hyphen.
+
+**An initial reading of the exam registry was wrong.** SCS-C02 appeared in the retired list and
+was corrected to current, which was a mistake: the review had it right, since the SCS-C02 *exam
+version* is retired while the certification continues as SCS-C03, and both were already listed.
+The entry was restored and the schema gained a `retired_on` field to record the distinction.
+
+**Twelve chapters linked to files that did not exist.** `docs/README.md` and `docs/practice.md`
+were written, the rest were repointed, and `validate.py` now checks every chapter-to-chapter
+link so this fails the build rather than reaching a reader.
+
+**The exam chapter had lost 119 of its 160 lines**, taking the per-cloud trap lists, the
+question-format comparison and the distractor patterns with it. Those were restored with the
+corrections applied, most visibly the Multi-AZ deployment-type distinction.
+
+**Nothing read `data/exams.yml`.** It is now the source for the exam tables in the exam chapter,
+has its own schema, and every `exam_tags` entry in the dataset is cross-checked against it. That
+check immediately found fourteen tags naming retired exams, offering AZ-204 and AZ-500 as live
+study filters. Google coverage went from two exams to six.
+
 ## 2026-09-09
 
 ### Setup

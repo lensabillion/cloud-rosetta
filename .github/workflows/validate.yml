@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml jsonschema
 
+      - name: Check house YAML style
+        run: python scripts/fmt.py --check
+
       - name: Validate dataset
         run: python scripts/validate.py
 

@@ -9,7 +9,7 @@
 <text x="950" y="216" fill="#6DC195" font-size="12" font-weight="700" letter-spacing="2">GOOGLE CLOUD</text>
 <line x1="56" y1="226" x2="1144" y2="226" stroke="#243733"/>
 <text x="56" y="246" fill="#EDF2EF" font-size="15" font-weight="500">High availability versus read scaling on a r</text>
-<text x="420" y="246" fill="#B9C8C4" font-size="13">Multi-AZ deployment, versus re</text>
+<text x="420" y="246" fill="#B9C8C4" font-size="13">RDS Multi-AZ DB instance or DB</text>
 <text x="700" y="246" fill="#B9C8C4" font-size="13">Zone-redundant configuration, </text>
 <text x="950" y="246" fill="#B9C8C4" font-size="13">Regional instance, versus read</text>
 <line x1="56" y1="266" x2="1144" y2="266" stroke="#243733"/>
@@ -49,14 +49,14 @@
 <text x="950" y="526" fill="#B9C8C4" font-size="13">Attached service account</text>
 <line x1="56" y1="546" x2="1144" y2="546" stroke="#243733"/>
 <text x="56" y="566" fill="#EDF2EF" font-size="15" font-weight="500">How a permission decision is reached</text>
-<text x="420" y="566" fill="#B9C8C4" font-size="13">Explicit deny, then SCP, then </text>
+<text x="420" y="566" fill="#B9C8C4" font-size="13">IAM policy evaluation by reque</text>
 <text x="700" y="566" fill="#B9C8C4" font-size="13">Deny assignment, then additive</text>
 <text x="950" y="566" fill="#B9C8C4" font-size="13">Deny policy, then additive uni</text>
 <line x1="56" y1="586" x2="1144" y2="586" stroke="#243733"/>
 <text x="56" y="606" fill="#EDF2EF" font-size="15" font-weight="500">Administering the directory versus administe</text>
-<text x="420" y="606" fill="#B9C8C4" font-size="13">no equivalent</text>
-<text x="700" y="606" fill="#B9C8C4" font-size="13">Microsoft Entra roles, separat</text>
-<text x="950" y="606" fill="#B9C8C4" font-size="13">no equivalent</text>
+<text x="420" y="606" fill="#B9C8C4" font-size="13">IAM Identity Center administra</text>
+<text x="700" y="606" fill="#B9C8C4" font-size="13">Microsoft Entra roles and Azur</text>
+<text x="950" y="606" fill="#B9C8C4" font-size="13">Cloud Identity super administr</text>
 <line x1="56" y1="626" x2="1144" y2="626" stroke="#243733"/>
 <text x="56" y="646" fill="#EDF2EF" font-size="15" font-weight="500">Instance-level traffic filtering</text>
 <text x="420" y="646" fill="#B9C8C4" font-size="13">Security group</text>
@@ -108,5 +108,5 @@
 <text x="700" y="1098" fill="#B9C8C4" font-size="13" font-style="italic">private connectivity, two vari</text>
 <text x="950" y="1098" fill="#B9C8C4" font-size="13" font-style="italic">private connectivity</text>
 <line x1="56" y1="1434" x2="1144" y2="1434" stroke="#334742"/>
-<text x="56" y="1464" fill="#93A6A1" font-size="13">github.com — Cloud Rosetta &#183; generated from the dataset on 2026-09-09 &#183; CC BY 4.0</text>
+<text x="56" y="1464" fill="#93A6A1" font-size="13">github.com — Cloud Rosetta &#183; generated from the dataset on 2026-09-10 &#183; CC BY 4.0</text>
 </svg>

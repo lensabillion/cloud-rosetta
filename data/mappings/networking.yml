@@ -3,7 +3,7 @@ title: Networking
 rows:
   - id: net.firewall.instance
     concept: Instance-level traffic filtering
-    divergence: none
+    divergence: partial
     bite: serious
     aws:
       name: Security group
@@ -14,18 +14,19 @@ rows:
     gcp:
       name: VPC firewall rule
       url: https://docs.cloud.google.com/firewall/docs/firewalls
-    breaks_when: >
-      An AWS security group cannot express a deny rule. It allows only, so blocking one specific
-      address is impossible and requires a network ACL instead; this is the most reliably tested
-      networking fact in the AWS catalogue. NSGs and Google firewall rules both support deny and
-      evaluate by priority, lowest number first. Google rules attach to the VPC network rather
-      than to an instance and select targets by network tag or service account, so an engineer
-      arriving from AWS looks for a firewall on the machine and does not find one. Google also
-      has implied rules that cannot be deleted: allow all egress, deny all ingress.
+    breaks_when: >-
+      An AWS security group has allow rules, not explicit deny rules. If broad allow rules must
+      remain while one address is blocked, use an appropriate deny-capable control, such as a
+      network ACL, network firewall, or application-layer control where applicable. Azure NSGs
+      and Google VPC firewall rules support allow and deny decisions with priorities. Google VPC
+      firewall rules belong to the network and select targets; do not assume all three attach
+      and evaluate identically.
     exam_tags: [CLF-C02, SAA-C03, AZ-104, AZ-700, ACE]
     sources:
+      - https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html
+      - https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview
       - https://docs.cloud.google.com/firewall/docs/firewalls
-    verified: '2026-09-09'
+    verified: '2026-09-10'
 
   - id: net.firewall.subnet
     concept: Stateless subnet-level filtering
@@ -39,15 +40,15 @@ rows:
       note: An NSG on the subnet fills this position but is stateful.
     gcp:
       name: null
-      note: No stateless layer. Firewall rules are always stateful.
-    breaks_when: >
-      Only AWS has a stateless filter, and statelessness is the whole point of the exam question.
-      Allowing traffic inbound on a network ACL does not allow the reply outbound, so return
-      traffic needs its own rule covering ephemeral ports. The symptom in a scenario is traffic
-      arriving while responses never come back. Azure NSGs applied at the subnet look similar
-      but are stateful, so they do not reproduce this behaviour or this failure mode.
+      note: VPC firewall rules are stateful; they do not reproduce the AWS network ACL model.
+    breaks_when: >-
+      AWS network ACLs are stateless: allowing an inbound request does not automatically permit
+      its outbound reply. Return traffic needs a matching rule. Azure NSGs and the Google VPC
+      firewall rules compared here are stateful, so their connection tracking differs. This
+      comparison concerns these native controls, not every possible firewall appliance or policy
+      product.
     exam_tags: [SAA-C03, SOA-C03]
-    verified: '2026-09-09'
+    verified: '2026-09-10'
 
   - id: net.private-service-access
     concept: Reaching a managed service without traversing the internet
@@ -62,7 +63,7 @@ rows:
     gcp:
       name: Private Service Connect, and separately Private Google Access
       url: https://docs.cloud.google.com/vpc/docs/private-service-connect
-    breaks_when: >
+    breaks_when: >-
       Azure's service endpoint and private endpoint sound like synonyms and are not. A service
       endpoint keeps traffic on the Microsoft backbone while the service keeps its public IP and
       nothing enters your address space. A private endpoint puts a network interface with a
@@ -72,7 +73,7 @@ rows:
       private endpoint. The AWS pair has the same shape: a gateway endpoint is a route table
       entry, is free, and serves only S3 and DynamoDB, while an interface endpoint is a real
       network interface, works for most services, and is billed hourly plus data.
-    exam_tags: [SAA-C03, AZ-104, AZ-700, AZ-500, ACE]
+    exam_tags: [SAA-C03, AZ-104, AZ-700, ACE]
     sources:
       - https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview
     verified: '2026-09-09'
@@ -90,14 +91,14 @@ rows:
     gcp:
       name: Global external Application Load Balancer
       url: https://docs.cloud.google.com/load-balancing/docs/https
-    breaks_when: >
+    breaks_when: >-
       Google's global external Application Load Balancer uses a single anycast IP worldwide
       natively, so one address serves every region. AWS and Azure reach the same outcome by
       placing a separate global service in front of regional load balancers. Do not confuse
-      Azure Front Door with Traffic Manager: Traffic Manager is DNS only, hands out an answer and
-      then leaves the path, and therefore cannot terminate TLS, rewrite a header or fail over a
-      live connection. Any question mentioning header-based routing or TLS offload at the edge
-      is a Front Door question. Route 53 occupies the same DNS-only position in AWS.
+      Azure Front Door with Traffic Manager: Traffic Manager is DNS only, hands out an answer
+      and then leaves the path, and therefore cannot terminate TLS, rewrite a header or fail
+      over a live connection. Any question mentioning header-based routing or TLS offload at the
+      edge is a Front Door question. Route 53 occupies the same DNS-only position in AWS.
     exam_tags: [SAA-C03, AZ-104, AZ-305, AZ-700, ACE]
     verified: '2026-09-09'
 
@@ -130,13 +131,13 @@ rows:
     gcp:
       name: VPC Network Peering
       url: https://docs.cloud.google.com/vpc/docs/vpc-peering
-    shared_trap: >
-      Behaviour matches closely, and the shared constraint is the tested one: peering is
-      non-transitive in all three clouds, and overlapping address ranges are refused everywhere.
-      If A peers with B and B peers with C, A cannot reach C, and the intended answer is a
-      transit construct: Transit Gateway, Virtual WAN, or Network Connectivity Center.
+    shared_trap: >-
+      Peering between A and B and between B and C does not by itself give A a transit path to C
+      in any of these three services. Check address-range overlap and supported route types:
+      peering products have provider-specific restrictions and exceptions. A transitive design
+      requires a supported transit or routing solution, not a chain of ordinary peerings.
     exam_tags: [SAA-C03, AZ-104, AZ-700, ACE]
-    verified: '2026-09-09'
+    verified: '2026-09-10'
 
   - id: net.nat
     concept: Outbound internet for private instances
@@ -151,7 +152,7 @@ rows:
     gcp:
       name: Cloud NAT
       url: https://docs.cloud.google.com/nat/docs/overview
-    breaks_when: >
+    breaks_when: >-
       An AWS NAT gateway is a zonal resource, so a zone-resilient design needs one per zone and
       pays for each, which turns up as both a cost question and an availability question. Cloud
       NAT is a software-defined feature of the network rather than an appliance in the data

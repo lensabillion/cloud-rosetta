@@ -72,8 +72,18 @@ def check_age(value: str, where: str, rep: Report, today: dt.date) -> None:
         rep.warn(where, f"last verified {age} days ago, due for a recheck")
 
 
+def exam_registry() -> tuple[set[str], set[str]]:
+    path = DATA / "exams.yml"
+    if not path.exists():
+        return set(), set()
+    exams = (load(path) or {}).get("exams") or []
+    return ({e["code"] for e in exams},
+            {e["code"] for e in exams if e.get("status") == "current"})
+
+
 def validate_mappings(rep: Report, today: dt.date) -> int:
     schema = json.loads((DATA / "schema" / "mapping.schema.json").read_text())
+    known, current = exam_registry()
     seen_ids: dict[str, str] = {}
     count = 0
 
@@ -126,6 +136,14 @@ def validate_mappings(rep: Report, today: dt.date) -> int:
                 if block.get("name") is None and not block.get("note"):
                     rep.warn(f"{where}.{cloud}", "no equivalent and no note explaining what to do instead")
 
+            # A tag is a promise that studying this helps for that exam. Offering a
+            # retired exam as a live filter breaks that promise silently.
+            for tag in row.get("exam_tags") or []:
+                if known and tag not in known:
+                    rep.error(f"{where}.exam_tags", f"{tag!r} is not in data/exams.yml")
+                elif current and tag in known and tag not in current:
+                    rep.error(f"{where}.exam_tags", f"{tag!r} names a retired exam; remove it or move it to a historical view")
+
             check_age(row.get("verified", ""), where, rep, today)
 
     return count
@@ -173,6 +191,52 @@ def validate_terms(rep: Report, today: dt.date) -> int:
     return count
 
 
+def validate_exams(rep: Report, today: dt.date) -> int:
+    path = DATA / "exams.yml"
+    if not path.exists():
+        return 0
+    schema = json.loads((DATA / "schema" / "exam.schema.json").read_text())
+    doc = load(path)
+    rel = path.relative_to(ROOT)
+    check_schema(doc, schema, str(rel), rep)
+
+    seen = set()
+    for exam in (doc or {}).get("exams") or []:
+        code = exam.get("code", "<missing>")
+        where = f"{rel}#{code}"
+        if code in seen:
+            rep.error(where, "duplicate exam code")
+        seen.add(code)
+        # A shared index page is not evidence about one exam. F03 asked for
+        # per-exam official links and this is what enforces it.
+        if exam.get("url", "").rstrip("/").endswith("aws-certification-exam-guides.html"):
+            rep.error(where, "cites the shared exam-guides index rather than this exam's own page")
+        check_age(exam.get("verified", ""), where, rep, today)
+    return len(seen)
+
+
+def check_doc_links(rep: Report) -> int:
+    """Markdown chapters that link to files which do not exist."""
+    docs = ROOT / "docs"
+    total = 0
+    for path in sorted(docs.rglob("*.md")):
+        for target in re.findall(r"\]\(([^)#:]+\.md)(?:#[^)]*)?\)", path.read_text(encoding="utf-8")):
+            total += 1
+            if not (path.parent / target).resolve().exists():
+                rep.error(str(path.relative_to(ROOT)), f"links to a file that does not exist: {target}")
+    return total
+
+
+def check_house_style(rep: Report) -> None:
+    """The dataset must be in the shape scripts/fmt.py emits, so that a diff
+    shows what changed rather than how it was serialised."""
+    import fmt as formatter
+    for path, render in formatter.targets():
+        original = path.read_text(encoding="utf-8")
+        if render(yaml.safe_load(original)) != original:
+            rep.error(str(path.relative_to(ROOT)), "not in house style. Run: python scripts/fmt.py")
+
+
 def check_links_wellformed(rep: Report) -> int:
     """Shape check only. Reaching the network is the job of the link-check workflow."""
     pattern = re.compile(r"https?://[^\s\"'<>)\]]+")
@@ -198,11 +262,16 @@ def main() -> int:
     today = dt.date.fromisoformat(args.today) if args.today else dt.date.today()
 
     rep = Report()
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
     rows = validate_mappings(rep, today)
     terms = validate_terms(rep, today)
+    exams = validate_exams(rep, today)
     links = check_links_wellformed(rep)
+    doclinks = check_doc_links(rep)
+    check_house_style(rep)
 
-    print(f"Cloud Rosetta data check   {rows} mapping rows, {terms} terms, {links} links")
+    print(f"Cloud Rosetta data check   {rows} mapping rows, {terms} terms, "
+          f"{exams} exams, {links} links, {doclinks} chapter links")
     print("-" * 68)
 
     for w in rep.warnings:

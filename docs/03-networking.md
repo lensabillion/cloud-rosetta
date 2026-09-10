@@ -168,7 +168,7 @@ to the DNS service.
 
 ## Next
 
-[04-compute.md](04-compute.md), then [09-confusing-terms.md](09-confusing-terms.md) for the
+[04-compute.md](README.md), then [09-confusing-terms.md](09-confusing-terms.md) for the
 firewall and endpoint vocabulary in one place.
 
 <!-- This document follows common-doc-guidelines.md. -->

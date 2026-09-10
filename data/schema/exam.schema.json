@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cloud Rosetta exam registry",
+  "type": "object",
+  "required": [
+    "exams"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "exams": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/exam"
+      }
+    }
+  },
+  "$defs": {
+    "exam": {
+      "type": "object",
+      "required": [
+        "code",
+        "name",
+        "provider",
+        "level",
+        "status",
+        "url",
+        "verified"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The code candidates book by, e.g. SAA-C03. Google exams have no code, so a short slug stands in."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full official name."
+        },
+        "provider": {
+          "enum": [
+            "aws",
+            "azure",
+            "gcp"
+          ]
+        },
+        "level": {
+          "enum": [
+            "foundational",
+            "associate",
+            "professional",
+            "expert",
+            "specialty"
+          ]
+        },
+        "status": {
+          "enum": [
+            "current",
+            "retired"
+          ],
+          "description": "An exam retiring is not the same event as a product retiring. Do not infer one from the other."
+        },
+        "retired_on": {
+          "type": "string",
+          "format": "date",
+          "description": "Date the exam stopped being offered. Present only when status is retired. An exam version retiring does not mean the certification retired."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "The exam's own official page, not a shared index."
+        },
+        "note": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
+  }
+}

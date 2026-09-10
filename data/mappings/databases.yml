@@ -14,7 +14,7 @@ rows:
     gcp:
       name: Cloud SQL
       url: https://docs.cloud.google.com/sql/docs/introduction
-    breaks_when: >
+    breaks_when: >-
       Azure splits by engine into separate products, whereas RDS and Cloud SQL are one product
       with an engine choice. Azure SQL Database is also not simply hosted SQL Server: it is a
       platform service with its own feature set, distinct from Azure SQL Managed Instance, which
@@ -28,7 +28,7 @@ rows:
     divergence: partial
     bite: serious
     aws:
-      name: Multi-AZ deployment, versus read replica
+      name: RDS Multi-AZ DB instance or DB cluster; read replica
       url: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
     azure:
       name: Zone-redundant configuration, versus geo-replica
@@ -36,14 +36,22 @@ rows:
     gcp:
       name: Regional instance, versus read replica
       url: https://docs.cloud.google.com/sql/docs/mysql/high-availability
-    breaks_when: >
-      The classic RDS trap, and it transfers. A Multi-AZ standby is synchronous, is not
-      readable, and exists purely to fail over. A read replica is asynchronous, is readable, and
-      does not provide automatic failover. Any question about surviving a zone failure wants the
-      standby; any question about offloading reporting queries wants the replica. Answering with
-      the wrong one is the intended failure, and the two are frequently offered together.
+    breaks_when: >-
+      In RDS, a Multi-AZ DB instance has a non-readable standby, while a Multi-AZ DB cluster has
+      two readable standby instances that also support failover. Ordinary RDS read replicas are
+      a separate asynchronous replication mechanism; do not infer automatic failover from
+      readability. Azure SQL Database zone redundancy and read scale-out depend on service tier;
+      active geo-replication is a separate readable asynchronous copy. Cloud SQL for MySQL
+      regional HA uses a standby for failover; a read replica serves reads separately. Specify
+      the engine, deployment type, and failure scope before choosing.
     exam_tags: [CLF-C02, SAA-C03, SOA-C03, AZ-104, AZ-305, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
+      - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html
+      - https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla
+      - https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview
+      - https://docs.cloud.google.com/sql/docs/mysql/high-availability
+    verified: '2026-09-10'
 
   - id: db.key-value
     concept: Managed key-value or document NoSQL
@@ -58,16 +66,15 @@ rows:
     gcp:
       name: Firestore, or Bigtable
       url: https://docs.cloud.google.com/firestore/docs/overview
-    breaks_when: >
-      These are not interchangeable. Cosmos DB is a multi-model database with several APIs and
-      five tunable consistency levels, and it is globally distributed by configuration. DynamoDB
-      is a single model with eventual or strongly consistent reads, and global tables are a
-      separate feature. Google splits the space in two: Firestore is document-oriented for
-      application data, while Bigtable is a wide-column store for very high write throughput and
-      time series, with no equivalent split elsewhere. Choosing Firestore where Bigtable is
-      wanted, or the reverse, is the standard Google distractor.
-    exam_tags: [SAA-C03, DVA-C02, AZ-204, AZ-305, ACE]
-    verified: '2026-09-09'
+    breaks_when: >-
+      These products share some workloads but differ in data model and consistency controls.
+      DynamoDB supports key-value and document data; Cosmos DB capabilities depend on the
+      selected API. Firestore is document-oriented; Bigtable uses a wide-column model. Choose
+      from required queries, transactions, consistency, throughput, and regional design, rather
+      than translating a product name. A provider may offer several relevant database products
+      beyond this shortlist.
+    exam_tags: [SAA-C03, DVA-C02, AZ-305, ACE]
+    verified: '2026-09-10'
 
   - id: db.warehouse
     concept: Analytical data warehouse
@@ -77,37 +84,56 @@ rows:
       name: Amazon Redshift
       url: https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html
     azure:
-      name: Microsoft Fabric, or Azure Synapse Analytics
+      name: Microsoft Fabric Warehouse or Azure Synapse Analytics
       url: https://learn.microsoft.com/en-us/fabric/data-warehouse/data-warehousing
-      maturity: superseded
-      note: Synapse is superseded by Fabric for new work, and the DP-203 exam that covered it is retired.
+      note: >-
+        Separate products and operating models. Exam retirement does not establish service
+        retirement.
     gcp:
       name: BigQuery
       url: https://docs.cloud.google.com/bigquery/docs/introduction
-    breaks_when: >
-      BigQuery is serverless with storage and compute separated and no cluster to provision,
-      which makes it the answer to "no infrastructure to manage" in a way a provisioned Redshift
-      cluster is not, though Redshift Serverless narrows the gap. Microsoft's warehouse story
-      moved into Fabric, and the Azure data engineering certification path moved with it, so
-      material referencing Synapse and the retired DP-203 exam is teaching a superseded shape.
+    breaks_when: >-
+      Compare the actual deployment model: provisioned or serverless Redshift, Fabric Warehouse
+      or Synapse SQL options, and BigQuery. Provisioned clusters and consumption-oriented
+      services expose different capacity and cost controls. Fabric and Synapse are separate
+      choices; retirement of an exam is not proof that a service is retired. Evaluate existing
+      integrations, workload, governance, and purchasing model.
     exam_tags: [CLF-C02, SAA-C03, AZ-900, DP-900, CDL, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://learn.microsoft.com/en-us/azure/synapse-analytics/overview-what-is
+      - https://learn.microsoft.com/en-us/fabric/data-warehouse/data-warehousing
+      - https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-serverless.html
+      - https://docs.cloud.google.com/bigquery/docs/introduction
+    verified: '2026-09-10'
 
   - id: db.cache
     concept: Managed in-memory cache
-    divergence: exact
+    divergence: partial
     bite: tip
     aws:
       name: Amazon ElastiCache
       url: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html
     azure:
-      name: Azure Cache for Redis
-      url: https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview
+      name: Azure Managed Redis
+      url: https://learn.microsoft.com/en-us/azure/redis/overview
+      note: >-
+        Azure Cache for Redis has a published retirement and migration schedule; consult the FAQ
+        for tier-specific dates.
     gcp:
       name: Memorystore
       url: https://docs.cloud.google.com/memorystore/docs/redis/redis-overview
-    exam_tags: [SAA-C03, DVA-C02, AZ-204, ACE]
-    verified: '2026-09-09'
+    breaks_when: >-
+      An in-memory cache is a shared concept, but engine/version support, persistence,
+      clustering, failover, and networking depend on the product and tier. Microsoft is moving
+      Azure Cache for Redis users to Azure Managed Redis on a published schedule. A new design
+      should compare current offerings rather than treating an old cache name as a stable
+      equivalent.
+    exam_tags: [SAA-C03, DVA-C02, ACE]
+    sources:
+      - https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/retirement-faq
+      - https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html
+      - https://docs.cloud.google.com/memorystore/docs/redis/redis-overview
+    verified: '2026-09-10'
 
   - id: db.streaming
     concept: Streaming ingestion and pub/sub messaging
@@ -122,12 +148,11 @@ rows:
     gcp:
       name: Pub/Sub
       url: https://docs.cloud.google.com/pubsub/docs/overview
-    breaks_when: >
-      Google collapses into one product what the other two split across several. Pub/Sub covers
-      both high-throughput streaming and topic fan-out. AWS separates ordered, replayable
-      streams in Kinesis from queues in SQS and fan-out in SNS. Azure separates Event Hubs for
-      telemetry streams, Service Bus for enterprise queues with transactions and sessions, and
-      Event Grid for reactive event routing. Mapping SQS to Pub/Sub is defensible; mapping it to
-      Event Hubs is not, and the intended Azure answer for a queue is nearly always Service Bus.
-    exam_tags: [SAA-C03, DVA-C02, AZ-204, AZ-305, ACE]
-    verified: '2026-09-09'
+    breaks_when: >-
+      Queue processing, event routing, topic fan-out, and replayable streams are distinct
+      requirements. AWS offers Kinesis, SQS, and SNS; Azure offers Event Hubs, Service Bus, and
+      Event Grid; Google Pub/Sub overlaps several of these workloads. Compare ordering scope,
+      acknowledgements, replay/retention, transactions, and delivery semantics for the chosen
+      service. A queue requirement does not by itself select a streaming service.
+    exam_tags: [SAA-C03, DVA-C02, AZ-305, ACE]
+    verified: '2026-09-10'
