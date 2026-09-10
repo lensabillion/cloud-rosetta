@@ -1,15 +1,14 @@
 # The Landscape: What These Three Things Are, and Where They Stand
 
-Start here if you are new. This chapter is orientation, not comparison. It should take about
-five minutes and leave you able to read every other chapter without looking anything up.
+Orientation, not comparison. Five minutes, and you can read every other chapter without looking
+anything up.
 
 Figures verified 9 September 2026. Every number links to its source.
 
 ## What a Cloud Provider Actually Sells
 
-All three sell the same underlying thing: **someone else's computers, rented by the minute,
-with software wrapped around them so you never touch the hardware.** Three layers, and the
-vocabulary for the layers is shared across all three vendors:
+All three sell the same thing: **someone else's computers, rented by the minute.** The layers
+below are named identically by all three vendors.
 
 | Layer | You manage | They manage | Example |
 | --- | --- | --- | --- |
@@ -17,16 +16,14 @@ vocabulary for the layers is shared across all three vendors:
 | **Platform as a service**, PaaS | Your code and data | Everything below your code | A managed database |
 | **Software as a service**, SaaS | Your data only | Everything | A hosted email product |
 
-The dividing line matters because it decides who is responsible when something goes wrong. Each
-vendor publishes this as a **shared responsibility model**, and all three say the same thing in
-different diagrams:
-[AWS](https://aws.amazon.com/compliance/shared-responsibility-model/),
-[Azure](https://learn.microsoft.com/en-us/azure/security/fundamentals/shared-responsibility),
-[Google Cloud](https://docs.cloud.google.com/architecture/framework/security/shared-responsibility-shared-fate).
+<!-- diagram: responsibility -->
 
-The short version, which is worth memorising because every foundational exam asks it: **the
-provider is responsible for the security *of* the cloud, and you are responsible for security
-*in* the cloud.** Patching the hypervisor is theirs. Leaving a storage bucket public is yours.
+All three publish this as a **shared responsibility model**
+([AWS](https://aws.amazon.com/compliance/shared-responsibility-model/),
+[Azure](https://learn.microsoft.com/en-us/azure/security/fundamentals/shared-responsibility),
+[Google Cloud](https://docs.cloud.google.com/architecture/framework/security/shared-responsibility-shared-fate)).
+Every foundational exam asks it: **the provider secures the cloud, you secure what you put in
+it.** Patching the hypervisor is theirs. Leaving a bucket public is yours.
 
 ## The Three Providers in One Paragraph Each
 
@@ -61,22 +58,15 @@ Share of that market, for the first quarter of 2026:
 | Google Cloud | 14% |
 | Everyone else combined | ~37% |
 
-Two things to take from this rather than the ranking itself:
-
-- **The three together hold roughly 63%** of a market that is still growing 35% a year. No
-  fourth competitor is close, so learning these three covers most of the industry.
-- **The gaps are narrowing.** Later reporting for the second quarter of 2026 puts the combined
-  share at 67% of a 143 billion dollar quarter, with Google Cloud reaching a record 15% and
-  growing far faster than the other two. Those quarter-two figures come from secondary
-  reporting rather than Synergy directly, so treat the precise numbers with more caution than
-  the direction.
+Take the shape, not the ranking. **The three together hold about 63%** of a market growing 35% a
+year, with no fourth competitor close, so these three cover most of the industry. Later
+reporting puts the combined share at 67% and Google at a record 15%, growing fastest of the
+three, though those figures are secondary rather than from Synergy directly.
 
 ## Who Actually Uses Them
 
-Market share measures money. It does not tell you what is running where, and the answer to that
-is more useful.
-
-According to the [Flexera 2026 State of the Cloud Report](https://www.flexera.com/blog/finops/flexera-2026-state-of-the-cloud-report-the-convergence-of-cloud-and-value/):
+Market share measures money, not what is running where. From the
+[Flexera 2026 State of the Cloud Report](https://www.flexera.com/blog/finops/flexera-2026-state-of-the-cloud-report-the-convergence-of-cloud-and-value/):
 
 | Finding | Figure |
 | --- | --- |
@@ -91,24 +81,15 @@ According to the [Flexera 2026 State of the Cloud Report](https://www.flexera.co
 being high and in multi-cloud complexity being real. The adoption numbers are broadly consistent
 with other surveys; treat the 32% waste figure as directional.
 
-Three consequences that shape this whole guide:
-
-1. **AWS and Azure are nearly tied on actual usage**, 83% against 79%, even though AWS leads
-   revenue share by seven points. Azure is deployed almost as widely but tends to carry smaller
-   or complementary workloads.
-2. **89% of organisations use more than one provider.** Knowing one cloud is no longer enough
-   for most jobs, and this statistic is the entire reason this project exists.
-3. **Google Cloud is a distant third by workload count** but concentrates in data analytics and
-   machine learning, where it is frequently the deliberate choice rather than the default.
-
-Reported specialisation, from the same report: AWS leads in infrastructure services, Azure in
-enterprise integration, and Google Cloud in data analytics and AI workloads.
+Three consequences shape this guide. **AWS and Azure are nearly tied on usage**, 83% against
+79%, despite a seven-point revenue gap. **89% use more than one provider**, which is the whole
+reason this project exists. And **Google is a distant third by workload count** but concentrates
+in data analytics and machine learning, where it is chosen deliberately rather than by default.
 
 ## Where Certifications Fit
 
-Each vendor runs its own certification programme, and none of them recognises the others.
-Passing an AWS exam gives you nothing on Azure. The concepts transfer, and this guide exists
-because the concepts transfer far less cleanly than people expect.
+Each vendor runs its own programme and none recognises the others. Passing an AWS exam gives you
+nothing on Azure, and the concepts transfer far less cleanly than people expect.
 
 | | Entry level | First serious credential |
 | --- | --- | --- |
@@ -122,8 +103,7 @@ is retired** and a great deal of course material for it is still on sale.
 
 ## The Vocabulary You Need Before Chapter One
 
-Six words, used identically by all three vendors. Everything else in this guide is about words
-they use differently.
+Six words all three use identically. The rest of this guide is about the ones they do not.
 
 | Term | Meaning |
 | --- | --- |

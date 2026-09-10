@@ -12,7 +12,9 @@ from __future__ import annotations
 import datetime as dt
 import html
 import pathlib
+import re
 
+import diagrams
 import mdlite
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -125,8 +127,42 @@ Free, open source, and every claim links to the vendor's own page.</p>
 </section>"""
 
 
+DIAGRAM_MARK = re.compile(r"<!--\s*diagram:\s*([a-z-]+)\s*-->")
+
+
 def page_from_markdown(slug: str, path: pathlib.Path) -> str:
-    body, _ = mdlite.render(path.read_text(encoding="utf-8"))
+    source = path.read_text(encoding="utf-8")
+    # The sidebar is the navigation, so a chapter's own "next" footer is noise
+    # here. It stays in the Markdown, where GitHub readers still need it.
+    source = re.split(r"\n## Next\b", source)[0]
+    source = re.sub(r"\n\*\*Next:\*\*.*?(?:\n\n|\Z)", "\n", source, flags=re.S)
+    # Verification is shown per row and in the footer; a dated preamble on every
+    # chapter is meta-commentary that pushes the content down the page.
+    source = re.sub(r"\nVerified against vendor documentation on [^\n]*\n(?:[^\n]*\n)?", "\n", source)
+    source = re.sub(r"\nMeasurements taken [^\n]*\n(?:[^\n]*\n)?", "\n", source)
+    source = re.sub(r"\nFacts marked \*\*verified\*\*[^\n]*\n(?:[^\n]*\n)*?\n", "\n", source)
+    # Swap each marker for a sentinel that survives Markdown rendering, then put
+    # the drawing back. Keeps the chapter readable as plain Markdown.
+    wanted: list[str] = []
+
+    def stash(m):
+        wanted.append(m.group(1))
+        return f"\n\nFIGURESLOT{len(wanted) - 1}FIGURESLOT\n\n"
+
+    body, outline = mdlite.render(DIAGRAM_MARK.sub(stash, source))
+    for i, name in enumerate(wanted):
+        body = body.replace(f"<p>FIGURESLOT{i}FIGURESLOT</p>", diagrams.render(name))
+    if "FIGURESLOT" in body:
+        raise SystemExit(f"{path.name}: a diagram slot was not filled")
+
+    # A chapter with several sections gets a contents block, placed after the
+    # opening paragraph so the reader sees what the page covers before scrolling.
+    tops = [(i, txt) for lvl, i, txt in outline if lvl == 2]
+    if len(tops) >= 4:
+        items = "".join(f'<a href="#{esc(i)}">{esc(txt)}</a>' for i, txt in tops)
+        toc = f'<nav class="toc" aria-label="On this page"><b>On this page</b>{items}</nav>'
+        cut = body.find("</p>")
+        body = body[:cut + 4] + toc + body[cut + 4:] if cut != -1 else toc + body
     return f'<section class="page hide" id="p-{slug}">{body}</section>'
 
 
@@ -202,6 +238,24 @@ page. An exam retiring and a product retiring are separate events; only the exam
 
 
 # --------------------------------------------------------------------- assembly
+
+def pager(order: list[tuple[str, str]]) -> dict[str, str]:
+    """Previous and next links for every page, taken from the sidebar order so
+    the two can never disagree."""
+    out = {}
+    for i, (slug, label) in enumerate(order):
+        prev_ = order[i - 1] if i else None
+        next_ = order[i + 1] if i + 1 < len(order) else None
+        links = ""
+        if prev_:
+            links += (f'<a class="pg prev" href="#{esc(prev_[0])}">'
+                      f'<span>Previous</span>{esc(prev_[1])}</a>')
+        if next_:
+            links += (f'<a class="pg next" href="#{esc(next_[0])}">'
+                      f'<span>Next</span>{esc(next_[1])}</a>')
+        out[slug] = f'<nav class="pager">{links}</nav>' if links else ""
+    return out
+
 
 def nav(groups: list) -> str:
     out = []
@@ -311,6 +365,11 @@ ROUTES = {
 }
 
 
+def _page_id(markup: str) -> str:
+    m = re.search(r'id="p-([^"]+)"', markup)
+    return m.group(1) if m else ""
+
+
 def resolve(stem: str) -> str:
     return f"#{ROUTES[stem]}" if stem in ROUTES else f"{REPO}/{stem}.md"
 
@@ -356,6 +415,17 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
                         ("exams", "Which exam, and what it costs")]),
         ("Practise", [("practice", "Drills and self-check")]),
     ]
+
+    order = [("home", "Start")]
+    for _, items in groups:
+        for item in items:
+            if isinstance(item, tuple) and item[0] == "sub":
+                order += [(s, l) for s, l in item[2]]
+            else:
+                order.append(item)
+    pagers = pager(order)
+    pages = [p.replace("</section>", pagers.get(_page_id(p), "") + "</section>", 1)
+             if _page_id(p) in pagers else p for p in pages]
 
     shell = (ROOT / "scripts" / "shell.html").read_text(encoding="utf-8")
     body = f"""
