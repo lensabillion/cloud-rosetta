@@ -18,6 +18,7 @@ import sys
 
 import yaml
 
+import guide as sitegen
 import surfaces
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -336,6 +337,10 @@ def build(out: pathlib.Path) -> None:
         for e in sorted(exams)
     )
 
+    # The guide itself: journey, then reference, then practice, built to
+    # docs/design-system.md. The old single-page template is no longer used.
+    stats = sitegen.build(domains, terms, load_exams(), out)
+
     subs = {
         "ROWS": "\n".join(rows_html),
         "TERMS": terms_html,
@@ -352,15 +357,7 @@ def build(out: pathlib.Path) -> None:
         "OLDEST": oldest.isoformat() if oldest else "",
         "BUILT": dt.date.today().isoformat(),
     }
-    page = PAGE
-    for key, value in subs.items():
-        page = page.replace("{{" + key + "}}", value)
-    if "{{" in page:
-        leftover = page[page.index("{{"): page.index("{{") + 40]
-        raise SystemExit(f"unreplaced template token near: {leftover!r}")
-
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(page, encoding="utf-8")
+    del subs  # the legacy single-page template is retired; site.py owns the page now
 
     chapter = ROOT / "docs" / "09-confusing-terms.md"
     chapter.write_text(render_terms_markdown(terms), encoding="utf-8")
@@ -383,7 +380,8 @@ def build(out: pathlib.Path) -> None:
     )
 
     drill_lines = (dist / "drills.tsv").read_text().count(chr(10))
-    print(f"wrote {out.relative_to(ROOT)}  {total} rows, {len(terms)} terms, {risky} flagged ({pct}%)")
+    print(f"wrote {out.relative_to(ROOT)}  {stats['pages']} pages, {stats['rows']} rows, "
+          f"{stats['terms']} terms, {stats['exams']} exams")
     print(f"wrote {chapter.relative_to(ROOT)}")
     print(f"wrote README.md generated block, dist/poster.svg, dist/rosetta.json")
     print(f"wrote dist/drills.tsv  {drill_lines} flashcards")
