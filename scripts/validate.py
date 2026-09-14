@@ -224,6 +224,15 @@ def check_doc_links(rep: Report) -> int:
             total += 1
             if not (path.parent / target).resolve().exists():
                 rep.error(str(path.relative_to(ROOT)), f"links to a file that does not exist: {target}")
+        for image in re.findall(r"!\[[^\]]*\]\(([^)]+)\)", path.read_text(encoding="utf-8")):
+            if image.startswith(("https://", "http://")):
+                continue
+            if image.startswith("assets/architecture/"):
+                import diagrams
+                if pathlib.Path(image).stem not in diagrams.ALL:
+                    rep.error(str(path.relative_to(ROOT)), f"unknown architecture diagram: {image}")
+            elif not (path.parent / image).is_file():
+                rep.error(str(path.relative_to(ROOT)), f"missing local image: {image}")
     return total
 
 

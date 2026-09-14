@@ -21,7 +21,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 DOCS = ROOT / "docs"
 CLOUDS = (("aws", "AWS"), ("azure", "Azure"), ("gcp", "Google Cloud"))
-DIVERGENCE = {"exact": "Transfers cleanly", "partial": "Behaves differently", "none": "No equivalent"}
+DIVERGENCE = {"exact": "Similar purpose", "partial": "Behaves differently", "none": "Different object or architecture"}
 BITE = {"serious": "Serious", "regular": "Regular", "tip": "Tip"}
 BITE_HELP = {
     "serious": "Significant risk or cost: a security exposure, real money, or an architectural choice that is hard to correct.",
@@ -70,6 +70,8 @@ def row_html(row: dict, domain: str) -> str:
         note = ('<details class="note"><summary>Same everywhere, still caught out</summary>'
                 f'<p>{flat(row["shared_trap"])}</p></details>')
 
+    evidence = " ".join(f'<a href="{esc(url)}" target="_blank" rel="noopener">Source {i+1}</a>'
+                        for i, url in enumerate(row.get("sources") or []))
     tags = "".join(f'<span class="tag">{esc(t)}</span>' for t in row.get("exam_tags") or [])
     hay = " ".join([row.get("concept", ""), domain, div, bite, " ".join(row.get("exam_tags") or [])]
                    + [str((row.get(k) or {}).get("name") or "") for k, _ in CLOUDS]
@@ -81,7 +83,7 @@ def row_html(row: dict, domain: str) -> str:
 <span class="mk d-{esc(div)}">{esc(DIVERGENCE[div])}</span></span></div>
 <div class="svcs">{services}</div>
 {note}
-<div class="rfoot">{tags}<span class="stamp">Verified {esc(row.get('verified'))}</span></div>
+<div class="rfoot">{tags}{evidence}<span class="stamp">Recorded check {esc(row.get('verified'))}</span></div>
 </article>"""
 
 
@@ -102,7 +104,7 @@ def term_html(term: dict) -> str:
     return f"""<article class="term s-{esc(sev)}" data-find="{esc(hay)}">
 <h3>{esc(term.get('term'))}</h3><span class="sev">{esc(label)}</span>
 <div class="senses">{senses}</div>
-<details class="note" open><summary>Why it costs marks</summary><p>{flat(term.get('why_it_hurts'))}</p></details>
+<details class="note" open><summary>Why the distinction matters</summary><p>{flat(term.get('why_it_hurts'))}</p></details>
 </article>"""
 
 
@@ -123,11 +125,11 @@ This one tells you <b>what breaks when you assume it works the same way</b>, and
 every row.</p>
 <a class="cta" href="#00-landscape">Start reading &rarr;</a>
 <p class="after">{counts['total']} graded mappings, {terms} colliding terms and {exams} exams.
-Free, open source, and every claim links to the vendor's own page.</p>
+Free and open source, with primary sources and explicit caveats.</p>
 </section>"""
 
 
-DIAGRAM_MARK = re.compile(r"<!--\s*diagram:\s*([a-z-]+)\s*-->")
+DIAGRAM_MARK = re.compile(r"!\[[^\]]*\]\(assets/architecture/([a-z-]+)\.svg\)")
 
 
 def page_from_markdown(slug: str, path: pathlib.Path) -> str:
@@ -151,7 +153,7 @@ def page_from_markdown(slug: str, path: pathlib.Path) -> str:
 
     body, outline = mdlite.render(DIAGRAM_MARK.sub(stash, source))
     for i, name in enumerate(wanted):
-        body = body.replace(f"<p>FIGURESLOT{i}FIGURESLOT</p>", diagrams.render(name))
+        body = body.replace(f"<p>FIGURESLOT{i}FIGURESLOT</p>", diagrams.render(name, slug + "-" + name))
     if "FIGURESLOT" in body:
         raise SystemExit(f"{path.name}: a diagram slot was not filled")
 
@@ -361,6 +363,7 @@ ROUTES = {
     "09-confusing-terms": "decoder",
     "10-exam-map": "exams",
     "practice": "practice",
+    "architecture": "architecture",
     "README": "home",
 }
 
@@ -387,6 +390,7 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
                ("01-mental-models", "How they are shaped differently")]
     learn = [("02-identity", "Who can do what"),
              ("03-networking", "How the network is put together"),
+             ("architecture", "Architecture atlas"),
              ("05-databases", "Where data lives")]
 
     for slug, _ in journey + learn:

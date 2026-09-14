@@ -38,12 +38,13 @@ rows:
       url: https://docs.cloud.google.com/sql/docs/mysql/high-availability
     breaks_when: >-
       In RDS, a Multi-AZ DB instance has a non-readable standby, while a Multi-AZ DB cluster has
-      two readable standby instances that also support failover. Ordinary RDS read replicas are
-      a separate asynchronous replication mechanism; do not infer automatic failover from
-      readability. Azure SQL Database zone redundancy and read scale-out depend on service tier;
-      active geo-replication is a separate readable asynchronous copy. Cloud SQL for MySQL
-      regional HA uses a standby for failover; a read replica serves reads separately. Specify
-      the engine, deployment type, and failure scope before choosing.
+      two readable standby instances with semisynchronous replication that also support
+      failover. Ordinary RDS read replicas are a separate asynchronous replication mechanism; do
+      not infer automatic failover from readability. Azure SQL Database zone redundancy and read
+      scale-out depend on service tier; active geo-replication is a separate readable
+      asynchronous copy. Cloud SQL for MySQL regional HA uses a standby for failover; a read
+      replica serves reads separately. Specify the engine, deployment type, and failure scope
+      before choosing.
     exam_tags: [CLF-C02, SAA-C03, SOA-C03, AZ-104, AZ-305, ACE]
     sources:
       - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
@@ -51,7 +52,8 @@ rows:
       - https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla
       - https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview
       - https://docs.cloud.google.com/sql/docs/mysql/high-availability
-    verified: '2026-09-10'
+      - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html
+    verified: '2026-09-14'
 
   - id: db.key-value
     concept: Managed key-value or document NoSQL

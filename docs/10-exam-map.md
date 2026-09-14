@@ -81,77 +81,15 @@ An exam retirement and a product retirement are separate events.
 5. Practice the official exam interface and use the provider's current preparation resources.
    The [practice scenarios here](practice.md) build reasoning but do not predict your exam score.
 
-## Format, Which Does Not Transfer
+## Use Current Exam Instructions
 
-Practising on one vendor's question style does not prepare you for another's.
+Question types, timing, review restrictions and renewal paths depend on the exact credential.
+Use the linked official exam guide and the on-screen instructions. Google labels such as
+`ACE` and `PCA` in this project are convenient abbreviations, not a promise of official exam codes.
 
-| | AWS | Azure | Google Cloud |
-| --- | --- | --- | --- |
-| Question types | Multiple choice, multiple response | Multiple choice, multiple select, case study, drag and drop, hot area, yes/no, sometimes interactive labs | Multiple choice, multiple select, case studies |
-| Typical associate length | 130 minutes, 65 questions | AZ-104 allows 100 minutes | Two hours |
-| Can you revisit answers? | Yes, flag and review | **Not always.** Some case study and lab sections lock once left | Yes |
-| Result detail | Scaled score with section feedback | Scaled score with section feedback | Pass or fail only, no score published |
-
-Two consequences worth planning around. **Azure sections can lock**, so read the on-screen
-instructions before entering a case study; a habit built on AWS-style banks where anything can
-be revisited will cost you. And **Microsoft role-based certifications renew annually**, free,
-through an online assessment, where AWS and Google run multi-year cycles.
-
-## Traps by Cloud
-
-### AWS
-
-- A security group has allow rules only. Blocking one address while broad allows remain needs a
-  deny-capable control such as a network ACL.
-- Network ACLs are stateless, so return traffic needs its own rule on ephemeral ports.
-- **Read the RDS deployment type before answering a Multi-AZ question.** A Multi-AZ DB instance
-  keeps an unreadable standby for failover; a Multi-AZ DB cluster has readable standbys. A read
-  replica scales reads and does not fail over automatically. See [Databases](05-databases.md).
-- An SCP never grants anything. It only limits what IAM may grant.
-- Availability zone names are shuffled per account; use the AZ ID when physical identity matters.
-- Gateway endpoints are free and serve only S3 and DynamoDB. Interface endpoints cost money and
-  serve nearly everything.
-- "Least operational overhead" usually selects the managed option even when a cheaper
-  self-managed one exists.
-
-### Azure
-
-- RBAC inheritance is additive and downward. A grant at the subscription reaches every resource
-  group beneath it.
-- Entra roles are not Azure RBAC roles. A Global Administrator holds no resource access until
-  they elevate to User Access Administrator at root scope.
-- Azure Policy is not RBAC. Enforcing a required configuration is a Policy answer.
-- An availability set is not an availability zone. Data centre level failure means zones.
-- Service endpoint and private endpoint differ. On-premises access with a private address means
-  private endpoint.
-- Traffic Manager is DNS only. TLS termination or header routing at the edge means Front Door.
-- Learn the redundancy acronyms literally: LRS, ZRS, GRS, GZRS, and the RA- prefix.
-- Deleting a resource group deletes everything inside it.
-
-### Google Cloud
-
-- The VPC is global and subnets are regional. Nothing is zonal at the network level.
-- Firewall rules belong to the network and select targets by network tag or service account.
-- Basic roles, Owner, Editor and Viewer, are almost always wrong in a least-privilege scenario.
-- IAM inheritance is additive and cannot be narrowed by a smaller grant lower down.
-- Using a service account needs a role on the service account itself.
-- Downloadable service account keys are the wrong answer wherever an alternative exists.
-- Sustained use discounts apply automatically with no commitment, and have no AWS or Azure
-  equivalent.
-- Cloud Functions is now Cloud Run functions. Most study material has not caught up.
-
-## Distractor Patterns Common to All Three
-
-1. **The technically correct but costly option**, which works and ignores a stated cost limit.
-2. **The self-managed option** where the question asks for least operational overhead.
-3. **The right service at the wrong scope**, such as a regional answer to a global requirement.
-4. **The superseded product**, still real and still sold, but not what is being asked for.
-5. **The adjacent service with a similar name**, which is what
-   [the decoder](09-confusing-terms.md) exists to defuse.
-
-When two answers both look right, find the constraint word: cheapest, least operational
-overhead, fastest to implement, minimum downtime, must survive a region failure. That word is
-what is being tested, not the technology.
+Technical scenarios in this guide are original learning exercises. Product availability,
+service retirement and exam retirement are separate facts. Avoid rules that select a service
+from one word while ignoring the stated constraints.
 
 **Next:** [practice](practice.md) · [full comparison reference](README.md) ·
 [chapter index](README.md).

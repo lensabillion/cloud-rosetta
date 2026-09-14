@@ -64,26 +64,26 @@ rows:
       name: Private Service Connect, and separately Private Google Access
       url: https://docs.cloud.google.com/vpc/docs/private-service-connect
     breaks_when: >-
-      Azure's service endpoint and private endpoint sound like synonyms and are not. A service
-      endpoint keeps traffic on the Microsoft backbone while the service keeps its public IP and
-      nothing enters your address space. A private endpoint puts a network interface with a
-      private IP from your subnet in front of the service, so it becomes addressable inside the
-      VNet and reachable from on-premises over ExpressRoute or VPN, which service endpoints
-      cannot do. "Must be reachable from on-premises" or "must have a private IP" selects
-      private endpoint. The AWS pair has the same shape: a gateway endpoint is a route table
-      entry, is free, and serves only S3 and DynamoDB, while an interface endpoint is a real
-      network interface, works for most services, and is billed hourly plus data.
+      A private endpoint provides a private destination address for a supported service;
+      routing, DNS, authorization and service configuration must still permit access. Azure
+      service endpoints instead retain the service public address and do not extend to
+      on-premises clients. AWS gateway endpoints provide route-based access to S3 and DynamoDB
+      without an endpoint fee; they are not reachable through VPN, Direct Connect or peering.
+      Interface endpoints use PrivateLink and have service-specific support and charges. Google
+      Private Service Connect and Private Google Access are different mechanisms.
     exam_tags: [SAA-C03, AZ-104, AZ-700, ACE]
     sources:
       - https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview
-    verified: '2026-09-09'
+      - https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html
+      - https://docs.cloud.google.com/vpc/docs/private-service-connect
+    verified: '2026-09-14'
 
   - id: net.lb.l7-global
     concept: Global layer 7 load balancing
     divergence: partial
     bite: regular
     aws:
-      name: CloudFront, or Global Accelerator for layer 4
+      name: Amazon CloudFront
       url: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html
     azure:
       name: Azure Front Door
@@ -92,15 +92,17 @@ rows:
       name: Global external Application Load Balancer
       url: https://docs.cloud.google.com/load-balancing/docs/https
     breaks_when: >-
-      Google's global external Application Load Balancer uses a single anycast IP worldwide
-      natively, so one address serves every region. AWS and Azure reach the same outcome by
-      placing a separate global service in front of regional load balancers. Do not confuse
-      Azure Front Door with Traffic Manager: Traffic Manager is DNS only, hands out an answer
-      and then leaves the path, and therefore cannot terminate TLS, rewrite a header or fail
-      over a live connection. Any question mentioning header-based routing or TLS offload at the
-      edge is a Front Door question. Route 53 occupies the same DNS-only position in AWS.
+      CloudFront and Front Door are global HTTP reverse-proxy services; neither is
+      interchangeable with a regional application load balancer. Google offers a global external
+      Application Load Balancer. Traffic Manager and Route 53 DNS routing select DNS answers
+      rather than carrying application traffic. AWS Global Accelerator handles TCP/UDP traffic
+      and is not a layer-7 routing engine. A global entry point does not make a single-region
+      origin resilient to regional failure.
     exam_tags: [SAA-C03, AZ-104, AZ-305, AZ-700, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html
+      - https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-overview
+    verified: '2026-09-14'
 
   - id: net.lb.l7-regional
     concept: Regional layer 7 load balancing
@@ -153,13 +155,18 @@ rows:
       name: Cloud NAT
       url: https://docs.cloud.google.com/nat/docs/overview
     breaks_when: >-
-      An AWS NAT gateway is a zonal resource, so a zone-resilient design needs one per zone and
-      pays for each, which turns up as both a cost question and an availability question. Cloud
-      NAT is a software-defined feature of the network rather than an appliance in the data
-      path, so there is nothing to place in a subnet or size. The three are billed on different
-      shapes, which matters in cost-optimisation scenarios.
+      AWS offers zonal and regional NAT gateways. Zonal gateways require an explicit per-zone
+      design for zone resilience; regional gateways support automatic expansion across workload
+      zones, with documented expansion delays and mode restrictions. Regional NAT does not
+      support private NAT. Azure NAT Gateway capabilities depend on SKU and configuration.
+      Google Cloud NAT is distributed translation, not a proxy VM through which packets are
+      routed. NAT is not an inbound publishing or application-authentication mechanism.
     exam_tags: [SAA-C03, SOA-C03, AZ-104, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateways-regional.html
+      - https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview
+      - https://docs.cloud.google.com/nat/docs/overview
+    verified: '2026-09-14'
 
   - id: net.hybrid-private
     concept: Private circuit to on-premises

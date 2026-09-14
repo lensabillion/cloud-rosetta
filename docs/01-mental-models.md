@@ -1,135 +1,77 @@
-# Mental Models: How the Three Clouds Are Shaped
+# Resource Ownership, Identity and Geography
 
-Read this before any service table. Service names are the easy part. The reason a competent
-AWS engineer gets Google Cloud questions wrong is that the two clouds disagree about what
-contains what, and about which things are global.
+Three questions need three answers: who administers a resource, where it runs, and which
+identity can access it. Billing is a related fourth question. Drawing all four as one nested
+hierarchy teaches the wrong model.
 
-Verified against vendor documentation on 9 September 2026. Numeric quotas change; the
-citations point at the pages that stay current.
+## Administrative Ownership
 
-## Three Boundaries, One Object or Three
+![Administrative relationships in AWS, Azure and Google Cloud](assets/architecture/hierarchy.svg)
 
-Every cloud answers three questions: what isolates a workload, what an invoice is drawn
-around, and what holds the users. **AWS answers "the account" to all three. Azure and Google
-split the answers across different objects**, and that split causes most cross-cloud confusion.
+The arrows in this drawing mean administrative parentage. They are not network connections.
+Optional intermediate groups are labelled. Regions and zones do not belong in this tree.
 
-<!-- diagram: hierarchy -->
-
-Verified structural limits:
-
-| Limit | AWS | Azure | Google Cloud |
-| --- | --- | --- | --- |
-| Grouping levels | 5 levels of OUs below a root | 6 levels of management groups, excluding root and subscription levels | 10 levels of folders |
-| Roots per hierarchy | Exactly 1 | Exactly 1 root management group per directory | 1 organization per domain |
-| Children per parent | 2,000 OUs per organization | 10,000 management groups per directory | 300 direct child folders per parent |
-| Default account or project count | 10 accounts, adjustable to 50,000 | Varies by agreement | Per-user project creation quota |
-
-Sources: [AWS Organizations quotas](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html),
-[Azure management groups overview](https://learn.microsoft.com/en-us/azure/governance/management-groups/overview),
-[Google Cloud Resource Manager limits](https://docs.cloud.google.com/resource-manager/docs/limits).
-
-Three facts from those pages that show up in questions:
-
-- The **AWS default account quota is 10**, not unlimited. Candidates assume an organization
-  starts unbounded. It does not, though the increase goes to 50,000.
-- The **Azure root management group cannot be moved or deleted**, its ID equals the Entra
-  tenant ID, and new subscriptions land in it by default. Nobody has access to it by default
-  either. A Global Administrator must first elevate to User Access Administrator.
-- Azure Resource Manager **caches the management group hierarchy for up to 30 minutes**, so a
-  move can appear not to have happened.
-
-## Grouping Objects Are Not Equivalent
-
-The single most costly false friend in the entire subject.
-
-| | AWS organizational unit | Azure resource group | Azure management group | Google folder |
-| --- | --- | --- | --- | --- |
-| Mandatory? | No | **Yes**, every resource is in exactly one | No | No |
-| Holds | Accounts | Resources | Subscriptions and other management groups | Projects and other folders |
-| Deleting it deletes contents? | No | **Yes** | No | Yes, with the projects inside |
-| Move contents later? | Yes | Sometimes, and many resource types refuse | Yes | Yes |
-| Sits above or below the billing boundary? | Above accounts | **Below** subscriptions | Above subscriptions | Above projects |
-
-An Azure resource group is not an AWS OU. It sits on the other side of the billing boundary,
-it is compulsory, and deleting it destroys everything inside. The closest AWS analogue to a
-resource group is a CloudFormation stack, and that analogy is itself imperfect.
-
-An **AWS resource group** exists and is a different thing again: an optional, tag-driven view
-over resources. Two clouds, one phrase, two unrelated concepts, one of which is load-bearing.
-
-## Global, Regional, Zonal
-
-Where a resource lives decides what happens when infrastructure fails. It is the highest
-frequency trap in the subject.
-
-<!-- diagram: scope -->
-
-A Google VPC spans every region, so a machine in Tokyo and one in Frankfurt can sit in the same
-network and route over Google's backbone with no peering. Nothing in AWS or Azure works that
-way. And because an AWS subnet lives in exactly one zone, "spread across zones" is a
-subnet-design problem there and a resource-placement problem in Azure.
-
-## Zones Are Not the Same Word
-
-| Term | Cloud | What it is |
+| Provider | Workload administration | Related systems |
 | --- | --- | --- |
-| Availability Zone | AWS | One or more discrete data centres in a region, with independent power and cooling |
-| Availability Zone | Azure | The same idea, but not enabled in every region, and opt-in per resource |
-| Zone | Google Cloud | A deployment area within a region, named like `us-central1-a` |
-| **Availability Set** | Azure only | A within-datacentre construct using fault domains and update domains. **Not a zone.** No AWS or Google equivalent |
+| AWS | An account contains resources and IAM configuration; Organizations groups accounts | Organizations supports consolidated billing. Workforce access can come from Identity Center or another identity provider |
+| Azure | Management groups organize subscriptions; resource groups contain resources deployed at resource-group scope | A subscription trusts an Entra tenant. Billing accounts and agreements form a separate billing hierarchy |
+| Google Cloud | An organization can contain folders and projects; projects contain workload resources | Projects link to billing accounts. Directory administration and resource IAM are separate responsibilities |
 
-The Azure availability set is the one that catches people. It protects against rack-level
-failure and host patching inside a single datacentre. It does not protect against a datacentre
-failing. An availability zone does. Choosing an availability set when the question says
-"datacentre outage" is a wrong answer, and the distractor is deliberately placed.
+Sources: [AWS Organizations](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html),
+[AWS billing](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/consolidated-billing.html),
+[Azure resource scopes](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview),
+[Google hierarchy](https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy).
 
-AWS also **shuffles zone names per account**. The `us-east-1a` in one account is generally not
-the same physical zone as `us-east-1a` in another. AWS exposes a stable AZ ID such as `use1-az1`
-for when the physical identity matters.
+## Network Membership and Location
 
-## Naming and Uniqueness
+![Network ownership and subnet location compared separately](assets/architecture/scope.svg)
 
-| Thing | Uniqueness scope |
+An AWS VPC is regional and its subnets each occupy one Availability Zone. An Azure VNet and
+its subnets are regional. A Google VPC is global and its subnets are regional. A Google project
+owns network resources; it does not own geographic regions. A VPC does not own a zone.
+[AWS subnets](https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html),
+[Azure VNets](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview),
+[Google VPCs](https://docs.cloud.google.com/vpc/docs/vpc).
+
+A global network can connect regional resources; it does not make those resources global or
+resilient to regional failure. Routing, firewall rules and authorization still apply.
+
+## Grouping and Deletion
+
+| Object | What deletion means |
 | --- | --- |
-| S3 bucket name | Global, across every AWS customer |
-| Azure storage account name | Global, and it becomes a DNS label |
-| Google Cloud Storage bucket name | Global, across every Google customer |
-| Google project ID | Global, permanent, and cannot be reused after deletion |
-| AWS account ID | Global, 12 digits, assigned |
-| Azure resource group name | Unique within its subscription only |
+| AWS Resource Group | Removes the group, not its member resources |
+| AWS organizational unit | Accounts and child OUs must first be removed or moved |
+| Azure resource group | Requests deletion of members; locks, dependencies and service behavior can prevent completion |
+| Google folder | Must be empty before deletion; it does not recursively delete projects |
+| Google project | Starts shutdown and a recovery period; some resources may not be recoverable. Project IDs cannot be reused |
 
-Google project IDs deserve a note. A project has a **name** you can change, an **ID** you
-choose once and can never change or reuse, and a **number** Google assigns. Questions exploit
-the difference between them.
+Sources: [AWS resource groups](https://docs.aws.amazon.com/ARG/latest/userguide/deleting-resource-groups.html),
+[AWS OUs](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_ous.html),
+[Azure deletion](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/delete-resource-group),
+[Google folders](https://docs.cloud.google.com/resource-manager/docs/creating-managing-folders),
+[Google projects](https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects).
 
-## What Happens When You Delete the Container
+## Failure Domains Are Not Guarantees
 
-| Action | Result |
-| --- | --- |
-| Close an AWS account | Enters a post-closure period before permanent closure; still counts against the organization quota until permanently closed |
-| Delete an Azure resource group | Deletes every resource inside it, without a per-resource prompt |
-| Delete a Google project | Enters a 30-day recovery window, then deletes; the project ID is never reusable |
+An Azure availability set separates fault and update domains within a datacenter; it is not a
+multi-zone design. To tolerate a zone outage, place enough capacity in other zones and ensure
+clients, data and dependencies can fail over. A single VM in a zone remains a single VM.
+[Azure availability sets](https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview).
 
-The Azure behaviour is the one that surprises people who came from AWS, where no equivalent
-container deletes its contents.
+AWS AZ names can map differently across accounts. Use AZ IDs to align physical locations when
+sharing resources. Do not replace “can differ” with “always differ.”
+[AWS AZ IDs](https://docs.aws.amazon.com/ram/latest/userguide/working-with-az-ids.html).
 
-## Practical Consequences
+## Quotas and Names
 
-- **Coming from AWS to Google Cloud:** stop thinking of the network as regional, and stop
-  putting subnets in zones. Use projects the way you used accounts, and expect to create far
-  more of them than you created accounts.
-- **Coming from AWS to Azure:** every resource must go in a resource group, so decide the
-  grouping before you deploy. Do not map a resource group to an OU; the levels do not line up.
-- **Coming from Azure to AWS:** there is no resource group. Lifecycle grouping is done with
-  tags, CloudFormation stacks, or separate accounts, and separate accounts are used far more
-  freely than separate subscriptions.
-- **Coming from Google Cloud anywhere:** your VPC is about to become regional, and cross-region
-  traffic is about to need peering or a transit construct.
+Nesting depth, project-creation quotas and resource-name rules are service-specific. Check
+current limits when designing an organization. S3 general-purpose bucket names, for example,
+are unique within an AWS partition; not every S3 bucket type has identical naming rules.
+[AWS Organizations quotas](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html),
+[Azure management groups](https://learn.microsoft.com/en-us/azure/governance/management-groups/overview),
+[S3 naming](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html).
 
-## Next
-
-- [02-identity.md](02-identity.md) for who is allowed to do what, the area candidates report
-  as hardest.
-- [09-confusing-terms.md](09-confusing-terms.md) for the word-by-word decoder.
+**Next:** [identity and access](02-identity.md) · [architecture atlas](architecture.md).
 
 <!-- This document follows common-doc-guidelines.md. -->

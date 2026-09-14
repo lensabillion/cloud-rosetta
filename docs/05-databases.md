@@ -1,7 +1,7 @@
 # Databases: Read Scaling and Surviving Failure
 
 **Goal:** choose a database deployment based on what must keep working.
-Prerequisite: [the first application](00-landscape.md). A database stores structured information
+Prerequisite: [cloud foundations](00-landscape.md). A database stores structured information
 that the application needs to query or change, such as the owner and caption of a photo.
 
 ## Three Different Questions
@@ -16,7 +16,7 @@ substitute for backups and a tested restore procedure.
 
 ## Read the Deployment Type
 
-<!-- diagram: multiaz -->
+![RDS deployment types and replication modes](assets/architecture/multiaz.svg)
 
 The other two clouds draw the same distinction with different names:
 
@@ -34,7 +34,7 @@ Sources: [RDS deployment types](https://docs.aws.amazon.com/AmazonRDS/latest/Use
 
 ## Before and After a Zone Failure
 
-![A two-zone standby design before and after failover; a separate read-replica branch does not by itself provide automatic failover.](assets/database-failover.svg)
+![A two-zone standby design before and after failover; a separate read-replica branch does not by itself provide automatic failover.](assets/architecture/database-failover.svg)
 
 The drawing illustrates a primary/standby pattern, not every database deployment. The application
 must reconnect and retry safely during failover. A region-wide outage needs a separate recovery

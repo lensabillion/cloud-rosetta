@@ -15,15 +15,16 @@ rows:
       name: Project
       url: https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy
     breaks_when: >-
-      An AWS account is simultaneously the isolation boundary, the billing boundary and the
-      identity boundary. Azure and Google Cloud split those across three different objects: an
-      Entra tenant holds identity, a subscription or billing account holds spend, and the
-      subscription or project holds resources. Assuming one object does all three is the single
-      most common cross-cloud modelling error.
+      An AWS account is a resource and IAM administration boundary, but workforce identities can
+      be federated and Organizations can consolidate charges. Azure subscriptions are resource
+      and billing scopes associated with an Entra tenant. Google projects hold workload
+      resources and link to a billing account. Resource ownership, identity administration and
+      payment responsibility must be designed separately in every cloud.
     exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
     sources:
       - https://docs.cloud.google.com/resource-manager/docs/cloud-platform-resource-hierarchy
-    verified: '2026-09-09'
+      - https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/consolidated-billing.html
+    verified: '2026-09-14'
 
   - id: hier.grouping-above
     concept: Grouping container above the isolation boundary
@@ -39,18 +40,17 @@ rows:
       name: Folder
       url: https://docs.cloud.google.com/resource-manager/docs/creating-managing-folders
     breaks_when: >-
-      Nesting depth differs and is tested. AWS allows five levels of OUs below a root. Azure
-      allows six levels of management groups, excluding the root and subscription levels, with
-      10,000 management groups per directory. Google allows ten levels of folders, with at most
-      300 direct child folders per parent. The Azure root management group cannot be moved or
-      deleted, its ID equals the tenant ID, and Azure Resource Manager caches the hierarchy for
-      up to 30 minutes so a move can appear not to have happened.
+      OUs, management groups and folders organize workload boundaries and inherited policy; they
+      are not geographic regions. Their nesting limits differ. A Google folder must be empty
+      before deletion. Consult current quotas rather than assuming identical depths or lifecycle
+      behavior.
     exam_tags: [SAA-C03, AZ-104, AZ-305, ACE]
     sources:
       - https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html
       - https://learn.microsoft.com/en-us/azure/governance/management-groups/overview
       - https://docs.cloud.google.com/resource-manager/docs/limits
-    verified: '2026-09-09'
+      - https://docs.cloud.google.com/resource-manager/docs/creating-managing-folders
+    verified: '2026-09-14'
 
   - id: hier.grouping-below
     concept: Grouping container below the isolation boundary
@@ -118,16 +118,16 @@ rows:
       name: Zone
       url: https://docs.cloud.google.com/compute/docs/regions-zones
     breaks_when: >-
-      Azure additionally has an availability set, which is not a zone. An availability set uses
-      fault domains and update domains inside a single datacentre and protects against rack
-      failure and host patching, not against a datacentre outage. Any question naming a
-      datacentre-level failure wants zones, and the availability set is a deliberate distractor.
-      AWS also shuffles zone names per account, so us-east-1a in two accounts is generally not
-      the same physical zone; the stable identifier is the AZ ID such as use1-az1.
+      An Azure availability set distributes VMs across fault and update domains; it does not
+      provide protection from losing a whole datacenter. Zone resilience requires resources
+      distributed across zones and a working failover design, not simply selecting one zone. AWS
+      AZ names can map differently between accounts; use AZ IDs when physical alignment matters.
     exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, ACE]
     sources:
       - https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview
-    verified: '2026-09-09'
+      - https://docs.aws.amazon.com/ram/latest/userguide/working-with-az-ids.html
+      - https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview
+    verified: '2026-09-14'
 
   - id: hier.org-guardrail
     concept: Organization-wide preventive guardrail
@@ -143,14 +143,15 @@ rows:
       name: Organization policy constraint
       url: https://docs.cloud.google.com/resource-manager/docs/organization-policy/overview
     breaks_when: >-
-      An SCP sets a ceiling on what IAM may grant and never grants anything itself; if the SCP
-      allows an action and no IAM policy grants it, the answer is still no. Azure Policy is a
-      different kind of engine: it evaluates resource configuration at write time and can deny a
-      deployment RBAC would have permitted, so it answers "is this configuration allowed" rather
-      than "may this principal act". A maximum of ten SCPs attach to any root, OU or account,
-      and when SCPs are enabled every entity must have at least one attached at all times.
+      An SCP restricts the permissions available to affected member-account principals and never
+      grants access. SCPs do not restrict the management account or service-linked roles. Azure
+      Policy and Google Organization Policy govern resource configuration; the supported effects
+      and enforcement points differ. Check the applicable control, scope and exceptions rather
+      than treating governance policy as a permission grant.
     exam_tags: [SAA-C03, SAP-C02, AZ-104, AZ-305, ACE]
     sources:
       - https://docs.aws.amazon.com/organizations/latest/userguide/orgs_reference_limits.html
       - https://learn.microsoft.com/en-us/azure/governance/policy/overview
-    verified: '2026-09-09'
+      - https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html
+      - https://docs.cloud.google.com/resource-manager/docs/organization-policy/overview
+    verified: '2026-09-14'

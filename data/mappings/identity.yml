@@ -40,18 +40,17 @@ rows:
       name: Attached service account
       url: https://docs.cloud.google.com/iam/docs/service-account-overview
     breaks_when: >-
-      Azure splits this into system-assigned, which is bound to one resource and deleted with
-      it, and user-assigned, which is a standalone resource that survives and can be shared;
-      "must outlive the VM" or "shared by several apps" selects user-assigned. AWS requires an
-      instance profile as a wrapper around the role, which the console creates invisibly and
-      which then appears unannounced in CLI questions. A Google service account is both an
-      identity and a resource, so using one requires a role on the service account itself,
-      typically Service Account User, separate from any permission the account holds.
+      Azure system-assigned identities follow the resource lifecycle; user-assigned identities
+      are independent. An EC2 role is attached through an instance profile; other AWS runtimes
+      use their own role integration. In Google Cloud, permission to attach a service account
+      (actAs) is distinct from permission to mint its credentials. Neither automatically grants
+      the service account access to application data.
     exam_tags: [SAA-C03, DVA-C02, AZ-104, ACE]
     sources:
       - https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview
       - https://docs.cloud.google.com/iam/docs/service-account-overview
-    verified: '2026-09-09'
+      - https://docs.cloud.google.com/iam/docs/service-account-permissions
+    verified: '2026-09-14'
 
   - id: iam.evaluation
     concept: How a permission decision is reached
@@ -126,12 +125,17 @@ rows:
       name: Cloud Identity, or Workforce Identity Federation
       url: https://docs.cloud.google.com/iam/docs/workforce-identity-federation
     breaks_when: >-
-      Entra ID is the identity system Azure is built on, so it is always present. AWS IAM
-      Identity Center is an optional layer added on top of per-account IAM, and IAM users still
-      exist underneath. Both were renamed recently enough that most third-party course material
-      still says Azure AD and AWS SSO, which is what candidates will have been taught.
+      Azure subscriptions trust an Entra tenant. AWS IAM Identity Center provides workforce
+      access using permission sets and account roles and can connect an external identity
+      provider. Google Cloud Identity and Workforce Identity Federation offer different
+      directory and federation models. Compare the source of identities, federation
+      configuration and resource grants rather than treating a directory as permission to all
+      workloads.
     exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html
+      - https://docs.cloud.google.com/iam/docs/workforce-identity-federation
+    verified: '2026-09-14'
 
   - id: iam.secrets
     concept: Storing application secrets
@@ -147,10 +151,13 @@ rows:
       name: Secret Manager
       url: https://docs.cloud.google.com/secret-manager/docs/overview
     breaks_when: >-
-      Azure Key Vault is one service holding secrets, keys and certificates, so it also occupies
-      the slot that AWS gives to KMS and Google gives to Cloud KMS. AWS splits the job in two,
-      and the split is tested: Secrets Manager rotates automatically and is billed per secret,
-      while Parameter Store is cheaper, has a free standard tier and does not rotate on its own.
-      "Automatic rotation" selects Secrets Manager.
+      Key Vault includes secrets, cryptographic keys and certificates; AWS and Google expose
+      separate services for some of those roles. Secrets Manager supports configured rotation
+      using managed integrations or Lambda, but storing a secret does not automatically
+      configure working rotation. Parameter Store supports secure parameters; rotation and
+      pricing depend on tier and integration. Verify the secret type, rotation mechanism and
+      application behavior.
     exam_tags: [SAA-C03, DVA-C02, SCS-C03, AZ-104, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html
+    verified: '2026-09-14'
