@@ -444,6 +444,6 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
 {ROUTER}"""
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(shell + body, encoding="utf-8")
+    out.write_text(shell + body + "\n</body>\n</html>\n", encoding="utf-8")
     return {"pages": len(pages), "rows": len(rows), "terms": len(terms), "exams": len(exams),
             "nav": sum(len(i) if t != "Look it up" else len(refs) + 2 for t, i in groups)}

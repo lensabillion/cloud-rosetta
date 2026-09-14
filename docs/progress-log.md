@@ -184,3 +184,16 @@ criteria, a GitHub-first learning proposal, and a participant-validation protoco
 implementation beads, extended three existing beads, and recorded dependencies. Added a
 [three-provider network-scope diagram proposal](assets/network-scope-review.svg), visually
 checked in the browser. Review task: `cloud-0apf`. Product fixes and learner testing remain open.
+
+## 2026-09-14
+
+Compared the local folder with GitHub after the design and diagram pull requests were merged.
+The local feature branch and current main had identical file trees. Recorded the current
+published state and outstanding learning work in the
+[status review](reviews/2026-09-14-project-status.md).
+
+Addressed F13 with an isolated check covering all eight generated outputs, deterministic
+source-date metadata, and regression tests for clock changes, stale files and build failures.
+Addressed F06 with a complete UTF-8 standards-mode HTML document and responsive viewport.
+Verified the home and first chapter over local HTTP at phone width; physical-device and
+screen-reader testing remain outstanding under the accessibility work.
