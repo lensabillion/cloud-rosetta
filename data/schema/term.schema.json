@@ -21,7 +21,8 @@
       "type": "object",
       "required": [
         "meaning",
-        "category"
+        "category",
+        "url"
       ],
       "additionalProperties": false,
       "properties": {

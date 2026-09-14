@@ -1,306 +1,264 @@
 #!/usr/bin/env python3
-"""Inline SVG diagrams for the guide.
+"""One diagram source for standalone SVG, GitHub chapters and the web guide.
 
-Each one exists to show a mechanism the prose cannot: what contains what, where
-a filter attaches, what you become when you assume a role. Structure is drawn in
-currentColor so it follows the theme; the three provider hues are the one place
-a literal colour carries meaning, and they come from the page's own tokens.
-
-Referenced from a chapter with an HTML comment: <!-- diagram: hierarchy -->
+Notation follows docs/architecture.md: labelled scope boundaries, explicit
+relationship types, real service names, and readable text instead of icon guesses.
 """
-
 from __future__ import annotations
 
-ARROW = """<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5"
-markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-<path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>"""
+from dataclasses import dataclass
+import html
+import pathlib
+import textwrap
 
-HUE = {"aws": "var(--aws)", "azure": "var(--azure)", "gcp": "var(--gcp)"}
-
-
-def figure(name: str, claim: str, w: int, h: int, body: str, caption: str) -> str:
-    return (
-        f'<figure class="fig" id="fig-{name}">'
-        f'<svg viewBox="0 0 {w} {h}" role="img" aria-label="{claim}">{ARROW}{body}</svg>'
-        f"<figcaption>{caption}</figcaption></figure>"
-    )
+WIDTH = 960
+PALETTE = {'aws': '#9a5307', 'azure': '#12537f', 'gcp': '#14603c', 'neutral': '#34465a'}
 
 
-def box(x, y, w, h, label, sub=None, hue=None, dash=False, weight=400):
-    stroke = HUE[hue] if hue else "currentColor"
-    d = ' stroke-dasharray="4 4"' if dash else ""
-    op = ' opacity=".55"' if dash else ""
-    out = (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="4" fill="none" '
-           f'style="stroke:{stroke}"{d}{op}/>')
-    ty = y + 17
-    out += (f'<text x="{x + 11}" y="{ty}" font-size="13" font-weight="{weight}" '
-            f'style="fill:{stroke if hue else "currentColor"}">{label}</text>')
-    if sub:
-        out += (f'<text x="{x + 11}" y="{ty + 16}" font-size="12" opacity=".62" '
-                f'fill="currentColor">{sub}</text>')
-    return out
+def esc(value: str) -> str:
+    return html.escape(str(value), quote=True)
 
 
-def tag(x, y, text, hue=None):
-    fill = HUE[hue] if hue else "currentColor"
-    return (f'<text x="{x}" y="{y}" font-size="11" text-anchor="end" '
-            f'style="fill:{fill}" opacity=".9" font-weight="600">{text}</text>')
+@dataclass
+class Diagram:
+    name: str
+    title: str
+    description: str
+    height: int
+    parts: list[str]
+
+    def text(self, x, y, value, width=48, size=15, color='#34465a', bold=False):
+        lines = textwrap.wrap(value, width, break_long_words=False, break_on_hyphens=False)
+        self.parts.append(f'<text x="{x}" y="{y}" font-size="{size}" fill="{color}" '
+                          f'font-weight="{700 if bold else 400}">')
+        for i, line in enumerate(lines):
+            self.parts.append(f'<tspan x="{x}" dy="{0 if i == 0 else 21}">{esc(line)}</tspan>')
+        self.parts.append('</text>')
+
+    def box(self, x, y, w, h, title, detail='', color='neutral', boundary=False):
+        hue = PALETTE[color]
+        dash = ' stroke-dasharray="7 5"' if boundary else ''
+        fill = '#f5f8fb' if boundary else '#ffffff'
+        self.parts.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" '
+                          f'fill="{fill}" stroke="{hue}" stroke-width="1.5"{dash}/>')
+        self.text(x+14, y+24, title, max(12, int((w-28)/8)), color=hue, bold=True)
+        if detail:
+            self.text(x+14, y+47, detail, max(12, int((w-28)/7.5)), size=14)
+
+    def arrow(self, x1, y1, x2, y2, label, control=False):
+        dash = ' stroke-dasharray="5 4"' if control else ''
+        self.parts.append(f'<path d="M{x1},{y1} L{x2},{y2}" fill="none" stroke="#34465a" '
+                          f'stroke-width="1.8" marker-end="url(#{self.name}-arrow)"{dash}/>')
+        # Labels use their own white strip so they never collide with a line.
+        lx, ly = (x1+x2)/2, (y1+y2)/2
+        length = len(label)*7.2+14
+        self.parts.append(f'<rect x="{lx-length/2}" y="{ly-12}" width="{length}" height="21" fill="#fff"/>')
+        self.parts.append(f'<text x="{lx}" y="{ly+3}" text-anchor="middle" font-size="13" fill="#34465a">{esc(label)}</text>')
+
+    def svg(self):
+        header = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {self.height}" '
+                  f'role="img" aria-labelledby="{self.name}-title {self.name}-desc" '
+                  'font-family="Arial, Helvetica, sans-serif">'
+                  f'<title id="{self.name}-title">{esc(self.title)}</title>'
+                  f'<desc id="{self.name}-desc">{esc(self.description)}</desc>'
+                  f'<defs><marker id="{self.name}-arrow" viewBox="0 0 10 10" refX="9" refY="5" '
+                  'markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#34465a"/></marker></defs>'
+                  f'<rect width="960" height="{self.height}" fill="#fff"/>')
+        return header + ''.join(self.parts) + '</svg>\n'
 
 
-def title(x, y, text, hue):
-    return (f'<text x="{x}" y="{y}" font-size="13" font-weight="700" '
-            f'letter-spacing=".08em" style="fill:{HUE[hue]}">{text.upper()}</text>')
+def canvas(name, title, description, height=620):
+    d = Diagram(name, title, description, height, [])
+    d.text(24, 34, title, width=70, size=23, bold=True)
+    d.text(24, 61, 'Cloud Rosetta | Conceptual architecture | Sources and assumptions in the chapter', width=110, size=13)
+    d.text(24, height-42, 'Legend: dashed box = labelled scope; solid arrow = named relationship;', width=115, size=13)
+    d.text(24, height-21, 'dashed arrow = control or recovery action. Colors identify providers, not security.', width=115, size=13)
+    return d
 
 
-def arrow(x1, y1, x2, y2, label=None, dash=False, above=True):
-    d = ' stroke-dasharray="5 4"' if dash else ""
-    out = (f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="currentColor" '
-           f'stroke-width="1.4"{d} marker-end="url(#ar)"/>')
-    if label:
-        mx, my = (x1 + x2) / 2, (y1 + y2) / 2 + (-7 if above else 15)
-        out += (f'<text x="{mx}" y="{my}" font-size="12" text-anchor="middle" '
-                f'fill="currentColor" opacity=".75">{label}</text>')
-    return out
+def hierarchy():
+    d=canvas('hierarchy','Administrative ownership is not geography',
+              'Administrative parentage only. Optional OUs, management groups and folders group workload boundaries. Regions and zones are not children in this tree.',680)
+    chains=[('aws','AWS',['Organization root','OU (optional)','Account','Workload resources']),
+            ('azure','Azure',['Root management group','Management group (optional)','Subscription','Resource group','Resources at this scope']),
+            ('gcp','Google Cloud',['Organization','Folder (optional)','Project','Workload resources'])]
+    for col,(key,label,nodes) in enumerate(chains):
+        x=24+col*312
+        d.box(x,88,288,520,label,color=key,boundary=True)
+        for i,node in enumerate(nodes):
+            y=130+i*92
+            d.box(x+14,y,260,54,node,color=key)
+            if i: d.arrow(x+144,y-38,x+144,y,'parent of')
+    return d
 
 
-def note(x, y, text, anchor="start"):
-    return (f'<text x="{x}" y="{y}" font-size="12" text-anchor="{anchor}" '
-            f'fill="currentColor" opacity=".65">{text}</text>')
+def scope():
+    d=canvas('scope','Network membership and location are separate',
+              'Each subnet belongs to its virtual network. AWS subnets occupy one zone; Azure and Google subnets are regional. A network does not own geographic zones.',490)
+    values=[('aws','AWS','VPC','Regional','Subnet','One Availability Zone'),
+            ('azure','Azure','Virtual network','Regional','Subnet','Regional; not zone-bound'),
+            ('gcp','Google Cloud','VPC network','Global','Subnet','One region')]
+    for col,(key,label,network,location,subnet,subplace) in enumerate(values):
+        x=24+312*col
+        d.box(x,90,288,314,label,color=key,boundary=True)
+        d.box(x+16,138,256,82,network,'Location: '+location,color=key)
+        d.arrow(x+144,220,x+144,274,'contains subnet')
+        d.box(x+16,274,256,104,subnet,'Location: '+subplace,color=key)
+    return d
 
 
-# --------------------------------------------------------------------------- 1
-
-def hierarchy() -> str:
-    b = title(20, 20, "AWS", "aws") + title(316, 20, "Azure", "azure") + title(612, 20, "Google Cloud", "gcp")
-
-    # AWS: one object carries all three jobs
-    b += box(20, 34, 268, 286, "Organization", hue="aws", dash=True)
-    b += box(34, 66, 240, 244, "Organizational unit", dash=True)
-    b += box(48, 98, 212, 202, "Account", "isolation + billing + identity", hue="aws", weight=700)
-    b += box(62, 146, 184, 144, "Region")
-    b += box(76, 178, 156, 102, "VPC", "regional")
-    b += box(90, 226, 128, 44, "Availability Zone", "holds the subnet")
-
-    # Azure: identity, billing and lifecycle are three different objects
-    b += box(316, 34, 268, 286, "Entra ID tenant", "identity", hue="azure", dash=True)
-    b += box(330, 82, 240, 228, "Management group", dash=True)
-    b += box(344, 114, 212, 186, "Subscription", "billing", hue="azure", weight=700)
-    b += box(358, 162, 184, 128, "Resource group", "mandatory, deletes contents")
-    b += box(372, 210, 156, 68, "Virtual network", "regional, subnets span zones")
-
-    # Google: the network escapes the region entirely
-    b += box(612, 34, 268, 210, "Organization", hue="gcp", dash=True)
-    b += box(626, 66, 240, 164, "Folder", dash=True)
-    b += box(640, 98, 212, 118, "Project", "isolation boundary", hue="gcp", weight=700)
-    b += box(654, 146, 184, 56, "Region", "holds the subnet")
-    b += box(626, 258, 240, 62, "VPC network", "global, outside every region", hue="gcp", weight=700)
-    b += arrow(746, 258, 746, 232, dash=True)
-
-    return figure(
-        "hierarchy",
-        "The containment hierarchy of AWS, Azure and Google Cloud drawn side by side at the same scale",
-        900, 336, b,
-        "One object or three. An AWS account is the isolation, billing and identity boundary at once; "
-        "Azure splits those across a tenant, a subscription and a resource group. Only Google's network "
-        "sits outside the region, which is why one Google VPC spans every region while an AWS subnet "
-        "sits inside a single zone.",
-    )
+def role():
+    d=canvas('role','Identity, credentials and permissions',
+              'AWS STS issues temporary role-session credentials after successful role assumption. Azure RBAC and Google IAM assign a permission set to a principal at a scope; conditions and denies still apply.',550)
+    d.text(24,106,'AWS | role assumption and an authorized request',width=90,bold=True)
+    d.box(24,126,230,90,'Principal','User, workload or federation')
+    d.box(364,126,230,90,'Role session','Temporary STS credentials',color='aws')
+    d.box(704,126,230,90,'Target resource','Checks applicable policies',color='aws')
+    d.arrow(254,171,364,171,'assume role')
+    d.arrow(594,171,704,171,'API request')
+    d.text(24,265,'Trust policy controls who may assume the role; an assumption request must be authorized.',width=112,size=14)
+    d.text(24,325,'Azure / Google | a grant relates a principal, a permission set and a scope',width=100,bold=True)
+    d.box(24,350,230,92,'Principal','Person or workload')
+    d.box(364,350,230,92,'Role assignment / binding','Role is a permission set')
+    d.box(704,350,230,92,'Scope','Grant can inherit to children')
+    d.arrow(254,396,364,396,'receives grant',control=True)
+    d.arrow(594,396,704,396,'applies at',control=True)
+    return d
 
 
-# --------------------------------------------------------------------------- 2
-
-def scope() -> str:
-    lanes = [("Global", 46), ("Regional", 106), ("Zonal", 166)]
-    b = ""
-    for label, y in lanes:
-        b += f'<line x1="120" y1="{y + 22}" x2="840" y2="{y + 22}" stroke="currentColor" opacity=".16"/>'
-        b += (f'<text x="108" y="{y + 16}" font-size="12" font-weight="700" text-anchor="end" '
-              f'fill="currentColor" opacity=".8">{label}</text>')
-
-    cols = {"aws": 150, "azure": 400, "gcp": 650}
-    for k, x in cols.items():
-        b += title(x, 26, {"aws": "AWS", "azure": "Azure", "gcp": "Google Cloud"}[k], k)
-
-    def chip(x, y, text, hue, strong=False):
-        w = max(96, 8 + len(text) * 6.4)
-        return (f'<rect x="{x}" y="{y}" width="{w}" height="26" rx="13" fill="none" '
-                f'style="stroke:{HUE[hue]}" stroke-width="{2 if strong else 1}"/>'
-                f'<text x="{x + w / 2}" y="{y + 17}" font-size="12" text-anchor="middle" '
-                f'font-weight="{700 if strong else 400}" style="fill:{HUE[hue]}">{text}</text>')
-
-    b += chip(150, 106, "VPC", "aws") + chip(150, 166, "Subnet", "aws", True)
-    b += chip(400, 106, "VNet", "azure") + chip(400, 106 + 32, "Subnet", "azure")
-    b += chip(650, 46, "VPC network", "gcp", True) + chip(650, 106, "Subnet", "gcp")
-    b += chip(150, 166 + 32, "Instance", "aws") + chip(400, 166, "Instance", "azure") + chip(650, 166, "Instance", "gcp")
-
-    return figure(
-        "scope",
-        "Where the virtual network and subnet live on the global, regional and zonal scale in each cloud",
-        880, 214, b,
-        "The two rows that decide questions. A Google VPC is global; an AWS subnet is zonal. Azure sits "
-        "between the two, with a regional network and regional subnets that span the zones.",
-    )
+def decision():
+    d=canvas('identity-decision','Two bounded AWS permission decisions',
+              'Example A: identity allows PutObject but boundary allows only GetObject, so deny. Example B: same-account bucket policy directly grants an IAM user GetObject, so omission from identity policy and boundary alone does not block it. No other restrictions are assumed.',470)
+    for x,title,grant,restriction,outcome in [
+        (24,'A | Identity-based grant','User policy allows PutObject','Boundary permits only GetObject','DENIED'),
+        (504,'B | Direct resource grant','Bucket grants user ARN GetObject','Identity and boundary omit it','ALLOWED under stated assumptions')]:
+        d.box(x,94,432,276,title,color='aws',boundary=True)
+        d.text(x+18,155,grant,width=48,bold=True)
+        d.text(x+18,195,restriction,width=48)
+        d.text(x+18,266,outcome,width=44,bold=True)
+        d.text(x+18,311,'No applicable explicit deny or other restricting control.',width=48,size=14)
+    return d
 
 
-# --------------------------------------------------------------------------- 3
-
-def role() -> str:
-    b = '<text x="20" y="18" font-size="13" font-weight="700" letter-spacing=".08em" fill="currentColor">AWS &#183; YOU BECOME IT</text>'
-    b += box(20, 34, 130, 46, "User", "or service")
-    b += arrow(150, 57, 236, 57, "assumes")
-    b += box(236, 26, 178, 62, "IAM role", "an identity, with its own temporary credentials", hue="aws", weight=700)
-    b += arrow(414, 57, 500, 57, "acts as")
-    b += box(500, 34, 130, 46, "Resource")
-    b += note(236, 106, "The role holds a trust policy naming who may assume it.")
-
-    b += '<line x1="20" y1="132" x2="860" y2="132" stroke="currentColor" opacity=".18"/>'
-    b += '<text x="20" y="160" font-size="13" font-weight="700" letter-spacing=".08em" fill="currentColor">AZURE AND GOOGLE &#183; IT IS PINNED TO YOU</text>'
-    b += box(20, 176, 130, 46, "User", "or group")
-    b += box(236, 176, 178, 46, "Role", "a list of permissions, no credentials", hue="azure", weight=700)
-    b += arrow(150, 199, 236, 199, "granted")
-    b += arrow(414, 199, 500, 199, "at a scope")
-    b += box(500, 168, 150, 62, "Scope", "subscription, project, resource group", hue="gcp", weight=700)
-    b += arrow(575, 230, 575, 258, "inherits down")
-    b += box(500, 258, 150, 34, "Everything beneath it")
-    b += note(20, 286, "Grants are additive. A narrower role lower down removes nothing.")
-
-    return figure(
-        "role",
-        "An AWS role is an identity you assume, while an Azure or Google role is a permission set granted to somebody else at a scope",
-        880, 306, b,
-        "The same word, two different kinds of object. In AWS you become the role and receive its "
-        "credentials. In Azure and Google the role is a list of verbs pinned to a separate principal at a "
-        "place, and everything under that place inherits it.",
-    )
+def firewall():
+    d=canvas('firewall','Native network filtering: specify the control',
+              'AWS security groups are stateful allow-only while network ACLs are stateless allow/deny. Azure NSGs are stateful at subnet or NIC. Google VPC firewall rules belong to a network and target VM interfaces.',570)
+    items=[('aws','AWS','Network ACL | subnet','Stateless; allow and deny','Security group | interface','Stateful; allow only'),
+           ('azure','Azure','NSG | subnet','Stateful; allow and deny','NSG | network interface','If both are assigned, both apply'),
+           ('gcp','Google Cloud','VPC firewall rule','Defined on the VPC network','VM interface targets','All instances, tags or service accounts')]
+    for col,(key,label,a,aa,b,bb) in enumerate(items):
+        x=24+col*312
+        d.box(x,94,288,385,label,color=key,boundary=True)
+        d.box(x+16,147,256,102,a,aa,color=key)
+        d.box(x+16,304,256,112,b,bb,color=key)
+        d.text(x+16,447,'See chapter for defaults and priority.',width=33,size=13)
+    return d
 
 
-# --------------------------------------------------------------------------- 4
-
-def firewall() -> str:
-    b = title(20, 18, "AWS", "aws") + title(310, 18, "Azure", "azure") + title(600, 18, "Google Cloud", "gcp")
-
-    b += box(20, 30, 262, 172, "VPC", hue="aws", dash=True)
-    b += box(32, 62, 238, 128, "Subnet")
-    b += box(44, 92, 214, 42, "Network ACL", "stateless, allow and deny", hue="aws", weight=700)
-    b += box(44, 144, 214, 36, "Security group on the interface", hue="aws", weight=700)
-    b += note(32, 218, "Two layers. Only the ACL can deny.")
-
-    b += box(310, 30, 262, 172, "Virtual network", hue="azure", dash=True)
-    b += box(322, 62, 238, 128, "Subnet")
-    b += box(334, 92, 214, 36, "NSG on the subnet", hue="azure", weight=700)
-    b += box(334, 138, 214, 42, "NSG on the interface", "both apply, in order", hue="azure", weight=700)
-    b += note(322, 218, "Same object, either level, or both.")
-
-    b += box(600, 30, 262, 172, "VPC network", "the rules live here", hue="gcp", dash=True, weight=700)
-    b += box(612, 76, 238, 40, "Firewall rule", hue="gcp", weight=700)
-    b += arrow(731, 116, 731, 146, "selects by tag")
-    b += box(612, 146, 238, 40, "Instances carrying that tag")
-    b += note(612, 218, "Nothing attaches to the machine itself.")
-
-    return figure(
-        "firewall",
-        "Where traffic filtering attaches in each cloud: the interface and subnet in AWS, either level in Azure, and the network itself in Google Cloud",
-        880, 232, b,
-        "The attachment point is the difference. Google's rules belong to the network and reach instances "
-        "by tag, so an engineer arriving from AWS looks for a firewall on the machine and does not find "
-        "one. And only the AWS network ACL can express a deny.",
-    )
+def multiaz():
+    d=canvas('multiaz','RDS: availability and readable replicas',
+              'A Multi-AZ DB instance has a synchronous unreadable standby. A Multi-AZ DB cluster has semisynchronous replication to two readable standbys in three zones. An ordinary read replica uses asynchronous replication and is not automatic failover for its source.',650)
+    panels=[('DB instance','Primary | AZ A','Standby | AZ B','Synchronous','Standby does not serve reads'),
+            ('DB cluster','Writer | AZ A','Reader | AZ B','Semisynchronous','Also reader in AZ C; both readable'),
+            ('Ordinary read replica','Source database','Read replica','Asynchronous','No automatic source failover')]
+    for i,(title,a,b,label,caption) in enumerate(panels):
+        x=24+312*i
+        d.box(x,94,288,454,title,color='aws',boundary=True)
+        d.box(x+16,146,256,60,a,color='aws')
+        d.arrow(x+144,206,x+144,277,label)
+        d.box(x+16,277,256,60,b,color='aws')
+        if i==1:
+            d.box(x+16,394,256,60,'Reader | AZ C',color='aws')
+            # Both readers receive the writer's log, not a chain of reader replication.
+            d.parts.append(f'<path d="M{x+270},176 L{x+280},176 L{x+280},424 L{x+272},424" fill="none" stroke="#34465a" marker-end="url(#multiaz-arrow)"/>')
+        d.text(x+16,489,caption,width=31,size=14)
+    return d
 
 
-# --------------------------------------------------------------------------- 5
-
-def multiaz() -> str:
-    b = '<text x="20" y="16" font-size="13" font-weight="700" fill="currentColor">Multi-AZ DB instance</text>'
-    b += box(20, 28, 116, 44, "Primary", "zone a", hue="aws")
-    b += arrow(136, 50, 196, 50, "synchronous")
-    b += box(196, 28, 116, 44, "Standby", "zone b")
-    b += note(20, 92, "Standby serves no reads. It exists to fail over.")
-
-    b += '<line x1="0" y1="112" x2="880" y2="112" stroke="currentColor" opacity=".18"/>'
-    b += '<text x="20" y="140" font-size="13" font-weight="700" fill="currentColor">Multi-AZ DB cluster</text>'
-    b += box(20, 152, 116, 44, "Writer", "zone a", hue="aws")
-    b += arrow(136, 174, 196, 174, "synchronous")
-    b += box(196, 152, 116, 44, "Reader", "zone b", hue="aws")
-    b += box(332, 152, 116, 44, "Reader", "zone c", hue="aws")
-    b += note(20, 216, "Readers serve reads and can be promoted.")
-
-    b += '<line x1="0" y1="236" x2="880" y2="236" stroke="currentColor" opacity=".18"/>'
-    b += '<text x="20" y="264" font-size="13" font-weight="700" fill="currentColor">Read replica</text>'
-    b += box(20, 276, 116, 44, "Primary", hue="aws")
-    b += arrow(136, 298, 196, 298, "asynchronous", dash=True)
-    b += box(196, 276, 116, 44, "Replica", "readable")
-    b += note(20, 340, "Scales reads. Does not fail over on its own.")
-
-    b += '<line x1="470" y1="24" x2="470" y2="348" stroke="currentColor" opacity=".18"/>'
-    b += '<text x="496" y="46" font-size="13" font-weight="700" fill="currentColor">Pick by the constraint</text>'
-    b += note(496, 74, "“Survive a zone failure”  →  a Multi-AZ deployment")
-    b += note(496, 100, "“Reporting must not slow the app”  →  a read replica")
-    b += note(496, 126, "“Both, from one deployment”  →  a Multi-AZ cluster")
-    b += note(496, 168, "The blanket rule “a standby is never readable”")
-    b += note(496, 190, "is true of the instance form only.")
-
-    return figure(
-        "multiaz",
-        "Multi-AZ DB instance, Multi-AZ DB cluster and read replica compared by what each one can serve and what it does on failure",
-        880, 360, b,
-        "Three deployments that a single sentence about Multi-AZ flattens. Whether the standby answers "
-        "reads depends on which one you chose, so a question about it is underspecified until the "
-        "deployment type is named.",
-    )
+def failover():
+    d=canvas('database-failover','RDS DB instance: before and after a zone outage',
+              'Before failure the database endpoint directs clients to the primary in zone A, with synchronous replication to a non-readable standby in zone B. After RDS promotes the standby, clients reconnect using the endpoint; existing sessions are interrupted.',560)
+    for x,after in [(24,False),(504,True)]:
+        d.box(x,94,432,368,'AFTER failover' if after else 'BEFORE outage',color='aws',boundary=True)
+        d.box(x+104,140,224,70,'Application','Uses DB endpoint; retries safely')
+        d.box(x+14,323,194,90,'AZ A','Unavailable' if after else 'Primary: reads / writes',color='aws')
+        d.box(x+224,323,194,90,'AZ B','Promoted: reads / writes' if after else 'Standby: no client reads',color='aws')
+        d.arrow(x+216,210,x+(321 if after else 111),323,'reconnect' if after else 'SQL session',control=after)
+        if not after:d.arrow(x+208,369,x+224,369,'sync')
+    return d
 
 
-# --------------------------------------------------------------------------- 6
-
-def responsibility() -> str:
-    layers = ["Applications", "Data", "Runtime", "Operating system", "Virtualisation",
-              "Servers and storage", "Networking and facilities"]
-    cols = [("On premises", 7), ("IaaS", 4), ("PaaS", 2), ("SaaS", 0)]
-    x0, w, rh = 210, 150, 32
-    b = ""
-    for i, layer in enumerate(layers):
-        y = 52 + i * rh
-        b += (f'<text x="{x0 - 16}" y="{y + 20}" font-size="12" text-anchor="end" '
-              f'fill="currentColor" opacity=".8">{layer}</text>')
-
-    for c, (name, yours) in enumerate(cols):
-        cx = x0 + c * (w + 8)
-        b += (f'<text x="{cx + w / 2}" y="34" font-size="13" font-weight="700" text-anchor="middle" '
-              f'fill="currentColor">{name}</text>')
-        for i in range(len(layers)):
-            y = 52 + i * rh
-            mine = i < yours
-            fill = "currentColor" if mine else HUE["azure"]
-            op = ".10" if mine else ".16"
-            b += (f'<rect x="{cx}" y="{y}" width="{w}" height="{rh - 4}" rx="3" '
-                  f'style="fill:{fill};stroke:{fill}" fill-opacity="{op}" stroke-opacity=".5"/>')
-        if yours:
-            b += (f'<line x1="{cx}" y1="{52 + yours * rh - 2}" x2="{cx + w}" y2="{52 + yours * rh - 2}" '
-                  f'stroke="currentColor" stroke-width="2"/>')
-
-    b += (f'<rect x="{x0}" y="290" width="14" height="14" rx="2" fill="currentColor" fill-opacity=".10" '
-          f'stroke="currentColor" stroke-opacity=".5"/>')
-    b += note(x0 + 22, 302, "you manage")
-    b += (f'<rect x="{x0 + 130}" y="290" width="14" height="14" rx="2" '
-          f'style="fill:{HUE["azure"]};stroke:{HUE["azure"]}" fill-opacity=".16" stroke-opacity=".5"/>')
-    b += note(x0 + 152, 302, "the provider manages")
-
-    return figure(
-        "responsibility",
-        "The shared responsibility line moving down the stack from on premises through IaaS and PaaS to SaaS",
-        880, 318, b,
-        "The same stack, four times, with the line between you and the provider in a different place. "
-        "Every foundational exam asks where it sits: the provider secures the cloud, and you secure what "
-        "you put in it.",
-    )
+def private_access():
+    d=canvas('private-access','Private endpoints: the service stays outside your subnet',
+              'Consumer clients connect to a private endpoint in their network, which connects to a supported provider service outside that consumer network. AWS interface endpoints, Azure private endpoints and Google PSC endpoints need correct DNS, routes and permissions.',650)
+    for i,(key,label,endpoint) in enumerate([('aws','AWS','Interface endpoint'),('azure','Azure','Private endpoint'),('gcp','Google Cloud','PSC endpoint')]):
+        x=24+i*312
+        d.box(x,94,288,296,label+' | consumer network',color=key,boundary=True)
+        d.box(x+16,142,256,64,'Client workload','Resolve service name')
+        d.arrow(x+144,206,x+144,277,'private destination')
+        d.box(x+16,277,256,86,endpoint,'Private IP / endpoint interface',color=key)
+        d.arrow(x+144,363,x+144,459,'service connection')
+        d.box(x+16,459,256,90,'Supported service','Provider-managed boundary',color=key)
+    return d
 
 
-ALL = {
-    "hierarchy": hierarchy, "scope": scope, "role": role,
-    "firewall": firewall, "multiaz": multiaz, "responsibility": responsibility,
+def responsibility():
+    d=canvas('responsibility','Managed service does not mean unmanaged responsibility',
+              'Customer duties remain across IaaS, PaaS and SaaS: protect data, manage access and configure available controls. Guest OS management is normally customer responsibility in IaaS and provider responsibility in managed PaaS and SaaS. Service-specific shared duties remain.',490)
+    for i,(model,detail) in enumerate([('IaaS','Operate guest OS and applications'),('PaaS','Configure application and platform controls'),('SaaS','Configure service settings and access')]):
+        x=24+i*312
+        d.box(x,94,288,304,model,boundary=True)
+        d.box(x+16,148,256,100,'Customer duties remain','Data protection, identities, access and available settings')
+        d.box(x+16,279,256,88,'Service-dependent duties',detail)
+    return d
+
+
+def application(key):
+    options={
+        'aws':('AWS account','API Gateway + Lambda','Amazon S3','DynamoDB','Lambda execution role'),
+        'azure':('Azure subscription','HTTP-triggered Functions','Blob Storage','Cosmos DB','Managed identity'),
+        'gcp':('Google project','Cloud Run service','Cloud Storage','Firestore','Service account'),
+    }
+    boundary,compute,objects,metadata,identity=options[key]
+    d=canvas('application-'+key,'Photo application | '+{'aws':'AWS','azure':'Azure','gcp':'Google Cloud'}[key],
+              'Logical service view, not VPC placement: a browser calls a protected application endpoint. Application code writes photo bytes to object storage and metadata to a database using its workload identity. The services are alternatives across providers, not exact equivalents.',690)
+    d.box(344,88,272,64,'Browser client','Authenticated application user')
+    d.box(24,225,912,371,boundary+' | logical resource ownership',color=key,boundary=True)
+    d.box(344,272,272,94,compute,'Validate requests and authorize users',color=key)
+    d.arrow(480,152,480,272,'1. HTTPS upload')
+    d.box(66,450,332,94,objects,'Photo bytes; private data access',color=key)
+    d.box(562,450,332,94,metadata,'Photo owner, caption and object key',color=key)
+    d.arrow(408,366,232,450,'2. write object')
+    d.arrow(552,366,728,450,'3. write metadata')
+    d.text(46,574,'Workload identity: '+identity+'. Grant only required data operations.',width=108,size=14)
+    return d
+
+
+ALL={
+    'hierarchy':hierarchy,'scope':scope,'role':role,'identity-decision':decision,
+    'firewall':firewall,'multiaz':multiaz,'database-failover':failover,
+    'private-access':private_access,'responsibility':responsibility,
+    'application-aws':lambda:application('aws'),
+    'application-azure':lambda:application('azure'),
+    'application-gcp':lambda:application('gcp'),
 }
 
 
-def render(name: str) -> str:
+def render(name: str, instance: str = "") -> str:
     if name not in ALL:
-        raise SystemExit(f"unknown diagram: {name!r}. Known: {', '.join(sorted(ALL))}")
-    return ALL[name]()
+        raise ValueError(f'Unknown diagram: {name}')
+    drawing=ALL[name]()
+    instance = instance or name
+    svg = drawing.svg().replace(name + "-", instance + "-")
+    return (f'<figure class="fig" id="fig-{instance}"><div class="diagram-scroll" tabindex="0" '
+            f'role="region" aria-label="{esc(drawing.title)}; scroll horizontally on small screens">'
+            + svg + '</div>'
+            + f'<figcaption>{esc(drawing.description)} '
+            + f'<a href="assets/architecture/{name}.svg">Open full-size SVG</a></figcaption></figure>')
+
+
+def export(root: pathlib.Path) -> None:
+    for base in (root/'docs/assets/architecture', root/'site/assets/architecture'):
+        base.mkdir(parents=True,exist_ok=True)
+        for name,factory in ALL.items():
+            (base/f'{name}.svg').write_text(factory().svg(),encoding='utf-8')

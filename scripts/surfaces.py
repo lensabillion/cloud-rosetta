@@ -59,11 +59,11 @@ def readme_block(domains: list[dict], terms: list[dict]) -> str:
         "",
         "| | How far the mapping transfers | | How badly it bites |",
         "| --- | --- | --- | --- |",
-        "| ✅ | Close equivalent. Learn it once. | ❗ | Serious. Security risk, real money, or hard to undo. |",
+        "| ✅ | Similar purpose; verify configuration. | ❗ | Serious. Security risk, real money, or hard to undo. |",
         "| ⚠️ | Behaves differently in a way that changes answers. | 🔸 | Regular. It breaks, or it fails to scale. |",
-        "| ❌ | No honest equivalent. Do not translate. | 🔹 | Tip. Often overlooked, nothing breaks. |",
+        "| ❌ | Different object or architecture; read the caveat. | 🔹 | Tip. Often overlooked, nothing breaks. |",
         "",
-        "⚑ marks a product its vendor has superseded. Do not learn it for a current exam.",
+        "Service lifecycle and exam coverage are separate; check official documentation.",
         "",
         f"## The {len(serious)} Differences That Will Actually Hurt You",
         "",
@@ -83,13 +83,12 @@ def readme_block(domains: list[dict], terms: list[dict]) -> str:
     out += [
         "",
         "<details>",
-        "<summary><b>Open for what breaks in each of those, in one line</b></summary>",
+        "<summary><b>Open for the conditions and caveats</b></summary>",
         "",
     ]
     for row in serious:
         note = " ".join(str(row.get("breaks_when") or row.get("shared_trap") or "").split())
-        first = note.split(". ")[0].rstrip(".") + "." if note else ""
-        out.append(f"- **{row['concept']}.** {first}")
+        out.append(f"- **{row['concept']}.** {note}")
     out += ["", "</details>", ""]
 
     high = [t for t in terms if t["severity"] == "high"]
@@ -137,39 +136,6 @@ def splice_readme(path: pathlib.Path, block: str) -> None:
 
 
 # --------------------------------------------------------------------------- Mermaid
-
-def mermaid_hierarchy() -> str:
-    """GitHub renders Mermaid natively, so the diagram works inside Markdown."""
-    return """```mermaid
-flowchart TB
-  subgraph AWS
-    direction TB
-    A1[Organization] --> A2[Organizational unit]
-    A2 --> A3["Account<br/><i>isolation + billing + identity</i>"]
-    A3 --> A4[Region]
-    A4 --> A5["VPC<br/><i>regional</i>"]
-    A5 --> A6[Availability Zone]
-    A6 --> A7["Subnet<br/><i>lives in one zone</i>"]
-  end
-  subgraph Azure
-    direction TB
-    B1[Entra ID tenant] --> B2[Management group]
-    B2 --> B3["Subscription<br/><i>billing boundary</i>"]
-    B3 --> B4["Resource group<br/><i>mandatory, deletes contents</i>"]
-    B4 --> B5["Virtual network<br/><i>regional</i>"]
-    B5 --> B6["Subnet<br/><i>regional, spans zones</i>"]
-  end
-  subgraph GoogleCloud["Google Cloud"]
-    direction TB
-    C1[Organization] --> C2[Folder]
-    C2 --> C3["Project<br/><i>isolation boundary</i>"]
-    C3 --> C4[Region]
-    C4 --> C5["Subnet<br/><i>regional</i>"]
-    C3 -.-> C6["VPC network<br/><i>GLOBAL, outside any region</i>"]
-    C6 -.-> C5
-  end
-```"""
-
 
 # --------------------------------------------------------------------------- poster
 
@@ -256,14 +222,16 @@ def drills_tsv(domains: list[dict], terms: list[dict]) -> str:
                     if k != key
                 ]
                 writer.writerow([
-                    f"{label} {block['name']} — what is the equivalent elsewhere?",
-                    "; ".join(others),
+                    f"{label} {block['name']} — compare the purpose and limits elsewhere.",
+                    "; ".join(others) + " | Grade: " + row["divergence"]
+                    + " | Caveat: " + " ".join(str(row.get("breaks_when") or row.get("shared_trap") or "Similar purpose does not imply identical limits or configuration.").split())
+                    + " | Sources: " + ", ".join(row.get("sources") or [row[k]["url"] for k, _ in CLOUDS if row.get(k, {}).get("url")]),
                     f"{domain['domain']} mapping {row['divergence']}",
                 ])
             if row.get("breaks_when"):
                 writer.writerow([
                     f"{row['concept']} — where does the mapping break?",
-                    " ".join(str(row["breaks_when"]).split()),
+                    " ".join(str(row["breaks_when"]).split()) + " | Sources: " + ", ".join(row.get("sources") or [row[k]["url"] for k, _ in CLOUDS if row.get(k, {}).get("url")]),
                     f"{domain['domain']} gotcha {row.get('bite','')}",
                 ])
 
@@ -271,7 +239,8 @@ def drills_tsv(domains: list[dict], terms: list[dict]) -> str:
         senses = [f"{lbl}: {term[k]['category']}" for k, lbl in CLOUDS if term.get(k)]
         writer.writerow([
             f'"{term["term"]}" — what does it mean in each cloud?',
-            "; ".join(senses) + " || " + " ".join(str(term["why_it_hurts"]).split()),
+            "; ".join(senses) + " || " + " ".join(str(term["why_it_hurts"]).split())
+            + " | Sources: " + ", ".join(term[k]["url"] for k, _ in CLOUDS if term.get(k, {}).get("url")),
             f"decoder {term['severity']}",
         ])
 

@@ -35,16 +35,17 @@ terms:
       url: https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html
     azure:
       meaning: >-
-        A mandatory lifecycle container. Every resource is in exactly one, and deleting the
-        group deletes everything inside.
+        A lifecycle and management container for resources deployed at resource-group scope.
+        Deletion requests removal of its contents; locks, dependencies and service behavior can
+        block completion. Not every Azure resource type belongs to a resource group.
       category: ownership container
-      url: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview
+      url: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/delete-resource-group
     why_it_hurts: >-
-      Identical phrase, unrelated concepts, and one of them is destructive. Deleting an Azure
-      resource group destroys every resource in it without a per-resource prompt. Deleting an
-      AWS resource group destroys nothing. Google has no construct at this level at all.
+      Deleting an AWS Resource Group removes the grouping, not its members. Azure resource-group
+      deletion requests deletion of member resources, subject to locks and dependencies. Google
+      projects are a different lifecycle boundary.
     see_also: [Stack, Project]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Policy
     severity: high
@@ -62,23 +63,23 @@ terms:
       url: https://learn.microsoft.com/en-us/azure/governance/policy/overview
     gcp:
       meaning: >-
-        Either an IAM allow policy, which is a list of role bindings, or an organization policy,
-        which is a configuration constraint.
+        An IAM allow policy binds roles to principals. IAM deny policies and organization
+        policies are separate controls; their scope and supported operations differ.
       category: two different things
       url: https://docs.cloud.google.com/iam/docs/policies
     why_it_hurts: >-
-      In AWS, policy is how permissions work. In Azure, permissions are RBAC and Azure Policy is
-      a separate system answering a different question. A scenario about enforcing a required
-      configuration is an Azure Policy answer and every RBAC option is a distractor. Google uses
-      the word for both of its systems, so context decides.
+      Specify the policy product and effect. An IAM permission grant, an IAM deny, and a
+      resource-configuration constraint answer different questions. Governance controls do not
+      substitute for application authorization.
     see_also: [Role, Service control policy]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: ASG
     severity: high
     aws:
       meaning: >-
-        Auto Scaling group. A pool of identical instances scaled by policy.
+        Auto Scaling group. A pool of EC2 instances that can scale together; mixed instance
+        types and purchase options are supported.
       category: compute
       url: https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-groups.html
     azure:
@@ -91,7 +92,7 @@ terms:
       One acronym, two services, different domains entirely, and both are common enough that the
       abbreviation gets used unqualified in study notes and team chat. Expand it every time.
     see_also: [Security group]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Container
     severity: high
@@ -99,6 +100,7 @@ terms:
       meaning: >-
         An OCI container image or running container. The storage equivalent is a bucket.
       category: compute packaging
+      url: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html
     azure:
       meaning: >-
         In Blob Storage, a grouping of blobs inside a storage account. Roughly what the other
@@ -109,6 +111,7 @@ terms:
       meaning: >-
         An OCI container image or running container. The storage equivalent is a bucket.
       category: compute packaging
+      url: https://docs.cloud.google.com/run/docs/container-contract
     why_it_hurts: >-
       Azure uses the word for both meanings in the same portal. "Create a container" in a
       storage context means a blob grouping and has nothing to do with Docker, Kubernetes or
@@ -120,9 +123,10 @@ terms:
     severity: high
     aws:
       meaning: >-
-        No such construct. Spreading across datacentres means using several Availability Zones,
-        and placement groups solve a different problem.
+        AWS does not use the Azure availability-set resource. Placement groups and multi-zone
+        deployment address different placement and failure requirements.
       category: no equivalent
+      url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html
     azure:
       meaning: >-
         A grouping using fault domains and update domains inside a single datacentre, protecting
@@ -131,23 +135,24 @@ terms:
       url: https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview
     gcp:
       meaning: >-
-        No such construct. Spread placement policies exist for physical separation, but the
-        failure domain you design against is the zone.
+        Google does not use the Azure availability-set resource. Placement policies and
+        distribution across zones must be evaluated against the intended failure domain.
       category: no equivalent
+      url: https://docs.cloud.google.com/compute/docs/instances/define-instance-placement
     why_it_hurts: >-
-      It sounds like an availability zone and is not one. An availability set does not protect
-      against a datacentre outage; an availability zone does. AWS and Google have no equivalent
-      construct, so there is nothing to translate it to. Any question naming a datacentre-level
-      failure wants zones, and the availability set is a deliberately placed wrong answer.
+      An availability set is not a multi-zone deployment. Surviving loss of a zone requires
+      replicas in other zones and a functioning failover path. Merely placing all resources in
+      one availability zone does not provide that protection.
     see_also: [Availability zone, Fault domain]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Endpoint
     severity: high
     aws:
       meaning: >-
-        A VPC endpoint. Gateway endpoints are free route table entries serving only S3 and
-        DynamoDB; interface endpoints are billed network interfaces serving most services.
+        For VPC endpoints, gateway endpoints provide route-based S3 and DynamoDB access.
+        Interface endpoints place endpoint interfaces in selected subnets for supported
+        PrivateLink services. There are other endpoint types; identify the product and mode.
       category: private connectivity
       url: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
     azure:
@@ -164,44 +169,48 @@ terms:
       category: private connectivity
       url: https://docs.cloud.google.com/vpc/docs/private-service-connect
     why_it_hurts: >-
-      The Azure pair is the worst naming collision in cloud networking. Service endpoint and
-      private endpoint sound like synonyms and behave differently: only the private endpoint
-      gives the service an address inside your network and only it works from on-premises over
-      ExpressRoute or VPN.
+      For the Azure service-endpoint/private-endpoint pair, only the private endpoint supplies a
+      private address in the consumer VNet. Hybrid clients also need working routing and DNS.
+      Endpoint connectivity does not itself grant permission or disable a service public
+      endpoint.
     see_also: [Private Link, Service endpoint]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Project
     severity: medium
     aws:
       meaning: >-
-        Not a platform concept. The equivalent boundary is an account.
+        An AWS account is the relevant workload administration boundary here; individual AWS
+        services can also have objects named projects.
       category: not applicable
+      url: https://docs.aws.amazon.com/accounts/latest/reference/welcome.html
     azure:
       meaning: >-
-        Not a platform concept. The equivalent boundary is a subscription, or a resource group
-        for lifecycle.
+        An Azure subscription is the relevant workload administration scope here; a project in
+        another Azure product is not automatically that scope.
       category: not applicable
+      url: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/initial-subscriptions
     gcp:
       meaning: >-
-        The mandatory container for all resources, with an immutable ID that can never be
-        reused, plus a mutable name and an assigned number.
+        A container for workload resources and API configuration. Organization, folder and
+        billing resources exist outside projects. A project has a mutable name, an immutable
+        unique ID and an assigned number.
       category: isolation boundary
       url: https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects
     why_it_hurts: >-
-      Google projects are created far more freely than AWS accounts or Azure subscriptions, so
-      the same word invites the wrong sense of weight. The ID, name and number are three
-      different fields and questions exploit the difference; the ID is permanent and is not
-      reusable even after the project is deleted.
+      Project name, ID and number are different identifiers. The ID cannot be reused after
+      deletion. Choose project boundaries for access, quotas and operations rather than assuming
+      they map exactly to another provider account.
     see_also: [Account, Subscription]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Account
     severity: medium
     aws:
       meaning: >-
-        The isolation, billing and identity boundary all at once. Identified by a 12-digit
-        number.
+        A resource and IAM administration boundary identified by a 12-digit number.
+        Organizations supports consolidated billing; workforce identities can be federated
+        across accounts.
       category: boundary
       url: https://docs.aws.amazon.com/accounts/latest/reference/welcome.html
     azure:
@@ -209,17 +218,19 @@ terms:
         Usually means a sign-in identity. A storage account is something else entirely, and a
         billing account something else again.
       category: overloaded
+      url: https://learn.microsoft.com/en-us/azure/cost-management-billing/understand/view-all-accounts
     gcp:
       meaning: >-
         Usually a user identity. A billing account is a separate payable object linked to
         projects. A service account is a machine identity.
       category: overloaded
+      url: https://docs.cloud.google.com/billing/docs/concepts
     why_it_hurts: >-
-      Only in AWS does "the account" name the thing workloads live in. Saying "put it in another
-      account" is a clear instruction on AWS and an ambiguous one everywhere else. Azure's
-      storage account is a resource, not an identity, despite the name.
+      An AWS account holds workload resources and IAM configuration. In Azure and Google,
+      qualify whether account means a person, workload identity, billing object or storage
+      object. Identity, resource and payment boundaries are related but not identical.
     see_also: [Project, Subscription, Service account]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Security group
     severity: medium
@@ -239,6 +250,7 @@ terms:
         No object by this name. VPC firewall rules do the job, attached to the network and
         targeted by tag or service account.
       category: network firewall
+      url: https://docs.cloud.google.com/firewall/docs/firewalls
     why_it_hurts: >-
       The AWS object cannot deny anything, which people consistently forget, and Azure's
       similarly named object can. In Entra ID, "security group" additionally means a directory
@@ -252,47 +264,51 @@ terms:
       meaning: >-
         A key-value label for billing, search and access control conditions.
       category: metadata
+      url: https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html
     azure:
       meaning: >-
         A key-value label for billing and search, usable as a condition in Azure Policy.
       category: metadata
+      url: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources
     gcp:
       meaning: >-
-        Two different things. Labels are key-value metadata for billing. Network tags are
-        strings that select firewall rule targets and affect routing. Tags proper are a third,
-        IAM-governed construct.
+        Three distinct constructs: labels for resource metadata, network tags for firewall and
+        route selection, and Resource Manager tags for governed key-value associations and
+        supported policy conditions.
       category: metadata and network selector
-      url: https://docs.cloud.google.com/vpc/docs/add-remove-network-tags
+      url: https://docs.cloud.google.com/resource-manager/docs/tags/tags-overview
     why_it_hurts: >-
-      A Google network tag is not metadata; it changes traffic behaviour by selecting which
-      firewall rules apply. Treating it as a cosmetic label is how people accidentally expose or
-      isolate an instance.
+      A network tag is metadata with operational effects: firewall rules and routes can select
+      it. A Resource Manager tag is a different governed construct. Do not treat either as
+      interchangeable with a billing label.
     see_also: [Label, Firewall rule]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Zone
     severity: medium
     aws:
       meaning: >-
-        Availability Zone, one or more discrete datacentres with independent power and cooling.
-        Names are shuffled per account.
+        An Availability Zone consists of one or more datacenters. AZ names can map differently
+        between accounts; AZ IDs identify the same physical zone across accounts.
       category: failure domain
+      url: https://docs.aws.amazon.com/ram/latest/userguide/working-with-az-ids.html
     azure:
       meaning: >-
         Availability zone, the same idea, but not present in every region and opted into per
         resource.
       category: failure domain
+      url: https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview
     gcp:
       meaning: >-
         A deployment area within a region, named like us-central1-a.
       category: failure domain
+      url: https://docs.cloud.google.com/compute/docs/regions-zones
     why_it_hurts: >-
-      Broadly the same concept, with two traps. AWS shuffles zone names per account, so
-      us-east-1a is not the same physical place in two accounts; use the AZ ID such as use1-az1
-      when physical identity matters. Azure zones are not available in every region. The word
-      also means a DNS zone in all three clouds.
+      Compare AWS AZ IDs when physical alignment between accounts matters; equal AZ names do not
+      guarantee it. Region and service support determine how zones can be selected. A DNS zone
+      is a different meaning of the word.
     see_also: [Availability set, Region]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Service account
     severity: medium
@@ -300,23 +316,26 @@ terms:
       meaning: >-
         Not the term used. The equivalent is an IAM role assumed by a service.
       category: identity
+      url: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
     azure:
       meaning: >-
         Not the term used. The equivalent is a service principal, or a managed identity that
         wraps one.
       category: identity
+      url: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview
     gcp:
       meaning: >-
-        A machine identity that is simultaneously an identity and a resource. You grant it
-        roles, and you grant others roles on it.
+        A workload identity that is also an IAM-managed resource. Permission to attach it
+        differs from permission to generate access tokens and from the permissions used by the
+        workload.
       category: identity and resource
-      url: https://docs.cloud.google.com/iam/docs/service-account-overview
+      url: https://docs.cloud.google.com/iam/docs/service-account-permissions
     why_it_hurts: >-
-      The dual nature is the part candidates report failing. Using a Google service account
-      requires a role on the service account itself, typically Service Account User, which is
-      entirely separate from whatever permissions that service account holds.
+      Service Account User supports attaching a Google service account; Token Creator supports
+      credential generation. A grant to use the identity does not grant that identity permission
+      to the application data. Check the intended authentication path.
     see_also: [Role, Managed identity, Principal]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Image
     severity: low
@@ -324,15 +343,18 @@ terms:
       meaning: >-
         Amazon Machine Image, an AMI. Regional, and must be copied to be used in another region.
       category: VM template
+      url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html
     azure:
       meaning: >-
         A managed image, or a version published in an Azure Compute Gallery for replication and
         versioning.
       category: VM template
+      url: https://learn.microsoft.com/en-us/azure/virtual-machines/azure-compute-gallery
     gcp:
       meaning: >-
         A custom image, which is a global resource usable from any region without copying.
       category: VM template
+      url: https://docs.cloud.google.com/compute/docs/images
     why_it_hurts: >-
       Scope differs. Google images are global; AMIs are regional and need explicit copying,
       which is a step people forget in multi-region designs and which exam questions test
@@ -347,40 +369,51 @@ terms:
         A CloudFormation stack, the set of resources created and deleted together from one
         template.
       category: deployment unit
+      url: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacks.html
     azure:
       meaning: >-
-        A deployment, from an ARM template or Bicep file. Azure Stack is an unrelated hybrid
-        hardware product.
+        An Azure deployment stack manages a set of resources deployed from Bicep or ARM
+        templates. Its deletion and detach behavior is configurable. Azure Stack is a separate
+        hybrid product family.
       category: deployment unit
+      url: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-stacks
     gcp:
       meaning: >-
-        A deployment, or a Terraform state in practice.
+        Infrastructure Manager manages Terraform deployments. A deployment and its state are not
+        a universal equivalent of an AWS CloudFormation stack.
       category: deployment unit
+      url: https://docs.cloud.google.com/infrastructure-manager/docs/overview
     why_it_hurts: >-
-      Azure Stack is a distinct product line for on-premises hardware and has nothing to do with
-      template deployments, so the word points at very different things depending on context.
+      Azure deployment stacks exist and must not be confused with Azure Stack. In every
+      provider, check retain, detach, deletion protection and state ownership rather than
+      assuming deleting a deployment always deletes every resource.
     see_also: [Resource group]
-    verified: '2026-09-09'
+    verified: '2026-09-14'
 
   - term: Reserved instance
     severity: low
     aws:
       meaning: >-
-        A billing commitment for capacity. Savings Plans are the newer, more flexible
-        commitment.
+        An EC2 billing discount for matching usage. Regional Reserved Instances do not reserve
+        capacity; zonal Reserved Instances include a capacity reservation. Savings Plans use a
+        different commitment model.
       category: discount
+      url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-reserved-instances.html
     azure:
       meaning: >-
         A reservation, purchased for one or three years.
       category: discount
+      url: https://learn.microsoft.com/en-us/azure/cost-management-billing/reservations/save-compute-costs-reservations
     gcp:
       meaning: >-
-        A committed use discount. Google also applies automatic sustained use discounts with no
-        commitment, which the other two do not have.
+        Committed use discounts and capacity reservations are separate mechanisms. Sustained use
+        discounts apply automatically only to eligible usage.
       category: discount
+      url: https://docs.cloud.google.com/compute/docs/sustained-use-discounts
     why_it_hurts: >-
-      Google's sustained use discount applies automatically for running an instance a large part
-      of the month, with nothing purchased. There is no AWS or Azure equivalent, and it is a
-      free mark on Cloud Digital Leader and Associate Cloud Engineer.
+      A discount is not necessarily guaranteed capacity. Verify reservation scope and eligible
+      machine families, regions and purchase options. Google sustained use discounts are not a
+      blanket reduction for every VM or for usage already receiving another incompatible
+      discount.
     see_also: [Spot]
-    verified: '2026-09-09'
+    verified: '2026-09-14'

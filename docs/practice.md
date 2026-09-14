@@ -1,68 +1,66 @@
-# Practice
+# Practice Architectural Decisions
 
-Reading a comparison table produces recognition, not recall. These drills exist to tell the
-difference. Nothing here predicts an exam score; it tells you which of your beliefs are wrong.
+For each scenario, state the constraint, choose an option, and explain what changes when the
+constraint changes. These are learning exercises, not real exam questions or a score predictor.
 
-## The Flashcard Deck
+## An Unreadable Standby
 
-The build generates a deck from the same dataset as everything else, so a card can never
-disagree with a chapter.
+An RDS Multi-AZ **DB instance** serves a photo application. Reporting queries need to move off
+the writer. Can they use the existing standby?
 
-```bash
-python scripts/build.py    # writes dist/drills.tsv
-```
+**Answer:** no. That deployment's standby is not a client read endpoint. Evaluate a read replica
+or a supported DB cluster configuration. Preserve the application's availability requirement.
+A Multi-AZ DB cluster has readable standbys, so “all Multi-AZ standbys are unreadable” is wrong.
+[Deployment modes and sources](05-databases.md).
 
-`dist/drills.tsv` is tab separated as front, back, tags. It imports directly into
-[Anki](https://apps.ankiweb.net/) through File, then Import, with the field separator set to
-tab. Three kinds of card are generated:
+## A Private Address That Does Not Work
 
-| Card type | Front | Tagged |
-| --- | --- | --- |
-| Translation | A service name in one cloud | `<domain> mapping <divergence>` |
-| Gotcha | A concept, asking where the mapping breaks | `<domain> gotcha <bite>` |
-| Decoder | A colliding term, asking what it means in each cloud | `decoder <severity>` |
+An on-premises client resolves an Azure service hostname to its public address, even after a
+private endpoint was created. Does adding a broader RBAC grant fix the network path?
 
-Filter the deck by tag to study one way. `tag:gotcha` alone is the highest-value session,
-because the translations are the part you can look up and the gotchas are the part you cannot.
+**Answer:** no. Inspect DNS resolution and forwarding, routes, endpoint approval and traffic
+controls. Authorization matters after reachability is established. Creating the endpoint alone
+does not guarantee public access is disabled. [Private access](03-networking.md).
 
-## Drill the Decision, Not the Keyword
+## A Smaller Role Does Not Remove Access
 
-Most wrong answers come from matching a keyword to a service instead of reading the constraint.
-Practise the constraint. For each scenario, name the deciding word before naming a service.
+A principal inherits a broad Azure or Google allow grant. You assign a narrower role on a child
+resource. Have you reduced the inherited permission?
 
-| The constraint says | What is being tested |
-| --- | --- |
-| Least operational overhead | Managed or serverless over self-managed, even at higher unit cost |
-| Must survive a data centre failure | Zones, not an Azure availability set, and not a read replica |
-| Must be reachable from on-premises with a private address | An Azure private endpoint, not a service endpoint |
-| Reporting queries must not slow the application | A read replica, not a failover standby |
-| Block one specific address while broad allow rules stay | A deny-capable control, so not an AWS security group alone |
-| Cheapest, and retrieval can wait hours | Offline archive tiers, where retrieval time is the trade |
-| Cheapest, but must read instantly | Google Archive is online; on AWS this is Glacier Instant Retrieval |
+**Answer:** no. The child allow grant does not subtract the parent grant. Change the relevant
+assignment or evaluate applicable deny and condition controls. Check other grants before
+concluding what the principal can do. [Identity](02-identity.md).
 
-## Self-Check
+## One Region Is Not a Recovery Plan
 
-Cover the right column. If you cannot answer in about five seconds, the underlying chapter has
-not landed yet.
+A web application has two instances in different zones but one unreplicated database. Is the
+application now resilient to every zone failure?
 
-| Question | Answer | Chapter |
-| --- | --- | --- |
-| Which cloud's "role" is an identity with its own credentials? | AWS | [Identity](02-identity.md) |
-| An SCP allows an action and no IAM policy grants it. Allowed? | No. An SCP limits, it never grants | [Identity](02-identity.md) |
-| Which cloud's virtual network is global? | Google Cloud | [Mental Models](01-mental-models.md) |
-| Which cloud puts a subnet inside a single zone? | AWS | [Mental Models](01-mental-models.md) |
-| Deleting which container destroys everything inside it? | An Azure resource group | [Mental Models](01-mental-models.md) |
-| ASG: expand it, twice | AWS Auto Scaling group; Azure application security group | [Decoder](09-confusing-terms.md) |
-| Is an RDS Multi-AZ standby readable? | It depends on the deployment type, so the question is underspecified | [Databases](05-databases.md) |
-| AWS associate passing score | 720, and it is a scaled score, not a percentage | [Exam Map](10-exam-map.md) |
-| How long is a Google professional certification valid? | Two years. Foundational and associate last three | [Exam Map](10-exam-map.md) |
+**Answer:** no. The database remains a dependency that can prevent useful service. Define the
+failure scope, data-loss objective and recovery time, then examine every dependency. Multi-zone
+resilience also does not establish recovery after a region-wide outage.
+[Architecture assumptions](architecture.md).
 
-## Where This Stops
+## One Product Name Can Hide a New Operating Mode
 
-These drills cover the cross-cloud material in this guide. They are not a syllabus for any
-certification, and no question here is taken from an exam. Build your checklist from the
-official objectives linked in [the exam map](10-exam-map.md).
+A design review claims that every AWS NAT gateway requires its own public subnet and one
+customer-managed gateway per Availability Zone. Is the statement current?
 
-**Next:** [chapter index](README.md) · [the decoder](09-confusing-terms.md)
+**Answer:** it describes the zonal public NAT pattern, not every mode. Regional NAT gateways
+support different placement and expansion behavior. Their mode restrictions and expansion delay
+still matter. [NAT modes and sources](03-networking.md).
+
+## Import the Optional Flashcards
+
+Download [the tab-separated deck](../dist/drills.tsv). In Anki, import it with fields mapped to
+front, back and tags. Comparison answers include the grade, caveat and sources so a card does
+not teach a false equivalence. Provider links establish where to investigate; they do not
+replace reading the applicable conditions.
+
+You can also practise without an account or flashcard application: cover the answer paragraph,
+write a justification, and check it against the linked chapter and primary sources. Revisit
+an answer when its source or required service configuration changes.
+
+**Next:** [architecture atlas](architecture.md) · [exam map](10-exam-map.md).
 
 <!-- This document follows common-doc-guidelines.md. -->

@@ -1,7 +1,7 @@
 # Identity and Access
 
 **Goal:** explain who can act, what they can do, and where the permission applies.
-Start with [the first application](00-landscape.md) if these terms are new.
+Start with [cloud foundations](00-landscape.md) if these terms are new.
 
 An **identity** represents a person or a workload. Authentication establishes that identity;
 authorization decides whether its request is permitted. A **principal** is the identity making
@@ -9,7 +9,7 @@ a request. A **scope** is the resource or collection to which a grant applies.
 
 ## Same Word, Different Object
 
-<!-- diagram: role -->
+![Roles, principals and credential flow](assets/architecture/role.svg)
 
 The nearest translation runs the other way from the name: an Azure or Google role is closest to
 an **AWS managed policy**, and an AWS role is closest to a **service principal or service
@@ -60,6 +60,8 @@ grant is not limited by those implicit denies. Naming a role ARN instead changes
 These are deliberately bounded examples, not advice to use IAM users for application credentials.
 For real requests also consider cross-account access, session policies, organization controls,
 resource-specific settings, conditions, and explicit denies.
+
+![Two bounded permission decisions](assets/architecture/identity-decision.svg)
 
 ## Inherited Grants in Azure and Google Cloud
 

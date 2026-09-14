@@ -13,7 +13,7 @@ GENERATED_FILES = (
     'README.md', 'docs/09-confusing-terms.md', 'docs/10-exam-map.md',
     'docs/hierarchy-diagram.md',
 )
-GENERATED_DIRS = ('site', 'dist')
+GENERATED_DIRS = ('site', 'dist', 'docs/assets/architecture')
 
 
 def inventory(root: pathlib.Path) -> set[str]:
@@ -35,6 +35,7 @@ def main() -> int:
         # generated chapters must be recreated rather than inherited from disk.
         for name in ('docs/09-confusing-terms.md', 'docs/hierarchy-diagram.md'):
             (expected / name).unlink(missing_ok=True)
+        shutil.rmtree(expected / 'docs/assets/architecture', ignore_errors=True)
         result = subprocess.run([sys.executable, 'scripts/build.py'], cwd=expected,
                                 capture_output=True, text=True)
         if result.returncode:

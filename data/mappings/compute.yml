@@ -18,7 +18,7 @@ rows:
     verified: '2026-09-09'
 
   - id: cmp.autoscale
-    concept: Horizontally scaling a pool of identical machines
+    concept: Horizontally scaling a pool of virtual machines
     divergence: partial
     bite: regular
     aws:
@@ -161,11 +161,10 @@ rows:
     gcp:
       name: Spot VMs
       url: https://docs.cloud.google.com/compute/docs/instances/spot
-      formerly: [Preemptible VMs]
     shared_trap: >-
-      The concept transfers cleanly, and the naming history is the trap. Google's older
-      preemptible VMs had a hard 24-hour maximum lifetime; Spot VMs do not, and material written
-      before the change still teaches the 24-hour limit. All three remain unsuitable for
-      anything that cannot tolerate reclamation at short notice.
+      All three can reclaim this discounted capacity. Interruption handling, availability and
+      pricing rules differ. Google Spot VMs and older preemptible VMs are distinct provisioning
+      models: the older model has a 24-hour runtime limit; Spot VMs do not have that fixed
+      limit. Design for loss of instances and uncertain replacement capacity.
     exam_tags: [CLF-C02, SAA-C03, AZ-900, CDL, ACE]
     verified: '2026-09-09'

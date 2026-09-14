@@ -13,6 +13,11 @@ already know one cloud and are learning a second.
 | 03 | [Networking](03-networking.md) | Virtual networks, firewalls, private access, load balancers |
 | 05 | [Databases](05-databases.md) | Read scaling against surviving failure, and why the two get confused |
 
+## Architecture
+
+[Architecture atlas](architecture.md): standardized diagrams, provider-specific photo applications,
+boundaries, traffic flows, permissions and failover assumptions.
+
 ## Look Things Up
 
 | Chapter | What it does |

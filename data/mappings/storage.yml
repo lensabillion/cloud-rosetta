@@ -25,7 +25,7 @@ rows:
     verified: '2026-09-10'
 
   - id: sto.archive-tier
-    concept: Cheapest archival storage tier
+    concept: Archival storage and retrieval behavior
     divergence: none
     bite: serious
     aws:
@@ -38,19 +38,17 @@ rows:
       name: Archive storage class
       url: https://docs.cloud.google.com/storage/docs/storage-classes
     breaks_when: >-
-      Retrieval behaviour differs fundamentally and decides questions. Google's Archive class is
-      online: it has the same millisecond first-byte latency as Standard and you simply pay more
-      to read it, with a 365-day minimum storage duration. AWS Glacier Flexible Retrieval and
-      Deep Archive are offline and need a restore job taking minutes to hours. The Azure Archive
-      tier is also offline and needs rehydration, which can take hours. So "archive but must be
-      readable instantly" is achievable natively on Google, needs Glacier Instant Retrieval on
-      AWS, and is not the Archive tier on Azure. Minimum durations also differ, and early
-      deletion is charged as if the object had been kept for the minimum.
+      Google Archive remains online with low-latency reads. S3 Glacier Deep Archive requires a
+      restore before access; Glacier Instant Retrieval is a different class. Azure Archive needs
+      rehydration before normal reads. Minimum storage durations, retrieval operations, early
+      deletion and data transfer affect total cost, so the lowest storage rate does not
+      establish the cheapest design.
     exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
     sources:
       - https://docs.cloud.google.com/storage/docs/storage-classes
       - https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview
-    verified: '2026-09-09'
+      - https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html
+    verified: '2026-09-14'
 
   - id: sto.block
     concept: Network-attached block storage for a VM
@@ -66,13 +64,18 @@ rows:
       name: Persistent Disk and Hyperdisk
       url: https://docs.cloud.google.com/compute/docs/disks
     breaks_when: >-
-      Google Persistent Disk can be created as regional, replicating synchronously across two
-      zones in a region, which EBS cannot do; EBS volumes are strictly zonal and cross-zone
-      resilience is a snapshot-and-restore or replication-at-the-application-layer problem.
-      Google disks can also be resized and attached read-only to many instances at once, which
-      changes what architectures are available.
+      EBS volumes are zonal. Azure managed disks offer redundancy options including ZRS on
+      supported disk types. Google regional Persistent Disk and Hyperdisk Balanced High
+      Availability replicate across two zones. Availability does not imply shared-writer safety:
+      multi-attach support, access modes, VM compatibility and clustered filesystems must be
+      checked for the selected disk. Replicated storage still needs application failover and
+      backups.
     exam_tags: [SAA-C03, SOA-C03, AZ-104, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://learn.microsoft.com/en-us/azure/virtual-machines/disks-redundancy
+      - https://docs.cloud.google.com/compute/docs/disks/hyperdisks
+      - https://docs.cloud.google.com/compute/docs/disks/sharing-disks-between-vms
+    verified: '2026-09-14'
 
   - id: sto.file
     concept: Shared network file system
@@ -88,12 +91,17 @@ rows:
       name: Filestore
       url: https://docs.cloud.google.com/filestore/docs/overview
     breaks_when: >-
-      Protocol support differs and is the deciding factor. Azure Files serves SMB and NFS, so it
-      is the natural answer for Windows workloads and can be mounted directly from on-premises.
-      EFS is NFS only, and Windows or Lustre workloads go to the separate FSx family. Filestore
-      is NFS only.
+      Choose the file protocol and service tier explicitly. EFS serves NFS; the FSx family
+      includes separate Windows, Lustre, NetApp ONTAP and OpenZFS offerings. Azure Files
+      supports SMB or NFS shares with different feature support; a share is not automatically
+      dual-protocol. Filestore serves NFS. On-premises access requires supported connectivity,
+      firewall, DNS and authentication configuration.
     exam_tags: [SAA-C03, AZ-104, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+      - https://docs.aws.amazon.com/fsx/latest/WindowsGuide/what-is.html
+      - https://docs.cloud.google.com/filestore/docs/overview
+    verified: '2026-09-14'
 
   - id: sto.redundancy
     concept: Naming the replication and durability setting
