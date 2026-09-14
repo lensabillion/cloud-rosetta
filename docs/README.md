@@ -15,6 +15,9 @@ already know one cloud and are learning a second.
 
 ## Architecture
 
+[Deployment reference architectures](reference-architectures.md): request flows, failure boundaries
+and operational decisions for all three clouds.
+
 [Architecture atlas](architecture.md): standardized diagrams, provider-specific photo applications,
 boundaries, traffic flows, permissions and failover assumptions.
 

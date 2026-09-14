@@ -197,3 +197,17 @@ source-date metadata, and regression tests for clock changes, stale files and bu
 Addressed F06 with a complete UTF-8 standards-mode HTML document and responsive viewport.
 Verified the home and first chapter over local HTTP at phone width; physical-device and
 screen-reader testing remain outstanding under the accessibility work.
+
+
+## 2026-09-14 — Deployment Architecture Follow-Up
+
+Pulled merged PR #7 (`227e99d`). Added three deployment reference diagrams and a chapter
+covering numbered request flows, private access, zone recovery and operational decisions.
+Corrected chapter-anchor routing, added root README link validation, and restored the missing
+architecture audit report. Replaced unsupported disclosure markup in practice answers.
+
+Validation: six build/failure-case tests; house formatting; schema and Markdown link checks;
+all generated outputs reproduced. Browser inspection covered all three new diagrams, chapter
+section navigation, atlas text-overlap measurements and a 390-pixel viewport without page overflow.
+These are reviewed educational designs, not cloud deployments or measured recovery guarantees.
+See [the audit](reviews/2026-09-14-architecture-audit.md) and tbd bead `cloud-4zfp`.

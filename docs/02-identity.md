@@ -96,14 +96,12 @@ identities or federation to distributing long-lived keys, where the workload sup
 A photo service needs to create objects in one bucket. Does giving it an organization-wide
 administrator role solve the problem well?
 
-<details><summary>Answer and reasoning</summary>
+**Answer and reasoning:**
 
 It may grant sufficient access, but it grants far more than the task needs. Give the workload
 an identity and an object-creation permission at the appropriate resource scope. Check whether
 it also needs to read, overwrite, or delete objects before adding those permissions. A role's
 name is not evidence that its permissions fit the task.
-
-</details>
 
 **Next:** [networking](03-networking.md) · [compare identity mappings](02-identity.md) ·
 [practice scenarios](practice.md).

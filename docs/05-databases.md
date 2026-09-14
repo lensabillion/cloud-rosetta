@@ -45,14 +45,12 @@ plan. Do not label a single-region standby diagram “disaster recovery” witho
 Your photo application's database uses an RDS Multi-AZ **DB instance**. A slow reporting query
 must move away from the primary. Can it run on the existing standby?
 
-<details><summary>Reveal the answer</summary>
+**Answer and reasoning:**
 
 No. That standby does not serve reads. Evaluate a read replica, a different deployment such as a
 supported Multi-AZ DB cluster, or a separate analytics path. Keep the availability requirement
 while deciding how much replication lag reporting can tolerate. “Multi-AZ is never readable”
 is also wrong: the DB cluster deployment has readable standbys.
-
-</details>
 
 **Change one constraint:** the database must keep writes available after a zone failure. Adding
 an ordinary asynchronous read replica alone is not enough to claim automatic failover. Specify
