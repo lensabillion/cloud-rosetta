@@ -8,6 +8,8 @@ application/data access and resilience to a zone failure within one region.
 Start with the [simpler photo applications](architecture.md) if you are learning cloud basics.
 Use these deployment views when network placement and recovery become requirements. They are
 illustrative designs, not tested deployments or a promise of an availability target.
+Groups labelled “resources in” or “VMs in” a zone identify the depicted resources
+that share a failure location. A VPC or subnet does not own an availability zone.
 
 ## Choose the Operating Model First
 

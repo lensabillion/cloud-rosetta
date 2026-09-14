@@ -244,7 +244,7 @@ def deployment_aws():
     d.box(250,316,460,90,'Application Load Balancer','Public subnets in AZ A and AZ B; AWS WAF',color='aws')
     d.arrow(480,154,480,316,'1  HTTPS :443')
     for x,zone in [(66,'AZ A'),(506,'AZ B')]:
-        d.box(x,466,388,396,zone+' | failure boundary',color='aws',boundary=True)
+        d.box(x,466,388,396,'VPC resources in '+zone,color='aws',boundary=True)
         d.box(x+18,515,352,92,'EC2 application instances','Private app subnet; no public IPs',color='aws')
         d.box(x+18,716,352,108,'RDS primary' if zone=='AZ A' else 'RDS standby',
               'Private DB subnet; writer' if zone=='AZ A' else 'Private DB subnet; not readable',color='aws')
@@ -291,7 +291,7 @@ def deployment_gcp():
     d.box(44,418,534,542,'VPC network | global',color='gcp',boundary=True)
     d.box(64,468,494,320,'Regional subnet',color='gcp',boundary=True)
     for x,zone in [(84,'Zone A'),(326,'Zone B')]:
-        d.box(x,520,212,152,zone,color='gcp',boundary=True)
+        d.box(x,520,212,152,'VMs in '+zone,color='gcp',boundary=True)
         d.box(x+12,562,188,86,'Compute Engine','Private app VMs',color='gcp')
     d.arrow(380,310,190,562,'2  HTTPS to backends')
     d.arrow(580,310,432,562,'2  HTTPS to backends')
