@@ -3,9 +3,9 @@ type: is
 id: is-01m21q38fwbmtyyv6ax35v48y1
 title: Link every claim to its original source
 kind: task
-status: open
+status: in_progress
 priority: 1
-version: 2
+version: 3
 spec_path: docs/reviews/2026-09-09-learning-experience-review.md
 labels:
   - content
@@ -13,7 +13,7 @@ labels:
 dependencies: []
 parent_id: is-01m21nbcbvadjeap7gvmks7ems
 created_at: 2026-09-08T23:54:17.467Z
-updated_at: 2026-09-09T23:14:06.715Z
+updated_at: 2026-09-14T13:45:32.208Z
 ---
 Standing requirement. Any figure, name, limit or claim carries a link to the vendor page or study it came from, in docs, data and the rendered site.
 

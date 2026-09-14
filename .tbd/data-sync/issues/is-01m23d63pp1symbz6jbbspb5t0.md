@@ -3,9 +3,9 @@ type: is
 id: is-01m23d63pp1symbz6jbbspb5t0
 title: Replace mixed hierarchy drawings with precise architecture diagrams
 kind: task
-status: open
+status: in_progress
 priority: 1
-version: 2
+version: 3
 spec_path: docs/reviews/2026-09-09-learning-experience-review.md
 labels:
   - review-2026-09-09
@@ -14,7 +14,7 @@ dependencies:
     target: is-01m21q38aap0qqv1ng8jsdwfsf
 parent_id: is-01m21nbcbvadjeap7gvmks7ems
 created_at: 2026-09-09T15:39:33.973Z
-updated_at: 2026-09-09T23:14:09.852Z
+updated_at: 2026-09-14T13:45:32.035Z
 ---
 ### F10 · P1 · Draw Separate Ownership, Location, and Traffic Models
 
