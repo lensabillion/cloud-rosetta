@@ -3,16 +3,16 @@ type: is
 id: is-01m23d59g6bprkxfbtht6srgw3
 title: Generate a complete UTF-8 standards-mode HTML document
 kind: bug
-status: open
+status: in_progress
 priority: 1
-version: 1
+version: 3
 spec_path: docs/reviews/2026-09-09-learning-experience-review.md
 labels:
   - review-2026-09-09
 dependencies: []
 parent_id: is-01m21nbcbvadjeap7gvmks7ems
 created_at: 2026-09-09T15:39:07.142Z
-updated_at: 2026-09-09T15:39:07.142Z
+updated_at: 2026-09-14T13:31:55.908Z
 ---
 ### F06 · P1 · Emit a Complete HTML Document
 
@@ -28,3 +28,7 @@ as desktop viewport resizing.
 
 
 Review: docs/reviews/2026-09-09-learning-experience-review.md. Keep source and generated surfaces consistent.
+
+## Notes
+
+Implementation in PR #6: explicit doctype, UTF-8, lang=en, viewport, description, head/body. Local HTTP browser confirms UTF-8/CSS1Compat; home and first chapter fit 390px; desktop navigation checked. Keeping in progress because acceptance also calls for an actual mobile-browser check; viewport resizing is not physical-device evidence. Broader accessibility remains cloud-zp0k.

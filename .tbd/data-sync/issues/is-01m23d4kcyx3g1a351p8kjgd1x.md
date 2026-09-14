@@ -3,9 +3,9 @@ type: is
 id: is-01m23d4kcyx3g1a351p8kjgd1x
 title: Correct IAM evaluation and directory administration mental models
 kind: bug
-status: open
+status: in_progress
 priority: 1
-version: 3
+version: 5
 spec_path: docs/reviews/2026-09-09-learning-experience-review.md
 labels:
   - review-2026-09-09
@@ -16,7 +16,7 @@ dependencies:
     target: is-01m23d63pp1symbz6jbbspb5t0
 parent_id: is-01m21nbcbvadjeap7gvmks7ems
 created_at: 2026-09-09T15:38:44.509Z
-updated_at: 2026-09-09T23:14:09.671Z
+updated_at: 2026-09-09T23:24:07.710Z
 ---
 ### F01 · P1 · Teach Permission Evaluation Without False Universal Rules
 
@@ -38,3 +38,7 @@ be able to reproduce the decisions from the cited documentation.
 
 
 Review: docs/reviews/2026-09-09-learning-experience-review.md. Keep source and generated surfaces consistent.
+
+## Notes
+
+Source correction implemented with two bounded AWS permission examples; dataset validation passes. Generated surfaces and final CI verification pending.

@@ -3,9 +3,9 @@ type: is
 id: is-01m23d4qedftpbhhyw59fnfhxx
 title: Distinguish RDS Multi-AZ instances, clusters, and read replicas
 kind: bug
-status: open
+status: in_progress
 priority: 1
-version: 3
+version: 5
 spec_path: docs/reviews/2026-09-09-learning-experience-review.md
 labels:
   - review-2026-09-09
@@ -16,7 +16,7 @@ dependencies:
     target: is-01m23d63pp1symbz6jbbspb5t0
 parent_id: is-01m21nbcbvadjeap7gvmks7ems
 created_at: 2026-09-09T15:38:48.652Z
-updated_at: 2026-09-09T23:14:09.677Z
+updated_at: 2026-09-10T09:39:42.306Z
 ---
 ### F02 · P1 · Scope the Multi-AZ Lesson to the Actual Deployment Type
 
@@ -34,3 +34,7 @@ scenario. Check Azure and Google behavior independently rather than copying the 
 
 
 Review: docs/reviews/2026-09-09-learning-experience-review.md. Keep source and generated surfaces consistent.
+
+## Notes
+
+Deployment-specific mapping and sourced database chapter implemented; failover diagram and generated surfaces remain to integrate. Dataset validation passes.

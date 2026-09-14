@@ -3,9 +3,9 @@ type: is
 id: is-01m23d4w2vq300cn0nkw7f99jw
 title: Correct exam facts and centralize certification lifecycle metadata
 kind: bug
-status: open
+status: in_progress
 priority: 1
-version: 2
+version: 4
 spec_path: docs/reviews/2026-09-09-learning-experience-review.md
 labels:
   - review-2026-09-09
@@ -14,7 +14,7 @@ dependencies:
     target: is-01m21nbzjda5hjbfe1p8d28yt5
 parent_id: is-01m21nbcbvadjeap7gvmks7ems
 created_at: 2026-09-09T15:38:53.402Z
-updated_at: 2026-09-09T23:14:09.506Z
+updated_at: 2026-09-10T09:40:42.705Z
 ---
 ### F03 · P1 · Correct Certification Facts and Track Exam Lifecycle Centrally
 
@@ -34,3 +34,7 @@ Do not infer product retirement from exam retirement.
 
 
 Review: docs/reviews/2026-09-09-learning-experience-review.md. Keep source and generated surfaces consistent.
+
+## Notes
+
+Added sourced registry for 17 current/historical exam tags; corrected AWS scores, Google validity, Microsoft expiry, and historical AZ-204/AZ-500/SCS-C02. Registry-to-site/table integration pending.

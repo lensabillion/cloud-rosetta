@@ -3,9 +3,9 @@ type: is
 id: is-01m23d513df18fs77zqqa7xxt1
 title: Update Kubernetes and storage comparisons and audit exclusivity claims
 kind: bug
-status: open
+status: in_progress
 priority: 1
-version: 2
+version: 3
 spec_path: docs/reviews/2026-09-09-learning-experience-review.md
 labels:
   - review-2026-09-09
@@ -14,7 +14,7 @@ dependencies:
     target: is-01m21nbzjda5hjbfe1p8d28yt5
 parent_id: is-01m21nbcbvadjeap7gvmks7ems
 created_at: 2026-09-09T15:38:58.540Z
-updated_at: 2026-09-09T23:14:09.510Z
+updated_at: 2026-09-10T09:40:42.863Z
 ---
 ### F04 · P1 · Replace Unsupported Exclusivity Claims With Current Comparisons
 
