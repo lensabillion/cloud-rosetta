@@ -218,7 +218,7 @@ terms:
         Usually means a sign-in identity. A storage account is something else entirely, and a
         billing account something else again.
       category: overloaded
-      url: https://learn.microsoft.com/en-us/azure/cost-management-billing/understand/view-all-accounts
+      url: https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/view-all-accounts
     gcp:
       meaning: >-
         Usually a user identity. A billing account is a separate payable object linked to

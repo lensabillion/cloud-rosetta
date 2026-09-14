@@ -148,7 +148,7 @@ See also: Policy, Service account, Principal.
 | Cloud | What it is | Meaning |
 | --- | --- | --- |
 | AWS | [boundary](https://docs.aws.amazon.com/accounts/latest/reference/welcome.html) | A resource and IAM administration boundary identified by a 12-digit number. Organizations supports consolidated billing; workforce identities can be federated across accounts. |
-| Azure | [overloaded](https://learn.microsoft.com/en-us/azure/cost-management-billing/understand/view-all-accounts) | Usually means a sign-in identity. A storage account is something else entirely, and a billing account something else again. |
+| Azure | [overloaded](https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/view-all-accounts) | Usually means a sign-in identity. A storage account is something else entirely, and a billing account something else again. |
 | Google Cloud | [overloaded](https://docs.cloud.google.com/billing/docs/concepts) | Usually a user identity. A billing account is a separate payable object linked to projects. A service account is a machine identity. |
 
 **Why the distinction matters.** An AWS account holds workload resources and IAM configuration. In Azure and Google, qualify whether account means a person, workload identity, billing object or storage object. Identity, resource and payment boundaries are related but not identical.
