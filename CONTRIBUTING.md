@@ -77,11 +77,22 @@ validator checks both.
 python -m venv .venv && ./.venv/bin/pip install pyyaml jsonschema
 ./.venv/bin/python scripts/validate.py
 ./.venv/bin/python scripts/build.py
+./.venv/bin/python -m unittest discover -s tests -v
+./.venv/bin/python scripts/check_generated.py
 ```
 
 `validate.py` checks schema conformance, id uniqueness, the `breaks_when` rule, staleness, and
 that no link points at retired domains such as `docs.microsoft.com`. It runs on every pull
 request. Warnings are fine to ship; errors are not.
+
+`check_generated.py` rebuilds in a temporary folder and compares all of `site/`, `dist/`,
+and the generated README and chapter content without modifying your files. CI and publishing
+run this same check. Run `build.py` to refresh outputs after changing their sources.
+
+The JSON export uses `latest_source_verification` (replacing the former `generated` build
+timestamp) for the newest recorded check in its mappings and terms. This is not a date on
+which every claim was checked. Each entry retains its own `verified` date, and the validator
+continues to measure age against today's date. Rebuilding alone never refreshes a claim.
 
 ## Reporting Something Wrong
 

@@ -27,16 +27,11 @@ jobs:
       - name: Validate dataset
         run: python scripts/validate.py
 
-      - name: Build site
-        run: python scripts/build.py
+      - name: Test generation and its failure cases
+        run: python -m unittest discover -s tests -v
 
-      - name: Fail if site/ is out of date with data/
-        run: |
-          if ! git diff --quiet -- site/; then
-            echo "site/ does not match data/. Run: python scripts/build.py"
-            git diff --stat -- site/
-            exit 1
-          fi
+      - name: Check every generated output without rewriting it
+        run: python scripts/check_generated.py
 
   links:
     runs-on: ubuntu-latest

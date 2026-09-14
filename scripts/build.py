@@ -337,10 +337,6 @@ def build(out: pathlib.Path) -> None:
         for e in sorted(exams)
     )
 
-    # The guide itself: journey, then reference, then practice, built to
-    # docs/design-system.md. The old single-page template is no longer used.
-    stats = sitegen.build(domains, terms, load_exams(), out)
-
     subs = {
         "ROWS": "\n".join(rows_html),
         "TERMS": terms_html,
@@ -355,7 +351,7 @@ def build(out: pathlib.Path) -> None:
         "NONE": str(counts["none"]),
         "DIAGRAM": HIERARCHY_SVG,
         "OLDEST": oldest.isoformat() if oldest else "",
-        "BUILT": dt.date.today().isoformat(),
+        "BUILT": surfaces.latest_verification(domains, terms),
     }
     del subs  # the legacy single-page template is retired; site.py owns the page now
 
@@ -378,6 +374,10 @@ def build(out: pathlib.Path) -> None:
         + surfaces.mermaid_hierarchy() + "\n",
         encoding="utf-8",
     )
+
+    # The guide follows docs/design-system.md. Refresh generated Markdown
+    # before rendering chapters that may consume it.
+    stats = sitegen.build(domains, terms, exams, out)
 
     drill_lines = (dist / "drills.tsv").read_text().count(chr(10))
     print(f"wrote {out.relative_to(ROOT)}  {stats['pages']} pages, {stats['rows']} rows, "

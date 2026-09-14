@@ -13,7 +13,6 @@ Called by build.py. Not usually run directly.
 from __future__ import annotations
 
 import csv
-import datetime as dt
 import io
 import json
 import pathlib
@@ -21,6 +20,13 @@ import pathlib
 CLOUDS = (("aws", "AWS"), ("azure", "Azure"), ("gcp", "Google Cloud"))
 BITE_MARK = {"serious": "❗", "regular": "🔸", "tip": "🔹"}
 GRADE_MARK = {"exact": "✅", "partial": "⚠️", "none": "❌"}
+
+
+def latest_verification(domains: list[dict], terms: list[dict]) -> str:
+    """Newest recorded source check, not a claim that every entry was rechecked."""
+    dates = [str(row["verified"]) for doc in domains for row in doc["rows"]]
+    dates.extend(str(term["verified"]) for term in terms)
+    return max(dates)
 
 
 def _name(row: dict, key: str) -> str:
@@ -217,7 +223,7 @@ def poster_svg(domains: list[dict], terms: list[dict]) -> str:
 
     parts += [
         f'<line x1="56" y1="{H - 66}" x2="1144" y2="{H - 66}" stroke="#334742"/>',
-        f'<text x="56" y="{H - 36}" fill="#93A6A1" font-size="13">github.com — Cloud Rosetta &#183; generated from the dataset on {dt.date.today().isoformat()} &#183; CC BY 4.0</text>',
+        f'<text x="56" y="{H - 36}" fill="#93A6A1" font-size="13">github.com — Cloud Rosetta &#183; latest recorded source check {latest_verification(domains, terms)} &#183; CC BY 4.0</text>',
         "</svg>",
     ]
     return "\n".join(parts)
@@ -277,7 +283,7 @@ def drills_tsv(domains: list[dict], terms: list[dict]) -> str:
 def dataset_json(domains: list[dict], terms: list[dict]) -> str:
     return json.dumps(
         {
-            "generated": dt.date.today().isoformat(),
+            "latest_source_verification": latest_verification(domains, terms),
             "licence": "CC BY 4.0",
             "mappings": [dict(r, domain=d["domain"]) for d in domains for r in d["rows"]],
             "terms": terms,
