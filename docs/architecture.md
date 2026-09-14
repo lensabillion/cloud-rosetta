@@ -4,6 +4,10 @@ These are conceptual and logical architecture drawings for learning. They are no
 plans, a security certification, or a claim that a provider guarantees an application's recovery
 time. Each view answers one question; read its assumptions before adapting it.
 
+For network placement and recovery decisions, continue to the
+[three deployment reference architectures](reference-architectures.md). They connect ingress,
+private application access, database availability and operational responsibilities.
+
 ## Diagram Standard
 
 We follow the [C4 notation guidance](https://c4model.com/diagrams/notation) on titles, scope,

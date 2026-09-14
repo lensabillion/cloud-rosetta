@@ -219,7 +219,7 @@ def check_doc_links(rep: Report) -> int:
     """Markdown chapters that link to files which do not exist."""
     docs = ROOT / "docs"
     total = 0
-    for path in sorted(docs.rglob("*.md")):
+    for path in [ROOT / "README.md", *sorted(docs.rglob("*.md"))]:
         for target in re.findall(r"\]\(([^)#:]+\.md)(?:#[^)]*)?\)", path.read_text(encoding="utf-8")):
             total += 1
             if not (path.parent / target).resolve().exists():

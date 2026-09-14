@@ -12,7 +12,9 @@ import unittest
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUTPUTS = ('site/index.html', 'README.md', 'docs/09-confusing-terms.md',
            'docs/10-exam-map.md', 'docs/hierarchy-diagram.md',
-           'dist/poster.svg', 'dist/drills.tsv', 'dist/rosetta.json')
+           'dist/poster.svg', 'dist/drills.tsv', 'dist/rosetta.json',
+           'docs/assets/architecture/deployment-azure.svg',
+           'site/assets/architecture/deployment-gcp.svg')
 
 
 class BuildTests(unittest.TestCase):
@@ -95,3 +97,47 @@ class BuildTests(unittest.TestCase):
         self.assertIn('<meta charset="utf-8">', output[:1024])
         self.assertIn('width=device-width, initial-scale=1', output)
         self.assertTrue(output.rstrip().endswith('</body>\n</html>'))
+
+    def test_readme_links_are_validated(self):
+        root = self.workspace()
+        with (root / 'README.md').open('a') as readme:
+            readme.write('\n[Missing review](docs/reviews/missing-review.md)\n')
+        result = subprocess.run([sys.executable, 'scripts/validate.py'], cwd=root,
+                                capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('missing-review.md', result.stdout)
+
+    def test_exported_diagrams_and_navigation_have_unique_accessible_targets(self):
+        import xml.etree.ElementTree as ET
+        from html.parser import HTMLParser
+
+        class Targets(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.ids = []
+                self.links = []
+
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                if 'id' in attrs:
+                    self.ids.append(attrs['id'])
+                if tag == 'a' and attrs.get('href', '').startswith('#'):
+                    self.links.append(attrs['href'][1:])
+
+        root = self.workspace()
+        output = self.run_build(root)
+        parser = Targets()
+        parser.feed(output['site/index.html'].decode())
+        self.assertEqual(len(parser.ids), len(set(parser.ids)), 'Duplicate document targets')
+        for target in parser.links:
+            self.assertTrue(target in parser.ids or 'p-' + target in parser.ids, target)
+        drawings = list((root / 'docs/assets/architecture').glob('*.svg'))
+        self.assertGreaterEqual(len(drawings), 15)
+        for path in drawings:
+            counterpart = root / 'site/assets/architecture' / path.name
+            self.assertEqual(path.read_bytes(), counterpart.read_bytes())
+            svg = ET.fromstring(path.read_bytes())
+            ids = {node.attrib['id'] for node in svg.iter() if 'id' in node.attrib}
+            for target in svg.attrib['aria-labelledby'].split():
+                self.assertIn(target, ids, path.name)
+            self.assertTrue(svg.find('{http://www.w3.org/2000/svg}desc').text)

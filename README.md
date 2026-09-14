@@ -94,6 +94,12 @@ The full decoder, with what each one actually means and why it costs marks, is i
 
 <!-- END GENERATED -->
 
+## Deployment Reference Architectures
+
+[Design a resilient web application](docs/reference-architectures.md): follow a request through
+AWS, Azure and Google Cloud designs, compare failure behavior, and decide how to test recovery.
+Each diagram includes network boundaries, numbered flows and a full-size SVG.
+
 ## Downloads and Verification
 
 [Flashcards](dist/drills.tsv) · [JSON dataset](dist/rosetta.json) · [Comparison poster](dist/poster.svg)

@@ -152,6 +152,11 @@ def page_from_markdown(slug: str, path: pathlib.Path) -> str:
         return f"\n\nFIGURESLOT{len(wanted) - 1}FIGURESLOT\n\n"
 
     body, outline = mdlite.render(DIAGRAM_MARK.sub(stash, source))
+    # Heading IDs must be unique across chapters mounted in the same document.
+    for _, ident, _ in outline:
+        body = body.replace(f'id="{ident}"', f'id="{slug}--{ident}"')
+        body = body.replace(f'href="#{ident}"', f'href="#{slug}--{ident}"')
+    outline = [(level, f"{slug}--{ident}", title) for level, ident, title in outline]
     for i, name in enumerate(wanted):
         body = body.replace(f"<p>FIGURESLOT{i}FIGURESLOT</p>", diagrams.render(name, slug + "-" + name))
     if "FIGURESLOT" in body:
@@ -282,6 +287,9 @@ ROUTER = """
   function has(id){return !!document.getElementById('p-'+id);}
 
   function show(id){
+    var anchor = has(id) ? null : document.getElementById(id);
+    var owner = anchor && anchor.closest('.page');
+    if(owner) id=owner.id.slice(2);
     if(!has(id)) id='home';
     var target=document.getElementById('p-'+id);
     pages.forEach(function(p){p.classList.toggle('hide',p!==target);});
@@ -291,7 +299,7 @@ ROUTER = """
     });
     var h1=target.querySelector('h1');
     document.title=(h1?h1.textContent+' \u2014 ':'')+'Cloud Rosetta';
-    window.scrollTo(0,0);
+    if(anchor && owner) anchor.scrollIntoView(); else window.scrollTo(0,0);
     var n=document.getElementById('nav'); if(n) n.classList.remove('open');
   }
 
@@ -302,11 +310,11 @@ ROUTER = """
     var a=e.target.closest('a[href^="#"]');
     if(a){
       var id=a.getAttribute('href').slice(1);
-      if(has(id)){
+      if(has(id) || document.getElementById(id)){
         e.preventDefault(); show(id);
-        try{history.replaceState(null,'','#'+id);}catch(_){}
+        try{history.pushState(null,'','#'+id);}catch(_){}
       }
-      return;                      // in-page heading anchors fall through
+      return;
     }
     var b=e.target.closest('.toolbar button');
     if(b){
@@ -364,6 +372,7 @@ ROUTES = {
     "10-exam-map": "exams",
     "practice": "practice",
     "architecture": "architecture",
+    "reference-architectures": "reference-architectures",
     "README": "home",
 }
 
@@ -391,6 +400,7 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
     learn = [("02-identity", "Who can do what"),
              ("03-networking", "How the network is put together"),
              ("architecture", "Architecture atlas"),
+             ("reference-architectures", "Design a resilient application"),
              ("05-databases", "Where data lives")]
 
     for slug, _ in journey + learn:
