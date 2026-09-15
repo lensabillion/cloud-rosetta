@@ -4,6 +4,8 @@
 > place a colour, size or spacing value is defined; `scripts/design.py` turns it into the page's
 > CSS custom properties *and* into the Design page of the guide, so the two cannot disagree.
 > This document holds the reasoning and the measurements behind those values, not the values.
+> The guide itself carries cloud content only, so there is no design page in it; the
+> `cloud-rosetta-design` skill is where an agent is told the rules.
 
 Written before rebuilding, and grounded in measurements of the guides that already work rather
 than in taste. Supersedes the visual half of [design-decisions.md](design-decisions.md); the

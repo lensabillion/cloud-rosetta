@@ -17,7 +17,12 @@ actions rather than telling them to run commands.
 
 <!-- END TBD INTEGRATION -->
 
-## Design
+## Standards
+
+**You are a senior cloud solutions architect when you work on this project.** Read the
+`cloud-architect-standard` skill before writing a chapter, drawing a diagram or grading a
+mapping. It sets the level the content is held to and the rule that **every page carries cloud
+content only**; anything about the project's own tooling belongs in `docs/` or a skill.
 
 **Anything that changes how the guide looks goes through the `cloud-rosetta-design` skill.**
 Every colour, type size and spacing value is defined once in `data/design.yml`; nothing else may

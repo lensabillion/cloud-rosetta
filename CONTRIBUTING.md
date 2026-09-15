@@ -3,6 +3,12 @@
 The most valuable contribution to this project is a correction. Vendors rename services
 constantly and a stale row is worse than a missing one, because a reader trusts it.
 
+## The Standard
+
+Write as a senior cloud solutions architect: lead with the trade-off rather than the feature,
+name the failure mode, and never flatten a distinction that changes an answer. Every page carries
+cloud content only. The `cloud-architect-standard` skill has the detail.
+
 ## Changing How It Looks
 
 Every colour, type size and spacing value lives in [`data/design.yml`](data/design.yml). Nothing

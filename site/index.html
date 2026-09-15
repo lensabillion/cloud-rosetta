@@ -318,7 +318,7 @@ details.note p{margin-top:10px; font-size:var(--t-body); line-height:1.6; color:
     <div class="brand"><a href="#home"><b>Cloud Rosetta</b></a>
       <span>AWS, Azure and Google Cloud, side by side</span></div>
     <button class="menutog" aria-controls="nav" aria-expanded="false">Contents</button>
-    <nav id="nav"><div class="grp"><h2>Start here</h2><a class="nl" href="#00-landscape">What these three clouds are</a><a class="nl" href="#01-mental-models">How they are shaped differently</a></div><div class="grp"><h2>Learn the parts that differ</h2><a class="nl" href="#02-identity">Who can do what</a><a class="nl" href="#03-networking">How the network is put together</a><a class="nl" href="#architecture">Architecture atlas</a><a class="nl" href="#reference-architectures">Design a resilient application</a><a class="nl" href="#05-databases">Where data lives</a></div><div class="grp"><h2>Look it up</h2><a class="nl" href="#decoder">The word means something else here</a><div class="sub"><a class="nl" href="#ref-compute">Compute and Containers</a><a class="nl" href="#ref-databases">Databases and Analytics</a><a class="nl" href="#ref-hierarchy">Resource Hierarchy and Scoping</a><a class="nl" href="#ref-identity">Identity and Access</a><a class="nl" href="#ref-networking">Networking</a><a class="nl" href="#ref-storage">Storage</a></div><a class="nl" href="#exams">Which exam, and what it costs</a></div><div class="grp"><h2>Practise</h2><a class="nl" href="#practice">Drills and self-check</a></div><div class="grp"><h2>Reference</h2><a class="nl" href="#design">The design system</a></div></nav>
+    <nav id="nav"><div class="grp"><h2>Start here</h2><a class="nl" href="#00-landscape">What these three clouds are</a><a class="nl" href="#01-mental-models">How they are shaped differently</a></div><div class="grp"><h2>Learn the parts that differ</h2><a class="nl" href="#02-identity">Who can do what</a><a class="nl" href="#03-networking">How the network is put together</a><a class="nl" href="#architecture">Architecture atlas</a><a class="nl" href="#reference-architectures">Design a resilient application</a><a class="nl" href="#05-databases">Where data lives</a></div><div class="grp"><h2>Look it up</h2><a class="nl" href="#decoder">The word means something else here</a><div class="sub"><a class="nl" href="#ref-compute">Compute and Containers</a><a class="nl" href="#ref-databases">Databases and Analytics</a><a class="nl" href="#ref-hierarchy">Resource Hierarchy and Scoping</a><a class="nl" href="#ref-identity">Identity and Access</a><a class="nl" href="#ref-networking">Networking</a><a class="nl" href="#ref-storage">Storage</a></div><a class="nl" href="#exams">Which exam, and what it costs</a></div><div class="grp"><h2>Practise</h2><a class="nl" href="#practice">Drills and self-check</a></div></nav>
   </aside>
   <main class="doc">
 <section class="page hero" id="p-home">
@@ -938,63 +938,7 @@ page. An exam retiring and a product retiring are separate events; only the exam
 <p><strong>Answer:</strong> it describes the zonal public NAT pattern, not every mode. Regional NAT gateways support different placement and expansion behavior. Their mode restrictions and expansion delay still matter. <a href="#03-networking">NAT modes and sources</a>.</p>
 <h2 id="practice--import-the-optional-flashcards">Import the Optional Flashcards</h2>
 <p>Download <a href="https://github.com/lensabillion/cloud-rosetta/blob/main/dist/drills.tsv" target="_blank" rel="noopener">the tab-separated deck</a>. In Anki, import it with fields mapped to front, back and tags. Comparison answers include the grade, caveat and sources so a card does not teach a false equivalence. Provider links establish where to investigate; they do not replace reading the applicable conditions.</p>
-<p>You can also practise without an account or flashcard application: cover the answer paragraph, write a justification, and check it against the linked chapter and primary sources. Revisit an answer when its source or required service configuration changes.</p><nav class="pager"><a class="pg prev" href="#exams"><span>Previous</span>Which exam, and what it costs</a><a class="pg next" href="#design"><span>Next</span>The design system</a></nav></section><section class="page hide" id="p-design">
-<p class="eyebrow">Design</p>
-<h1>The design system</h1>
-<p>Every colour, size and spacing value in this guide comes from one file,
-<code>data/design.yml</code>. This page is generated from that same file, so it cannot describe a
-design the site is not running. Change a token there and both follow.</p>
-
-<nav class="toc" aria-label="On this page"><b>On this page</b>
-<a href="#design--where-it-comes-from">Where it comes from</a>
-<a href="#design--typography">Typography</a>
-<a href="#design--colour">Colour</a>
-<a href="#design--layout">Layout and spacing</a>
-<a href="#design--components">Components</a>
-<a href="#design--deviations">Deviations from the source</a></nav>
-
-<h2 id="design--where-it-comes-from">Where it comes from</h2>
-<p>The palette, type scale and spacing are taken from
-<a href="https://www.elegantthemes.com/blog/resources/git-and-github-a-beginners-guide-for-complete-newbies" target="_blank" rel="noopener">the Elegant Themes blog</a>,
-measured from computed styles at a 1280px viewport on 2026-09-15. That site runs
-Divi and sets everything in Lato, with blue-tinted neutrals rather than grey, unusually loose
-leading and a single hot pink reserved for actions. Those are the decisions adopted here.</p>
-
-<h2 id="design--typography">Typography</h2>
-<p>Six sizes, matching the source's six. The source computes fractional values such as 36.8px from
-multipliers; these are rounded to whole pixels, because a scale should read as a decision.
-Running text is 19px at a line height of 1.9, which is
-looser than most long-form sites and is what gives the page its air.</p>
-<div class="specimens"><div class="spec"><span class="lbl"><code>--t-title</code> 37px</span><span style="font-size:37px;line-height:1.4">The same idea, three different shapes</span></div><div class="spec"><span class="lbl"><code>--t-section</code> 29px</span><span style="font-size:29px;line-height:1.4">The same idea, three different shapes</span></div><div class="spec"><span class="lbl"><code>--t-sub</code> 24px</span><span style="font-size:24px;line-height:1.4">The same idea, three different shapes</span></div><div class="spec"><span class="lbl"><code>--t-body</code> 19px</span><span style="font-size:19px;line-height:1.9">The same idea, three different shapes</span></div><div class="spec"><span class="lbl"><code>--t-nav</code> 17px</span><span style="font-size:17px;line-height:1.9">The same idea, three different shapes</span></div><div class="spec"><span class="lbl"><code>--t-label</code> 14px</span><span style="font-size:14px;line-height:1.9">The same idea, three different shapes</span></div><div class="spec"><span class="lbl"><code>--t-title-sm</code> 28px</span><span style="font-size:28px;line-height:1.9">The same idea, three different shapes</span></div><div class="spec"><span class="lbl"><code>--t-section-sm</code> 23px</span><span style="font-size:23px;line-height:1.9">The same idea, three different shapes</span></div></div>
-
-<h2 id="design--colour">Colour</h2>
-<p>Nothing here is black and nothing is neutral grey. Every neutral carries a blue cast, taken
-from the source.</p>
-<div class="tw"><table><thead><tr><th>Role</th><th>Token</th><th>Light theme</th></tr></thead>
-<tbody><tr><td>Headings</td><td><code>--ink</code></td><td><span class="chip sm" style="background:#20292F"></span> <code>#20292F</code></td></tr><tr><td>Running text</td><td><code>--ink2</code></td><td><span class="chip sm" style="background:#375174"></span> <code>#375174</code></td></tr><tr><td>Secondary text</td><td><code>--ink3</code></td><td><span class="chip sm" style="background:#6D7C90"></span> <code>#6D7C90</code></td></tr><tr><td>Links</td><td><code>--link</code></td><td><span class="chip sm" style="background:#3776FF"></span> <code>#3776FF</code></td></tr><tr><td>Primary action</td><td><code>--accent</code></td><td><span class="chip sm" style="background:#FF4A9E"></span> <code>#FF4A9E</code></td></tr><tr><td>Hairlines</td><td><code>--rule</code></td><td><span class="chip sm" style="background:#E3E8EF"></span> <code>#E3E8EF</code></td></tr></tbody></table></div>
-<h3>Provider identity</h3><p>One hue per cloud, used identically in every table, diagram and card. Never used for anything else.</p><div class="swatches"><div class="sw"><span class="chip" style="background:#B45309"></span><b>--aws</b><code>#B45309</code></div><div class="sw"><span class="chip" style="background:#3776FF"></span><b>--azure</b><code>#3776FF</code></div><div class="sw"><span class="chip" style="background:#0E8F63"></span><b>--gcp</b><code>#0E8F63</code></div></div><h3>Severity</h3><p>Always paired with a word or a mark, so the grading survives greyscale and colour vision deficiency.</p><div class="swatches"><div class="sw"><span class="chip" style="background:#B14E00"></span><b>--fault</b><code>#B14E00</code></div><div class="sw"><span class="chip" style="background:#C02458"></span><b>--void</b><code>#C02458</code></div><div class="sw"><span class="chip" style="background:#6D7C90"></span><b>--calm</b><code>#6D7C90</code></div></div><h3>Accents</h3><p>From the source palette. Accent use only, never body text or large areas.</p><div class="swatches"><div class="sw"><span class="chip" style="background:#4A42EC"></span><b>--violet</b><code>#4A42EC</code></div><div class="sw"><span class="chip" style="background:#8F42EC"></span><b>--purple</b><code>#8F42EC</code></div><div class="sw"><span class="chip" style="background:#34DDA9"></span><b>--mint</b><code>#34DDA9</code></div></div>
-
-<h2 id="design--layout">Layout and spacing</h2>
-<p>Prose is capped at 640px, matching the source. Sections are separated by
-69px, which is nearly double what most documentation sites use.</p>
-<div class="tw"><table><thead><tr><th>Token</th><th>Value</th></tr></thead>
-<tbody><tr><td><code>--prose</code></td><td>640px</td></tr><tr><td><code>--wide</code></td><td>880px</td></tr><tr><td><code>--side</code></td><td>280px</td></tr><tr><td><code>--gap-section</code></td><td>69px</td></tr><tr><td><code>--gap-para</code></td><td>24px</td></tr><tr><td><code>--radius</code></td><td>6px</td></tr><tr><td><code>--radius-pill</code></td><td>100px</td></tr></tbody></table></div>
-
-<h2 id="design--components">Components</h2>
-<p>Buttons are fully pill-shaped at 100px, and the primary action is the one
-place the accent appears.</p>
-<div class="demo">
-  <a class="cta" href="#home">Primary action</a>
-  <span class="tag">exam code</span>
-  <span class="mk b-serious">Serious</span>
-  <span class="mk b-regular">Regular</span>
-</div>
-
-<h2 id="design--deviations">Deviations from the source</h2>
-<p>Recorded rather than made silently. Each one is a place this guide does something the source
-does not, and why.</p>
-<div class="devs"><div class="dev"><b>Monospace is kept for code, identifiers and exam codes</b><p>The source sets everything in one family, including shell commands in a Git tutorial. A reference guide has to let a reader tell a command from a sentence, so Roboto Mono stays.</p></div><div class="dev"><b>Links keep an underline in running prose</b><p>The source removes underlines and leans on colour alone, which fails for readers who cannot separate the blue from the surrounding navy. Colour is never the only signal here.</p></div><div class="dev"><b>Type sizes are rounded to whole pixels</b><p>The source computes fractional sizes from multipliers. Rounding keeps the same rhythm and makes the scale legible as a decision.</p></div><div class="dev"><b>A dark theme is defined</b><p>The source is light only. People revise at night, so the same tokens are given a dark counterpart rather than inverted at render time.</p></div></div>
-</section>
+<p>You can also practise without an account or flashcard application: cover the answer paragraph, write a justification, and check it against the linked chapter and primary sources. Revisit an answer when its source or required service configuration changes.</p><nav class="pager"><a class="pg prev" href="#exams"><span>Previous</span>Which exam, and what it costs</a></nav></section>
   </main>
 </div>
 <script>
