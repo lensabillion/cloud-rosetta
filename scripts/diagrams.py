@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import html
 import pathlib
 import textwrap
+import architecture_art
 
 WIDTH = 960
 import design as _design
@@ -227,107 +228,18 @@ def responsibility():
     return d
 
 
-def application(key):
-    options={
-        'aws':('AWS account','API Gateway + Lambda','Amazon S3','DynamoDB','Lambda execution role'),
-        'azure':('Azure subscription','HTTP-triggered Functions','Blob Storage','Cosmos DB','Managed identity'),
-        'gcp':('Google project','Cloud Run service','Cloud Storage','Firestore','Service account'),
-    }
-    boundary,compute,objects,metadata,identity=options[key]
-    d=canvas('application-'+key,'Photo application | '+{'aws':'AWS','azure':'Azure','gcp':'Google Cloud'}[key],
-              'Logical service view, not VPC placement: a browser calls a protected application endpoint. Application code writes photo bytes to object storage and metadata to a database using its workload identity. The services are alternatives across providers, not exact equivalents.',690)
-    d.box(344,88,272,64,'Browser client','Authenticated application user')
-    d.box(24,225,912,371,boundary+' | logical resource ownership',color=key,boundary=True)
-    d.box(344,272,272,94,compute,'Validate requests and authorize users',color=key)
-    d.arrow(480,152,480,272,'1. HTTPS upload')
-    d.box(66,450,332,94,objects,'Photo bytes; private data access',color=key)
-    d.box(562,450,332,94,metadata,'Photo owner, caption and object key',color=key)
-    d.arrow(408,366,232,450,'2. write object')
-    d.arrow(552,366,728,450,'3. write metadata')
-    d.text(46,574,'Workload identity: '+identity+'. Grant only required data operations.',width=108,size=14)
-    return d
-
-
-def deployment_aws():
-    d = canvas('deployment-aws', 'AWS | Private application, two-zone recovery',
-               'An internet-facing ALB reaches private EC2 instances across two zones. Both use the RDS writer endpoint; the Multi-AZ DB instance standby is not a read target. This is one region, not regional disaster recovery.', 1080)
-    d.box(320,90,320,64,'Clients','DNS resolves the ALB name')
-    d.box(24,218,912,710,'AWS account | selected region',color='aws',boundary=True)
-    d.box(44,262,872,636,'VPC | regional network',color='aws',boundary=True)
-    d.box(250,316,460,90,'Application Load Balancer','Public subnets in AZ A and AZ B; AWS WAF',color='aws')
-    d.arrow(480,154,480,316,'1  HTTPS :443')
-    for x,zone in [(66,'AZ A'),(506,'AZ B')]:
-        d.box(x,466,388,396,'VPC resources in '+zone,color='aws',boundary=True)
-        d.box(x+18,515,352,92,'EC2 application instances','Private app subnet; no public IPs',color='aws')
-        d.box(x+18,716,352,108,'RDS primary' if zone=='AZ A' else 'RDS standby',
-              'Private DB subnet; writer' if zone=='AZ A' else 'Private DB subnet; not readable',color='aws')
-    d.arrow(360,406,260,515,'2  HTTPS')
-    d.arrow(600,406,820,515,'2  HTTPS')
-    d.arrow(260,607,260,716,'3  SQL/TLS to writer')
-    d.arrow(700,607,436,742,'3  same writer')
-    d.arrow(436,790,524,790,'sync')
-    d.text(44,960,'ACCESS  App security group accepts only ALB traffic; DB accepts only the app group.',width=111,size=14)
-    d.text(44,987,'OPERATE  One ASG spans both zones • spare capacity • alarms • patching • restore tests',width=108,size=14)
-    return d
-
-
-def deployment_azure():
-    d = canvas('deployment-azure', 'Azure | Separate inbound and outbound private paths',
-               'Application Gateway WAF_v2 reaches App Service through an inbound private endpoint. App Service uses a separate delegated integration subnet for outbound SQL traffic. App Service and SQL are managed services outside the consumer VNet.', 1120)
-    d.box(194,90,332,64,'Clients','DNS resolves the gateway public IP')
-    d.box(24,218,912,780,'Subscription | selected region',color='azure',boundary=True)
-    d.box(44,264,460,702,'Virtual network | regional',color='azure',boundary=True)
-    d.box(72,320,404,94,'Application Gateway WAF_v2','Dedicated subnet; zone redundant',color='azure')
-    d.arrow(360,154,360,320,'1  HTTPS :443')
-    d.box(72,502,404,90,'App Service private endpoint','Private endpoint subnet; inbound path',color='azure')
-    d.arrow(274,414,274,502,'2  HTTPS')
-    d.box(624,502,284,116,'App Service','Zone-redundant plan; public access disabled',color='azure')
-    d.arrow(476,547,624,547,'3  Private Link')
-    d.box(72,692,404,90,'VNet integration subnet','Delegated to App Service; outbound path',color='azure')
-    d.arrow(760,618,476,732,'4  outbound integration')
-    d.box(72,850,404,90,'SQL private endpoint','Private DNS resolves the SQL hostname',color='azure')
-    d.arrow(274,782,274,850,'5  SQL/TLS')
-    d.box(624,838,284,116,'Azure SQL Database','Zone redundancy enabled on a supported tier',color='azure')
-    d.arrow(476,896,624,896,'6  Private Link')
-    d.text(44,1030,'ACCESS  Managed identity + database grants; private connectivity alone grants no data access.',width=112,size=14)
-    d.text(44,1057,'OPERATE  Azure Monitor / Application Insights • backups • restore and failover exercises',width=113,size=14)
-    return d
-
-
-def deployment_gcp():
-    d = canvas('deployment-gcp', 'Google Cloud | Global ingress, regional application',
-               'A global external Application Load Balancer uses a regional managed instance group. The VPC is global, its subnet is regional and VMs occupy zones. Cloud SQL HA uses private services access outside the consumer VPC. Global ingress does not provide regional recovery.', 1120)
-    d.box(300,90,360,64,'Clients','DNS resolves the load balancer IP')
-    d.box(24,190,912,808,'Workload project',color='gcp',boundary=True)
-    d.box(220,220,520,90,'Global external Application Load Balancer','Cloud Armor policy; HTTPS frontend and backend',color='gcp')
-    d.arrow(480,154,480,220,'1  HTTPS :443')
-    d.box(44,418,534,542,'VPC network | global',color='gcp',boundary=True)
-    d.box(64,468,494,320,'Regional subnet',color='gcp',boundary=True)
-    for x,zone in [(84,'Zone A'),(326,'Zone B')]:
-        d.box(x,520,212,152,'VMs in '+zone,color='gcp',boundary=True)
-        d.box(x+12,562,188,86,'Compute Engine','Private app VMs',color='gcp')
-    d.arrow(380,310,190,562,'2  HTTPS to backends')
-    d.arrow(580,310,432,562,'2  HTTPS to backends')
-    d.text(88,713,'Regional MIG spans selected zones.',width=55,size=14,bold=True)
-    d.text(88,741,'Health checks + spare serving capacity.',width=57,size=14)
-    d.box(86,850,450,80,'Private services access','Allocated address range + private connection',color='gcp')
-    d.arrow(310,788,310,850,'3  SQL/TLS')
-    d.box(684,796,228,164,'Cloud SQL HA','Same region; primary + standby zones; public IP disabled',color='gcp')
-    d.arrow(536,890,684,890,'4  private IP')
-    d.text(44,1030,'ACCESS  Firewall permits required proxies and health checks; app identity and DB auth are separate.',width=112,size=14)
-    d.text(44,1057,'OPERATE  Cloud Monitoring • autohealing policy • backups + PITR • reconnect after failover',width=111,size=14)
-    return d
 
 
 ALL={
-    'deployment-aws':deployment_aws, 'deployment-azure':deployment_azure,
-    'deployment-gcp':deployment_gcp,
+    'deployment-aws':lambda:architecture_art.render('deployment-aws'),
+    'deployment-azure':lambda:architecture_art.render('deployment-azure'),
+    'deployment-gcp':lambda:architecture_art.render('deployment-gcp'),
     'hierarchy':hierarchy,'scope':scope,'role':role,'identity-decision':decision,
     'firewall':firewall,'multiaz':multiaz,'database-failover':failover,
     'private-access':private_access,'responsibility':responsibility,
-    'application-aws':lambda:application('aws'),
-    'application-azure':lambda:application('azure'),
-    'application-gcp':lambda:application('gcp'),
+    'application-aws':lambda:architecture_art.render('application-aws'),
+    'application-azure':lambda:architecture_art.render('application-azure'),
+    'application-gcp':lambda:architecture_art.render('application-gcp'),
 }
 
 
@@ -337,7 +249,8 @@ def render(name: str, instance: str = "") -> str:
     drawing=ALL[name]()
     instance = instance or name
     svg = drawing.svg().replace(name + "-", instance + "-")
-    return (f'<figure class="fig" id="fig-{instance}"><div class="diagram-scroll" tabindex="0" '
+    figure_class = "fig service-architecture" if isinstance(drawing, architecture_art.ArchitectureDrawing) else "fig"
+    return (f'<figure class="{figure_class}" id="fig-{instance}"><div class="diagram-scroll" tabindex="0" '
             f'role="region" aria-label="{esc(drawing.title)}; scroll horizontally on small screens">'
             + svg + '</div>'
             + f'<figcaption>{esc(drawing.description)} '

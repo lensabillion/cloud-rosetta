@@ -66,6 +66,10 @@ Sources: [ALB subnet and zone requirements](https://docs.aws.amazon.com/elasticl
 6. Private Link connects that endpoint to Azure SQL Database. Disable the SQL public endpoint
    and configure database permissions for the application's managed identity.
 
+This drawing separates app and SQL private endpoints into two subnets for clarity and policy
+control. Microsoft’s baseline shares a private-endpoint subnet; splitting it is a design choice,
+not a Private Link requirement. The delegated integration and gateway subnets remain separate.
+
 Choose supported App Service and SQL tiers, explicitly enable zone redundancy, and size for
 surviving capacity. The managed application and database are drawn outside the consumer VNet;
 private endpoints do not move these services into your subnet. The design omits Key Vault,
@@ -143,15 +147,15 @@ deliberate choice, not an oversight.
 
 | The choice | What it buys | What it costs | Pillars in tension |
 | --- | --- | --- | --- |
-| Two zones rather than three | Most of the resilience for two thirds of the footprint | A zone failure removes half your capacity, so either run the remaining zone at double headroom or accept degraded service during recovery | Reliability against cost |
-| Private compute reached through a managed egress path | No inbound path to the application tier, and a single audited route outward | A per-zone charge and a new dependency in the egress path that can itself fail | Security against cost and reliability |
-| One region | No cross-region write conflicts to resolve and no second footprint to pay for | A regional outage is an outage; recovery means the second-region strategy described above, not a redraw | Reliability against cost and operational excellence |
-| Synchronous standby for the database | A failover that does not lose committed writes | Every commit waits for a second zone to acknowledge, and in the non-readable form the standby serves no traffic while it is paid for | Reliability against performance efficiency and cost |
-| Health checks that remove unhealthy targets | Recovery from an instance failure without human action | In-flight requests on that target are lost, so the application must be safe to retry and able to reconnect | Reliability against a requirement placed on the application |
+| Spread compute across zones | Surviving capacity when one zone fails | AWS and Google show two pools for clarity; Azure uses service-managed zone distribution. Size the surviving capacity for the actual load; a third zone does not imply a fixed cost increase | Reliability against cost |
+| Private application and data access | Restricts direct public access to the origin and database | DNS, routing and authorization need separate configuration. Internet egress is omitted here; choose endpoints, NAT or a firewall only when dependencies require them | Security against operational complexity |
+| One region | Avoids cross-region write coordination and a second application footprint | A regional outage still interrupts service; recovery requires an explicit second-region strategy | Reliability against cost and operational excellence |
+| Zone-resilient database | Provider-managed recovery from a supported zonal failure | Replication and additional capacity cost resources; reconnect time remains. The depicted RDS DB-instance and Cloud SQL standbys do not serve reads. Azure behavior depends on the selected SQL tier | Reliability against performance efficiency and cost |
+| Health-based backend routing | Directs requests away from failed application instances | In-flight requests may fail. Test all-backends-unhealthy behavior and use safe retries; health checks cannot repair bad application state | Reliability against application complexity |
 
 If a requirement makes one of these unacceptable, change the design rather than the diagram.
-Raising the availability target usually means a third zone or a second region, and both move
-cost and operational load before they move availability.
+Measure the bottleneck before adding replicas or regions. A dependency, failed deployment or
+untested restore can dominate recovery even when compute spans several zones.
 
 ## Three Things to Explain Back
 

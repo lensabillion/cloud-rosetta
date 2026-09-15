@@ -42,6 +42,7 @@ type:
     lh-tight: '1.2'
 
 layout:
+  architecture-width: 1440px
   prose: 640px
   wide: 880px
   side: 280px
@@ -98,6 +99,11 @@ palette_extra:
   mint: '#34DDA9'
 
 deviations:
+  - what: Official vendor artwork retains its original colors
+    why: >-
+      Service icons are unmodified provider assets, not interface colors. Recoloring
+      would change the artwork. Labels, boundaries, connectors and backgrounds
+      still use this file's palette; icons supplement readable service names.
   - what: Monospace is kept for code, identifiers and exam codes
     why: >-
       The source sets everything in one family, including shell commands in a Git
@@ -116,3 +122,264 @@ deviations:
     why: >-
       The source is light only. People revise at night, so the same tokens are
       given a dark counterpart rather than inverted at render time.
+
+# Architecture composition: absolute geometry exists only in this design source.
+diagram:
+  width: 1440
+  padding: 24
+  marker_size: 6
+  icon: 48
+  icon_inset: 16
+  text_inset: 80
+  plain_inset: 16
+  title_baseline: 28
+  detail_gap: 24
+  line_height: 24
+  radius: 6
+  stroke: 1.5
+  control_dash: [6, 5]
+  boundary_dash: [8, 6]
+  label_pad: 8
+  title_position: [24, 48]
+  subtitle_position: [24, 86]
+  footer_inset: 20
+  boundary_label_inset: [16, 28]
+  scenes:
+    deployment-aws:
+      height: 1060
+      elements:
+        region:
+          rect: [232, 150, 1180, 670]
+        vpc:
+          rect: [252, 194, 1140, 602]
+        az-a:
+          rect: [574, 254, 794, 214]
+        az-b:
+          rect: [574, 534, 794, 214]
+        client:
+          rect: [24, 408, 184, 110]
+        alb:
+          rect: [276, 390, 264, 154]
+        app-a:
+          rect: [600, 308, 308, 120]
+        app-b:
+          rect: [600, 588, 308, 120]
+        db-a:
+          rect: [1030, 308, 312, 120]
+        db-b:
+          rect: [1030, 588, 312, 120]
+        routes:
+          rect: [282, 582, 256, 172]
+        https:
+          points: [[208, 463], [276, 463]]
+          label_at: [242, 448]
+        targets-a:
+          points: [[540, 440], [558, 440], [558, 368], [600, 368]]
+          label_at: [490, 352]
+        targets-b:
+          points: [[540, 480], [558, 480], [558, 648], [600, 648]]
+          label_at: [558, 510]
+        sql-a:
+          points: [[908, 368], [1030, 368]]
+          label_at: [968, 353]
+        sql-b:
+          points: [[908, 648], [968, 648], [968, 398], [1030, 398]]
+          label_at: [962, 492]
+        replication:
+          points: [[1186, 428], [1186, 588]]
+          label_at: [1242, 504]
+        failure:
+          rect: [32, 866, 656, 132]
+        tradeoff:
+          rect: [752, 866, 656, 132]
+    deployment-azure:
+      height: 1130
+      elements:
+        owner:
+          rect: [232, 152, 1180, 766]
+        vnet:
+          rect: [252, 202, 740, 684]
+        gateway-subnet:
+          rect: [272, 254, 290, 222]
+        app-pe-subnet:
+          rect: [602, 254, 366, 222]
+        integration-subnet:
+          rect: [602, 522, 366, 158]
+        data-pe-subnet:
+          rect: [602, 706, 366, 158]
+        client:
+          rect: [24, 322, 184, 110]
+        gateway:
+          rect: [288, 312, 258, 134]
+        inbound-pe:
+          rect: [624, 312, 322, 134]
+        app:
+          rect: [1110, 312, 282, 134]
+        integration:
+          rect: [624, 560, 322, 96]
+        sql-pe:
+          rect: [624, 744, 322, 96]
+        sql:
+          rect: [1110, 732, 282, 120]
+        dns:
+          rect: [282, 548, 266, 244]
+        client-gateway:
+          points: [[208, 377], [288, 377]]
+          label_at: [247, 360]
+        gateway-pe:
+          points: [[546, 379], [624, 379]]
+          label_at: [584, 362]
+        pe-app:
+          points: [[946, 379], [1110, 379]]
+          label_at: [1028, 362]
+        app-integration:
+          points: [[1252, 446], [1252, 608], [946, 608]]
+          label_at: [1110, 590]
+        integration-pe:
+          points: [[930, 656], [930, 744]]
+          label_at: [860, 698]
+        pe-sql:
+          points: [[946, 792], [1110, 792]]
+          label_at: [1028, 775]
+        failure:
+          rect: [32, 950, 656, 128]
+        tradeoff:
+          rect: [752, 950, 656, 128]
+    deployment-gcp:
+      height: 1080
+      elements:
+        project:
+          rect: [232, 152, 1180, 704]
+        region:
+          rect: [254, 370, 1136, 460]
+          label_at: [1122, 398]
+        vpc:
+          rect: [274, 414, 708, 390]
+        subnet:
+          rect: [292, 460, 668, 258]
+        service-network:
+          rect: [1026, 432, 340, 370]
+        client:
+          rect: [24, 198, 184, 110]
+        lb:
+          rect: [484, 208, 402, 120]
+        armor:
+          rect: [1050, 208, 316, 120]
+        app-a:
+          rect: [316, 536, 280, 128]
+        app-b:
+          rect: [658, 536, 280, 128]
+        writer:
+          rect: [1048, 486, 296, 120]
+        standby:
+          rect: [1048, 688, 296, 96]
+        mig:
+          rect: [306, 734, 634, 60]
+        https:
+          points: [[208, 253], [484, 253]]
+          label_at: [346, 236]
+        armor-policy:
+          points: [[1050, 268], [886, 268]]
+          label_at: [968, 250]
+        backend-a:
+          points: [[610, 328], [610, 508], [480, 508], [480, 536]]
+          label_at: [610, 390]
+        backend-b:
+          points: [[760, 328], [760, 350], [810, 350], [810, 536]]
+          label_at: [816, 390]
+        sql-a:
+          points: [[456, 664], [456, 700], [1002, 700], [1002, 546], [1048, 546]]
+          label_at: [790, 728]
+        sql-b:
+          points: [[798, 664], [798, 700]]
+          label_at: [865, 680]
+        replicate:
+          points: [[1196, 606], [1196, 688]]
+          label_at: [1192, 650]
+        failure:
+          rect: [32, 904, 656, 130]
+        tradeoff:
+          rect: [752, 904, 656, 130]
+    application-aws:
+      height: 870
+      elements:
+        owner:
+          rect: [248, 160, 1164, 480]
+        client:
+          rect: [24, 330, 188, 130]
+        api:
+          rect: [282, 330, 260, 130]
+        client-api:
+          points: [[212, 395], [282, 395]]
+          label_at: [247, 378]
+        api-code:
+          points: [[542, 395], [614, 395]]
+          label_at: [577, 378]
+        code:
+          rect: [614, 330, 308, 130]
+        objects:
+          rect: [1060, 230, 324, 132]
+        metadata:
+          rect: [1060, 464, 324, 132]
+        write-object:
+          points: [[922, 374], [988, 374], [988, 296], [1060, 296]]
+          label_at: [985, 280]
+        write-data:
+          points: [[922, 420], [988, 420], [988, 530], [1060, 530]]
+          label_at: [984, 564]
+        identity:
+          rect: [32, 694, 656, 128]
+        failure:
+          rect: [752, 694, 656, 128]
+    application-azure:
+      height: 870
+      elements:
+        owner:
+          rect: [248, 160, 1164, 480]
+        client:
+          rect: [24, 330, 188, 130]
+        client-code:
+          points: [[212, 395], [614, 395]]
+          label_at: [405, 378]
+        code:
+          rect: [614, 330, 308, 130]
+        objects:
+          rect: [1060, 230, 324, 132]
+        metadata:
+          rect: [1060, 464, 324, 132]
+        write-object:
+          points: [[922, 374], [988, 374], [988, 296], [1060, 296]]
+          label_at: [985, 280]
+        write-data:
+          points: [[922, 420], [988, 420], [988, 530], [1060, 530]]
+          label_at: [984, 564]
+        identity:
+          rect: [32, 694, 656, 128]
+        failure:
+          rect: [752, 694, 656, 128]
+    application-gcp:
+      height: 870
+      elements:
+        owner:
+          rect: [248, 160, 1164, 480]
+        client:
+          rect: [24, 330, 188, 130]
+        client-code:
+          points: [[212, 395], [614, 395]]
+          label_at: [405, 378]
+        code:
+          rect: [614, 330, 308, 130]
+        objects:
+          rect: [1060, 230, 324, 132]
+        metadata:
+          rect: [1060, 464, 324, 132]
+        write-object:
+          points: [[922, 374], [988, 374], [988, 296], [1060, 296]]
+          label_at: [985, 280]
+        write-data:
+          points: [[922, 420], [988, 420], [988, 530], [1060, 530]]
+          label_at: [984, 564]
+        identity:
+          rect: [32, 694, 656, 128]
+        failure:
+          rect: [752, 694, 656, 128]

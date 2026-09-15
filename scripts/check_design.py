@@ -54,7 +54,7 @@ def main() -> int:
 
     # 2. Generated drawings may inline colours, because a standalone SVG cannot
     #    read CSS custom properties, but every value must still be a token.
-    for path in [ROOT / "scripts" / "diagrams.py", ROOT / "scripts" / "surfaces.py"]:
+    for path in [ROOT / "scripts" / "diagrams.py", ROOT / "scripts" / "surfaces.py", ROOT / "scripts" / "architecture_art.py"]:
         src = path.read_text(encoding="utf-8")
         for hit in re.findall(r"#[0-9A-Fa-f]{6}", src):
             if hit.upper() not in allowed:

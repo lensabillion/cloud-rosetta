@@ -45,6 +45,16 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         return {name: (root / name).read_bytes() for name in OUTPUTS}
 
+    def test_design_check_rejects_an_untokenized_architecture_colour(self):
+        root = self.workspace()
+        self.run_build(root)
+        renderer = root / 'scripts/architecture_art.py'
+        renderer.write_text(renderer.read_text() + '\nPROBE = "#123456"\n')
+        result = subprocess.run([sys.executable, 'scripts/check_design.py'], cwd=root,
+                                capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('scripts/architecture_art.py: #123456 is not a value', result.stdout)
+
     def test_one_build_propagates_changed_terms_and_is_clock_independent(self):
         root = self.workspace()
         terms = root / 'data/terms/false-friends.yml'
