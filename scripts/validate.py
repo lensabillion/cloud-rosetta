@@ -136,6 +136,21 @@ def validate_mappings(rep: Report, today: dt.date) -> int:
                 if block.get("name") is None and not block.get("note"):
                     rep.warn(f"{where}.{cloud}", "no equivalent and no note explaining what to do instead")
 
+            # A claim without a source is an assertion. The project rule is that
+            # every behavioural claim links to vendor documentation, and 8 rows
+            # were asserting behaviour on no evidence before this check existed.
+            claim = (row.get("breaks_when") or row.get("shared_trap") or "").strip()
+            sources = row.get("sources") or []
+            if claim and not sources:
+                rep.error(where, "makes a behavioural claim with no source. Cite the vendor page that supports it")
+            # The more a row says it will hurt, the more evidence it needs.
+            if row.get("bite") == "serious" and len(sources) < 2:
+                rep.error(
+                    where,
+                    f"graded 'serious' with {len(sources)} source(s). A row claiming significant "
+                    "risk or cost needs at least two vendor citations",
+                )
+
             # A tag is a promise that studying this helps for that exam. Offering a
             # retired exam as a live filter breaks that promise silently.
             for tag in row.get("exam_tags") or []:

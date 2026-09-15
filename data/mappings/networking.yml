@@ -48,7 +48,10 @@ rows:
       comparison concerns these native controls, not every possible firewall appliance or policy
       product.
     exam_tags: [SAA-C03, SOA-C03]
-    verified: '2026-09-10'
+    sources:
+      - https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html
+      - https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview
+    verified: '2026-09-15'
 
   - id: net.private-service-access
     concept: Reaching a managed service without traversing the internet
@@ -64,19 +67,26 @@ rows:
       name: Private Service Connect, and separately Private Google Access
       url: https://docs.cloud.google.com/vpc/docs/private-service-connect
     breaks_when: >-
-      A private endpoint provides a private destination address for a supported service;
-      routing, DNS, authorization and service configuration must still permit access. Azure
-      service endpoints instead retain the service public address and do not extend to
-      on-premises clients. AWS gateway endpoints provide route-based access to S3 and DynamoDB
-      without an endpoint fee; they are not reachable through VPN, Direct Connect or peering.
-      Interface endpoints use PrivateLink and have service-specific support and charges. Google
-      Private Service Connect and Private Google Access are different mechanisms.
+      The mechanism decides the limits. An AWS gateway endpoint adds a prefix-list route and the
+      instance still reaches the service on its public address, so there is no private address
+      to route to: that is why it cannot be used from on-premises over VPN or Direct Connect, or
+      from a peered VPC. Its route is also regional, so traffic to the same service in another
+      Region leaves through the internet gateway instead. Gateway endpoints serve only S3 and
+      DynamoDB and carry no endpoint charge. An interface endpoint uses PrivateLink to place an
+      address from your subnet in front of the service, which is what makes it reachable from
+      on-premises, and it is billed. Azure draws the same line: a service endpoint keeps the
+      service's public address and does not extend to on-premises clients, while a private
+      endpoint gives it an address in your VNet. Google Private Service Connect and Private
+      Google Access are different mechanisms again. Routing, DNS and authorization must still
+      permit access in every case.
     exam_tags: [SAA-C03, AZ-104, AZ-700, ACE]
     sources:
-      - https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview
       - https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html
+      - https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html
+      - https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview
+      - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview
       - https://docs.cloud.google.com/vpc/docs/private-service-connect
-    verified: '2026-09-14'
+    verified: '2026-09-15'
 
   - id: net.lb.l7-global
     concept: Global layer 7 load balancing
@@ -139,7 +149,11 @@ rows:
       peering products have provider-specific restrictions and exceptions. A transitive design
       requires a supported transit or routing solution, not a chain of ordinary peerings.
     exam_tags: [SAA-C03, AZ-104, AZ-700, ACE]
-    verified: '2026-09-10'
+    sources:
+      - https://docs.aws.amazon.com/vpc/latest/peering/invalid-peering-configurations.html
+      - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview
+      - https://docs.cloud.google.com/vpc/docs/vpc-peering
+    verified: '2026-09-15'
 
   - id: net.nat
     concept: Outbound internet for private instances
