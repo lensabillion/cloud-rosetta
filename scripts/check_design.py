@@ -54,7 +54,7 @@ def main() -> int:
 
     # 2. Generated drawings may inline colours, because a standalone SVG cannot
     #    read CSS custom properties, but every value must still be a token.
-    for path in [ROOT / "scripts" / "diagrams.py"]:
+    for path in [ROOT / "scripts" / "diagrams.py", ROOT / "scripts" / "surfaces.py"]:
         src = path.read_text(encoding="utf-8")
         for hit in re.findall(r"#[0-9A-Fa-f]{6}", src):
             if hit.upper() not in allowed:
@@ -64,7 +64,11 @@ def main() -> int:
     #    drawings, not the source, because a size can reach the output through a
     #    helper's default without appearing as a literal anywhere.
     floor = float(str(doc["type"]["scale"]["t-label"]).rstrip("px"))
-    for svg in sorted((ROOT / "site" / "assets" / "architecture").glob("*.svg")):
+    drawings = sorted((ROOT / "site" / "assets" / "architecture").glob("*.svg"))
+    poster = ROOT / "dist" / "poster.svg"
+    if poster.exists():
+        drawings.append(poster)
+    for svg in drawings:
         for s in sorted({s for s in SVG_SIZE.findall(svg.read_text(encoding="utf-8"))}):
             if float(s) < floor:
                 errors.append(f"{svg.relative_to(ROOT)}: drawn text at {s}px is below the {floor:.0f}px floor")

@@ -13,9 +13,12 @@ Called by build.py. Not usually run directly.
 from __future__ import annotations
 
 import csv
+import datetime as dt
 import io
 import json
 import pathlib
+
+import design
 
 CLOUDS = (("aws", "AWS"), ("azure", "Azure"), ("gcp", "Google Cloud"))
 BITE_MARK = {"serious": "❗", "regular": "🔸", "tip": "🔹"}
@@ -140,59 +143,105 @@ def splice_readme(path: pathlib.Path, block: str) -> None:
 # --------------------------------------------------------------------------- poster
 
 def poster_svg(domains: list[dict], terms: list[dict]) -> str:
-    """One shareable image. Cloud Product Mapping proved a poster travels where a
-    site does not; generating it from the data means it can never drift."""
-    rows = [r for d in domains for r in d["rows"] if r.get("bite") == "serious"]
-    high = [t for t in terms if t["severity"] == "high"][:7]
+    """The whole service landscape on one sheet, graded.
 
-    W, H = 1200, 1500
-    y = 0
-    parts = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" font-family="Roboto, Helvetica, Arial, sans-serif">',
-        f'<rect width="{W}" height="{H}" fill="#16211F"/>',
-        '<text x="56" y="86" fill="#FBFBF9" font-size="52" font-weight="900" letter-spacing="-1.6">Cloud Rosetta</text>',
-        '<text x="56" y="122" fill="#93A6A1" font-size="19">What breaks when you assume AWS, Azure and Google Cloud work the same way.</text>',
-        '<line x1="56" y1="148" x2="1144" y2="148" stroke="#334742"/>',
-        '<text x="56" y="184" fill="#E5A057" font-size="14" font-weight="700" letter-spacing="2.6">THE DIFFERENCES THAT ACTUALLY HURT</text>',
-    ]
+    Cloud Product Mapping proved a poster travels where a site does not, and its
+    weakness is that a name-to-name list cannot say where the mapping fails. This
+    one carries every row in the dataset with its divergence on the left edge, so
+    the eye finds the dangerous rows before it reads a word. Generated from the
+    same YAML as everything else, so it cannot drift.
+    """
+    c = design.load()["colour"]["light"]
+    ink, ink2, ink3 = c["ink"], c["ink2"], c["ink3"]
+    hue = {"aws": c["aws"], "azure": c["azure"], "gcp": c["gcp"]}
+    grade = {"exact": c["ink3"], "partial": c["fault"], "none": c["void"]}
+    mark = {"exact": "", "partial": "!", "none": "X"}
 
-    cols = (56, 420, 700, 950)
-    parts += [
-        f'<text x="{cols[1]}" y="216" fill="#E0A05B" font-size="12" font-weight="700" letter-spacing="2">AWS</text>',
-        f'<text x="{cols[2]}" y="216" fill="#77B4E4" font-size="12" font-weight="700" letter-spacing="2">AZURE</text>',
-        f'<text x="{cols[3]}" y="216" fill="#6DC195" font-size="12" font-weight="700" letter-spacing="2">GOOGLE CLOUD</text>',
-    ]
+    COLW, GUT, PAD = 760, 60, 52
+    W = PAD * 2 + COLW * 2 + GUT
+    LINE, ENTRY, HEAD, TOP = 20, 50, 46, 176
 
-    y = 240
-    for row in rows[:14]:
-        parts.append(f'<line x1="56" y1="{y - 14}" x2="1144" y2="{y - 14}" stroke="#243733"/>')
-        concept = row["concept"][:44]
-        parts.append(f'<text x="{cols[0]}" y="{y + 6}" fill="#EDF2EF" font-size="15" font-weight="500">{_x(concept)}</text>')
-        for (key, _), cx in zip(CLOUDS, cols[1:]):
-            nm = (row.get(key) or {}).get("name") or "no equivalent"
-            parts.append(f'<text x="{cx}" y="{y + 6}" fill="#B9C8C4" font-size="13">{_x(nm[:30])}</text>')
-        y += 40
+    order = [("hierarchy", "Resource hierarchy"), ("identity", "Identity and access"),
+             ("networking", "Networking"), ("compute", "Compute and containers"),
+             ("storage", "Storage"), ("databases", "Databases and analytics")]
+    by = {d["domain"]: d for d in domains}
+    groups = [(slug, title, by[slug]["rows"]) for slug, title in order if slug in by]
 
-    y += 26
-    parts += [
-        f'<line x1="56" y1="{y - 24}" x2="1144" y2="{y - 24}" stroke="#334742"/>',
-        f'<text x="56" y="{y + 6}" fill="#E28C82" font-size="14" font-weight="700" letter-spacing="2.6">SAME WORD, DIFFERENT KIND OF THING</text>',
-    ]
-    y += 44
-    for term in high:
-        parts.append(f'<text x="{cols[0]}" y="{y}" fill="#EDF2EF" font-size="16" font-weight="700">{_x(term["term"])}</text>')
-        for (key, _), cx in zip(CLOUDS, cols[1:]):
-            sense = term.get(key)
-            cat = sense["category"] if sense else "—"
-            parts.append(f'<text x="{cx}" y="{y}" fill="#B9C8C4" font-size="13" font-style="italic">{_x(cat[:30])}</text>')
-        y += 38
+    # Pack each domain into whichever column is currently shorter. The first
+    # attempt split on a running total and left one column half empty.
+    heights = [HEAD + len(rows) * ENTRY + 10 for _, _, rows in groups]
+    left, right, hl, hr = [], [], 0, 0
+    for g, h in zip(groups, heights):
+        if hl <= hr:
+            left.append(g); hl += h
+        else:
+            right.append(g); hr += h
+    colh = max(hl, hr)
+    H = TOP + colh + 96
 
-    parts += [
-        f'<line x1="56" y1="{H - 66}" x2="1144" y2="{H - 66}" stroke="#334742"/>',
-        f'<text x="56" y="{H - 36}" fill="#93A6A1" font-size="13">github.com — Cloud Rosetta &#183; latest recorded source check {latest_verification(domains, terms)} &#183; CC BY 4.0</text>',
-        "</svg>",
-    ]
-    return "\n".join(parts)
+    p = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" '
+         f'font-family="Lato, Helvetica, Arial, sans-serif">',
+         f'<rect width="{W}" height="{H}" fill="{c["sheet"]}"/>']
+
+    p.append(f'<text x="{PAD}" y="74" font-size="44" font-weight="900" fill="{ink}">Cloud Rosetta</text>')
+    p.append(f'<text x="{PAD}" y="108" font-size="19" fill="{ink2}">Every service mapping, graded by how far the equivalence can be trusted.</text>')
+
+    lx = PAD
+    for label, colour, text in (("", grade["exact"], "safe to translate"),
+                                ("!", grade["partial"], "behaves differently"),
+                                ("X", grade["void" if False else "none"], "no honest equivalent")):
+        p.append(f'<rect x="{lx}" y="132" width="4" height="18" fill="{colour}"/>')
+        if label:
+            p.append(f'<text x="{lx + 14}" y="147" font-size="14" font-weight="700" fill="{colour}">{label}</text>')
+        p.append(f'<text x="{lx + (30 if label else 14)}" y="147" font-size="14" fill="{ink3}">{_x(text)}</text>')
+        lx += 34 + len(text) * 7.4 + (16 if label else 0)
+    p.append(f'<line x1="{PAD}" y1="{TOP - 24}" x2="{W - PAD}" y2="{TOP - 24}" stroke="{c["rule2"]}"/>')
+
+    def draw(col, x0):
+        y = TOP
+        for _slug, title, rows in col:
+            p.append(f'<text x="{x0}" y="{y + 16}" font-size="15" font-weight="900" '
+                     f'letter-spacing="1.6" fill="{ink3}">{_x(title.upper())}</text>')
+            p.append(f'<line x1="{x0}" y1="{y + 26}" x2="{x0 + COLW}" y2="{y + 26}" stroke="{c["rule"]}"/>')
+            y += HEAD
+            for r in rows:
+                d = r.get("divergence", "exact")
+                p.append(f'<rect x="{x0}" y="{y - 2}" width="3" height="{ENTRY - 12}" fill="{grade[d]}"/>')
+                concept = r["concept"]
+                p.append(f'<text x="{x0 + 14}" y="{y + 12}" font-size="15" font-weight="700" fill="{ink}">'
+                         f'{_x(concept[:58])}</text>')
+                if mark[d]:
+                    p.append(f'<text x="{x0 + COLW}" y="{y + 12}" font-size="14" font-weight="900" '
+                             f'text-anchor="end" fill="{grade[d]}">{mark[d]}</text>')
+                # Fixed slots rather than estimated advance widths. Estimating is
+                # how the first version collided seven labels: Lato is wider at
+                # 14px than the estimate allowed.
+                slot = (COLW - 14) / 3
+                for i, (key, short) in enumerate((("aws", "AWS"), ("azure", "AZ"), ("gcp", "GC"))):
+                    sx = x0 + 14 + i * slot
+                    name = (r.get(key) or {}).get("name") or "none"
+                    budget = int((slot - 56) / 7.6)
+                    if len(name) > budget:
+                        name = name[: budget - 1].rstrip(" ,") + "\u2026"
+                    p.append(f'<text x="{sx}" y="{y + 12 + LINE}" font-size="14" font-weight="700" '
+                             f'fill="{hue[key]}">{short}</text>')
+                    p.append(f'<text x="{sx + 42}" y="{y + 12 + LINE}" font-size="14" '
+                             f'fill="{ink2}">{_x(name)}</text>')
+                y += ENTRY
+            y += 10
+
+    draw(left, PAD)
+    draw(right, PAD + COLW + GUT)
+
+    p.append(f'<line x1="{PAD}" y1="{H - 58}" x2="{W - PAD}" y2="{H - 58}" stroke="{c["rule2"]}"/>')
+    # The date states when the data was last verified, not when this file happened
+    # to be written. That makes the build deterministic and says something truer.
+    checked = max((r.get("verified", "") for _, _, rows in groups for r in rows), default="")
+    p.append(f'<text x="{PAD}" y="{H - 30}" font-size="14" fill="{ink3}">'
+             f'{sum(len(r) for _, _, r in groups)} mappings &#183; newest verification {checked} '
+             f'&#183; every claim links to vendor documentation in the guide &#183; CC BY 4.0</text>')
+    p.append("</svg>")
+    return "\n".join(p)
 
 
 def _x(text: str) -> str:
