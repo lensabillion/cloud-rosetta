@@ -3,16 +3,20 @@ type: is
 id: is-01m23d5q1ffg33r07p9jm5nckt
 title: Fix decoder filters and add stable links and recoverable search
 kind: bug
-status: open
+status: closed
 priority: 2
-version: 1
+version: 3
 spec_path: docs/reviews/2026-09-09-learning-experience-review.md
 labels:
   - review-2026-09-09
 dependencies: []
 parent_id: is-01m21nbcbvadjeap7gvmks7ems
 created_at: 2026-09-09T15:39:21.007Z
-updated_at: 2026-09-09T15:39:21.007Z
+updated_at: 2026-09-15T08:17:19.440Z
+closed_at: 2026-09-15T08:17:19.437Z
+close_reason: "PR #9 repairs navigation positioning/focus and link resolution, adds stable row/term links, URL search/filter state, related-term links, and one-click empty-result recovery. Seven tests and GitHub data/link checks pass; controls were exercised in the browser."
+resolution: null
+duplicate_of: null
 ---
 ### F08 · P2 · Make Search, Filters, and Links Predictable
 
