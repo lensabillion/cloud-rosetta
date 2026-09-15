@@ -364,7 +364,6 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
                         ("sub", "Service equivalents", refs),
                         ("exams", "Which exam, and what it costs")]),
         ("Practise", [("practice", "Drills and self-check")]),
-        ("Reference", [("design", "The design system")]),
     ]
 
     order = [("home", "Start")]
@@ -383,7 +382,9 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
     shell = shell.replace("{{TOKENS}}", design.css(tokens)).replace("{{FONTS}}", design.font_link(tokens))
     if "{{" in shell:
         raise SystemExit("shell.html has an unfilled placeholder")
-    pages.append(design.page(tokens))
+    # The guide carries cloud content only. The design system is developer
+    # documentation and lives in data/design.yml, docs/design-system.md and the
+    # cloud-rosetta-design skill, not in a reader-facing page.
     body = f"""
 <button class="themetog" title="Switch light and dark" aria-label="Switch light and dark">&#9681;</button>
 <div class="app">
