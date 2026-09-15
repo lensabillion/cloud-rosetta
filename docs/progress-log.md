@@ -211,3 +211,15 @@ all generated outputs reproduced. Browser inspection covered all three new diagr
 section navigation, atlas text-overlap measurements and a 390-pixel viewport without page overflow.
 These are reviewed educational designs, not cloud deployments or measured recovery guarantees.
 See [the audit](reviews/2026-09-14-architecture-audit.md) and tbd bead `cloud-4zfp`.
+
+
+## 2026-09-15 — Repair Page Interactions
+
+Separated the navigation controller into `scripts/router.js`, repaired section positioning and
+focus, added stable comparison/term links, preserved query/filter state, and added recovery
+buttons for empty results. Corrected Markdown fragment/path resolution and URL escaping.
+Seven Python tests pass, including five link regression cases. Browser exercises verified
+section clicks, filtering, reset, menu closing, restored URL state, disclosures and theme
+switching; the 390px layout has no page overflow. See the
+[interaction review](reviews/2026-09-15-interactions.md). Official icon libraries were checked
+for all three providers; adopting their artwork is tracked separately.

@@ -28,6 +28,12 @@ infrastructure. Full-size SVGs remain readable when opened separately; the web g
 horizontal scrolling without shrinking labels on a phone. Text descriptions accompany each view.
 Editable source: [`scripts/diagrams.py`](../scripts/diagrams.py).
 
+Official service artwork is available from [AWS architecture icons](https://aws.amazon.com/architecture/icons/),
+[Azure architecture icons](https://learn.microsoft.com/en-us/azure/architecture/icons/) and the
+[Google Cloud product icon library](https://cloud.google.com/icons). The current drawings use
+project-drawn labelled boxes. Provider icons should supplement product names and explicit
+relationships; their color and shape do not establish security or availability guarantees.
+
 ## One Application, Three Implementations
 
 A user uploads a photo through an authenticated HTTPS endpoint. Application code checks ownership

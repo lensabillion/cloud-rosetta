@@ -51,6 +51,7 @@
 
 *{box-sizing:border-box}
 button,input,select,textarea{font-family:inherit; font-size:var(--t-nav)}
+html{overflow-anchor:none}
 body{background:var(--paper); color:var(--ink); font-family:var(--text);
   font-size:var(--t-body); line-height:1.65; -webkit-font-smoothing:antialiased;
   font-optical-sizing:auto}
@@ -208,13 +209,14 @@ details.note p{margin-top:10px; font-size:var(--t-body); line-height:1.6; color:
   background:var(--sheet); border:1px solid var(--rule2); border-radius:6px; padding:9px 12px;
 }
 .toolbar input::placeholder{color:var(--ink3)}
-.toolbar button{
+.toolbar button,.empty button{
+  min-height:44px;
   font-family:var(--sans); font-size:var(--t-nav); font-weight:600; color:var(--ink2); cursor:pointer;
   background:var(--sheet); border:1px solid var(--rule2); border-radius:6px; padding:8px 13px;
 }
 .toolbar button[aria-pressed="true"]{background:var(--fault); border-color:var(--fault); color:#fff}
 .tcount{font-family:var(--mono); font-size:var(--t-label); color:var(--ink3); margin-left:auto}
-.empty{color:var(--ink3); padding:44px 0; font-size:var(--t-label)}
+.empty{color:var(--ink2); padding:44px 0; font-size:var(--t-label)}
 .hide{display:none !important}
 
 .themetog{

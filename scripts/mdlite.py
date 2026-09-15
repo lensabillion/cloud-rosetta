@@ -42,10 +42,10 @@ RESOLVE = None
 
 
 def _link(label: str, href: str) -> str:
+    href = html.unescape(href)
     external = href.startswith(("http://", "https://"))
-    if href.endswith(".md"):
-        stem = href.rsplit("/", 1)[-1][:-3]
-        href = RESOLVE(stem) if RESOLVE else "#" + stem
+    if not external and not href.startswith(("#", "mailto:", "/")) and RESOLVE:
+        href = RESOLVE(href)
         external = href.startswith(("http://", "https://"))
     rel = ' target="_blank" rel="noopener"' if external else ""
     return f'<a href="{html.escape(href, quote=True)}"{rel}>{label}</a>'
