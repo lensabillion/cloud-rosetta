@@ -1,5 +1,10 @@
 # Design System
 
+> **The design itself lives in [`data/design.yml`](../data/design.yml).** That file is the only
+> place a colour, size or spacing value is defined; `scripts/design.py` turns it into the page's
+> CSS custom properties *and* into the Design page of the guide, so the two cannot disagree.
+> This document holds the reasoning and the measurements behind those values, not the values.
+
 Written before rebuilding, and grounded in measurements of the guides that already work rather
 than in taste. Supersedes the visual half of [design-decisions.md](design-decisions.md); the
 typography evidence there still stands.
