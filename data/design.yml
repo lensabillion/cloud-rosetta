@@ -1,0 +1,115 @@
+# The design lives here. Nothing else defines a colour, a size or a spacing value.
+#
+# scripts/design.py turns this into the :root custom properties in the built page
+# and renders the Design page that shows every token in use. Change a value here
+# and both follow; there is no second place to edit.
+#
+# Provenance: the palette, type scale and spacing are taken from the Elegant
+# Themes blog, measured from computed styles at a 1280px viewport on
+# 15 September 2026. Deviations from that source are recorded in `deviations`
+# below rather than made silently.
+
+meta:
+  name: Cloud Rosetta
+  source: https://www.elegantthemes.com/blog/resources/git-and-github-a-beginners-guide-for-complete-newbies
+  measured: '2026-09-15'
+
+fonts:
+  stacks:
+    text: '"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif'
+    sans: '"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif'
+    serif: '"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif'
+    mono: '"Roboto Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace'
+  google: 'family=Lato:wght@400;700;900&family=Roboto+Mono:wght@400..500'
+
+type:
+  # Six sizes, matching the source's six. Rounded to whole pixels: the source
+  # computes 36.8, 28.8 and 14.45 from multipliers, and a designed scale should
+  # land on round numbers.
+  scale:
+    t-title: 37px
+    t-section: 29px
+    t-sub: 24px
+    t-body: 19px
+    t-nav: 17px
+    t-label: 14px
+  leading:
+    lh-body: '1.9'
+    lh-head: '1.4'
+    lh-tight: '1.2'
+
+layout:
+  prose: 640px
+  wide: 880px
+  side: 280px
+  gap-section: 69px
+  gap-para: 24px
+  radius: 6px
+  radius-pill: 100px
+
+colour:
+  light:
+    paper: '#FFFFFF'
+    sheet: '#FFFFFF'
+    sunk: '#F5F7FA'
+    ink: '#20292F'
+    ink2: '#375174'
+    ink3: '#6D7C90'
+    rule: '#E3E8EF'
+    rule2: '#CBD4E0'
+    accent: '#FF4A9E'
+    accent-ink: '#FFFFFF'
+    link: '#3776FF'
+    focus: '#3776FF'
+    calm: '#6D7C90'
+    fault: '#B14E00'
+    void: '#C02458'
+    aws: '#B45309'
+    azure: '#3776FF'
+    gcp: '#0E8F63'
+  dark:
+    paper: '#151B24'
+    sheet: '#1B2330'
+    sunk: '#202A38'
+    ink: '#F2F5F9'
+    ink2: '#C3D0E2'
+    ink3: '#8FA0B8'
+    rule: '#2B3747'
+    rule2: '#3B4A5E'
+    accent: '#FF6FB2'
+    accent-ink: '#1A0A12'
+    link: '#7FA9FF'
+    focus: '#7FA9FF'
+    calm: '#8FA0B8'
+    fault: '#E9A15C'
+    void: '#F08BA8'
+    aws: '#E0A45F'
+    azure: '#7FA9FF'
+    gcp: '#5CC79B'
+
+# Colours the source uses that this project keeps for accents only, never for
+# body text or large areas.
+palette_extra:
+  violet: '#4A42EC'
+  purple: '#8F42EC'
+  mint: '#34DDA9'
+
+deviations:
+  - what: Monospace is kept for code, identifiers and exam codes
+    why: >-
+      The source sets everything in one family, including shell commands in a Git
+      tutorial. A reference guide has to let a reader tell a command from a
+      sentence, so Roboto Mono stays.
+  - what: Links keep an underline in running prose
+    why: >-
+      The source removes underlines and leans on colour alone, which fails for
+      readers who cannot separate the blue from the surrounding navy. Colour is
+      never the only signal here.
+  - what: Type sizes are rounded to whole pixels
+    why: >-
+      The source computes fractional sizes from multipliers. Rounding keeps the
+      same rhythm and makes the scale legible as a decision.
+  - what: A dark theme is defined
+    why: >-
+      The source is light only. People revise at night, so the same tokens are
+      given a dark counterpart rather than inverted at render time.

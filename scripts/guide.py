@@ -14,6 +14,7 @@ import html
 import pathlib
 import re
 
+import design
 import diagrams
 import mdlite
 
@@ -363,6 +364,7 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
                         ("sub", "Service equivalents", refs),
                         ("exams", "Which exam, and what it costs")]),
         ("Practise", [("practice", "Drills and self-check")]),
+        ("Reference", [("design", "The design system")]),
     ]
 
     order = [("home", "Start")]
@@ -376,7 +378,12 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
     pages = [p.replace("</section>", pagers.get(_page_id(p), "") + "</section>", 1)
              if _page_id(p) in pagers else p for p in pages]
 
+    tokens = design.load()
     shell = (ROOT / "scripts" / "shell.html").read_text(encoding="utf-8")
+    shell = shell.replace("{{TOKENS}}", design.css(tokens)).replace("{{FONTS}}", design.font_link(tokens))
+    if "{{" in shell:
+        raise SystemExit("shell.html has an unfilled placeholder")
+    pages.append(design.page(tokens))
     body = f"""
 <button class="themetog" title="Switch light and dark" aria-label="Switch light and dark">&#9681;</button>
 <div class="app">
