@@ -33,6 +33,9 @@ type:
     t-body: 19px
     t-nav: 17px
     t-label: 14px
+    # Narrow screens step the two display sizes down; nothing else changes.
+    t-title-sm: 28px
+    t-section-sm: 23px
   leading:
     lh-body: '1.9'
     lh-head: '1.4'

@@ -12,7 +12,20 @@ import pathlib
 import textwrap
 
 WIDTH = 960
-PALETTE = {'aws': '#9a5307', 'azure': '#12537f', 'gcp': '#14603c', 'neutral': '#34465a'}
+import design as _design
+
+# Standalone SVG files cannot read the page's CSS custom properties, so the
+# values are inlined here. They are read from data/design.yml rather than
+# written down twice, which is how this palette had drifted to the previous
+# design without anyone noticing.
+_TOKENS = _design.load()["colour"]["light"]
+PALETTE = {
+    'aws': _TOKENS['aws'], 'azure': _TOKENS['azure'], 'gcp': _TOKENS['gcp'],
+    'neutral': _TOKENS['ink2'],
+}
+NEUTRAL = _TOKENS['ink2']
+SURFACE = _TOKENS['sheet']
+BOUNDARY_FILL = _TOKENS['sunk']
 
 
 def esc(value: str) -> str:
@@ -27,7 +40,7 @@ class Diagram:
     height: int
     parts: list[str]
 
-    def text(self, x, y, value, width=48, size=15, color='#34465a', bold=False):
+    def text(self, x, y, value, width=48, size=15, color=NEUTRAL, bold=False):
         lines = textwrap.wrap(value, width, break_long_words=False, break_on_hyphens=False)
         self.parts.append(f'<text x="{x}" y="{y}" font-size="{size}" fill="{color}" '
                           f'font-weight="{700 if bold else 400}">')
@@ -38,7 +51,7 @@ class Diagram:
     def box(self, x, y, w, h, title, detail='', color='neutral', boundary=False):
         hue = PALETTE[color]
         dash = ' stroke-dasharray="7 5"' if boundary else ''
-        fill = '#f5f8fb' if boundary else '#ffffff'
+        fill = BOUNDARY_FILL if boundary else SURFACE
         self.parts.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" '
                           f'fill="{fill}" stroke="{hue}" stroke-width="1.5"{dash}/>')
         self.text(x+14, y+24, title, max(12, int((w-28)/8)), color=hue, bold=True)
@@ -48,13 +61,13 @@ class Diagram:
 
     def arrow(self, x1, y1, x2, y2, label, control=False):
         dash = ' stroke-dasharray="5 4"' if control else ''
-        self.parts.append(f'<path d="M{x1},{y1} L{x2},{y2}" fill="none" stroke="#34465a" '
+        self.parts.append(f'<path d="M{x1},{y1} L{x2},{y2}" fill="none" stroke="{NEUTRAL}" '
                           f'stroke-width="1.8" marker-end="url(#{self.name}-arrow)"{dash}/>')
         # Labels use their own white strip so they never collide with a line.
         lx, ly = (x1+x2)/2, (y1+y2)/2
         length = len(label)*7.2+14
         self.parts.append(f'<rect x="{lx-length/2}" y="{ly-12}" width="{length}" height="21" fill="#fff"/>')
-        self.parts.append(f'<text x="{lx}" y="{ly+3}" text-anchor="middle" font-size="13" fill="#34465a">{esc(label)}</text>')
+        self.parts.append(f'<text x="{lx}" y="{ly+3}" text-anchor="middle" font-size="14" fill="{NEUTRAL}">{esc(label)}</text>')
 
     def svg(self):
         header = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {self.height}" '
@@ -63,7 +76,7 @@ class Diagram:
                   f'<title id="{self.name}-title">{esc(self.title)}</title>'
                   f'<desc id="{self.name}-desc">{esc(self.description)}</desc>'
                   f'<defs><marker id="{self.name}-arrow" viewBox="0 0 10 10" refX="9" refY="5" '
-                  'markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#34465a"/></marker></defs>'
+                  f'markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{NEUTRAL}"/></marker></defs>'
                   f'<rect width="960" height="{self.height}" fill="#fff"/>')
         return header + ''.join(self.parts) + '</svg>\n'
 
@@ -71,9 +84,9 @@ class Diagram:
 def canvas(name, title, description, height=620):
     d = Diagram(name, title, description, height, [])
     d.text(24, 34, title, width=70, size=23, bold=True)
-    d.text(24, 61, 'Cloud Rosetta | Conceptual architecture | Sources and assumptions in the chapter', width=110, size=13)
-    d.text(24, height-42, 'Legend: dashed box = labelled scope; solid arrow = named relationship;', width=115, size=13)
-    d.text(24, height-21, 'dashed arrow = control or recovery action. Colors identify providers, not security.', width=115, size=13)
+    d.text(24, 61, 'Cloud Rosetta | Conceptual architecture | Sources and assumptions in the chapter', width=110, size=14)
+    d.text(24, height-42, 'Legend: dashed box = labelled scope; solid arrow = named relationship;', width=115, size=14)
+    d.text(24, height-21, 'dashed arrow = control or recovery action. Colors identify providers, not security.', width=115, size=14)
     return d
 
 
@@ -152,7 +165,7 @@ def firewall():
         d.box(x,94,288,385,label,color=key,boundary=True)
         d.box(x+16,147,256,102,a,aa,color=key)
         d.box(x+16,304,256,112,b,bb,color=key)
-        d.text(x+16,447,'See chapter for defaults and priority.',width=33,size=13)
+        d.text(x+16,447,'See chapter for defaults and priority.',width=33,size=14)
     return d
 
 
@@ -171,7 +184,7 @@ def multiaz():
         if i==1:
             d.box(x+16,394,256,60,'Reader | AZ C',color='aws')
             # Both readers receive the writer's log, not a chain of reader replication.
-            d.parts.append(f'<path d="M{x+270},176 L{x+280},176 L{x+280},424 L{x+272},424" fill="none" stroke="#34465a" marker-end="url(#multiaz-arrow)"/>')
+            d.parts.append(f'<path d="M{x+270},176 L{x+280},176 L{x+280},424 L{x+272},424" fill="none" stroke="{NEUTRAL}" marker-end="url(#multiaz-arrow)"/>')
         d.text(x+16,489,caption,width=31,size=14)
     return d
 

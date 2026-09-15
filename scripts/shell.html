@@ -102,7 +102,7 @@ code{font-family:var(--mono); font-size:var(--t-nav); background:var(--sunk); pa
 
 .fig{margin:0; display:flex; flex-direction:column; gap:12px}
 .diagram-scroll{overflow-x:auto; border:1px solid var(--rule); border-radius:var(--radius)}
-.fig svg{display:block; width:100%; min-width:900px; height:auto; background:#fff}
+.fig svg{display:block; width:100%; min-width:900px; height:auto; background:var(--sheet)}
 .fig svg text{font-family:var(--sans)}
 .fig figcaption{font-size:var(--t-label); line-height:1.6; color:var(--ink2);
   border-left:2px solid var(--rule2); padding-left:14px}
@@ -192,7 +192,7 @@ details.note p{margin-top:10px; font-size:var(--t-body); line-height:1.6; color:
   font-family:var(--sans); font-size:var(--t-nav); font-weight:600; color:var(--ink2); cursor:pointer;
   background:var(--sheet); border:1px solid var(--rule2); border-radius:var(--radius); padding:8px 13px;
 }
-.toolbar button[aria-pressed="true"]{background:var(--fault); border-color:var(--fault); color:#fff}
+.toolbar button[aria-pressed="true"]{background:var(--fault); border-color:var(--fault); color:var(--accent-ink)}
 .tcount{font-family:var(--mono); font-size:var(--t-label); color:var(--ink3); margin-left:auto}
 .empty{color:var(--ink2); padding:44px 0; font-size:var(--t-label)}
 .hide{display:none !important}
@@ -215,8 +215,9 @@ details.note p{margin-top:10px; font-size:var(--t-body); line-height:1.6; color:
     background:var(--sunk); border:1px solid var(--rule2); border-radius:var(--radius); padding:9px 14px;
   }
   .doc{padding:0 20px 72px}
-  .hero{padding-top:44px} .hero h1{font-size:34px}
-  .page h1{font-size:28px}
+  .hero{padding-top:44px} .hero h1{font-size:var(--t-title-sm)}
+  .page h1{font-size:var(--t-title-sm)}
+  .page h2{font-size:var(--t-section-sm)}
   .svc,.sense{grid-template-columns:1fr; gap:2px}
   .tw{margin-inline:0}
 }

@@ -37,6 +37,9 @@ jobs:
           python -m unittest discover -s tests -v
           python scripts/check_generated.py
 
+      - name: Check the design system
+        run: python scripts/check_design.py
+
       - name: Build the guide
         run: python scripts/build.py
 

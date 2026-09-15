@@ -3,6 +3,13 @@
 The most valuable contribution to this project is a correction. Vendors rename services
 constantly and a stale row is worse than a missing one, because a reader trusts it.
 
+## Changing How It Looks
+
+Every colour, type size and spacing value lives in [`data/design.yml`](data/design.yml). Nothing
+else may declare one, and `python scripts/check_design.py` fails the build if something does. The
+full rules are in the `cloud-rosetta-design` skill, and the Design page of the guide shows every
+token in use.
+
 ## Ground Rules
 
 1. **Never edit `site/`.** It is generated. Change the data and rebuild.
