@@ -17,6 +17,12 @@ actions rather than telling them to run commands.
 
 <!-- END TBD INTEGRATION -->
 
+## Design
+
+**Anything that changes how the guide looks goes through the `cloud-rosetta-design` skill.**
+Every colour, type size and spacing value is defined once in `data/design.yml`; nothing else may
+declare one. `scripts/check_design.py` fails the build if you bypass it, and it runs in CI.
+
 ## Build & Test
 
 _Add your build and test commands here_
