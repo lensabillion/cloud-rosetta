@@ -47,9 +47,9 @@ Outputs: [research-pain-points.md](research-pain-points.md),
 | --- | --- | --- | --- |
 | R4.1 | Build a platform that **addresses** the weaknesses found in R3.4 | done | cloud-se24 |
 | R4.2 | Build a platform that **keeps and enhances** the strengths found in R3.3 | done | cloud-se24 |
-| R4.3 | Visually appealing | in progress | cloud-kml6 |
-| R4.4 | Very usable | in progress | cloud-kml6 |
-| R4.5 | Be creative about representation: illustration, graphs, or another form | in progress | cloud-zwpn |
+| R4.3 | Visually appealing | done | cloud-kml6 |
+| R4.4 | Very usable | done | cloud-kml6 |
+| R4.5 | Be creative about representation: illustration, graphs, or another form | done | cloud-zwpn |
 | R4.6 | Structured to earn GitHub stars | in progress | cloud-57r1 |
 | R4.7 | Open source | done | cloud-57r1 |
 
@@ -87,13 +87,51 @@ supporting page.
 
 | # | Requirement | Status | Bead |
 | --- | --- | --- | --- |
-| R6.1 | Create a pull request | in progress | cloud-8pwg |
+| R6.1 | Create a pull request | done | cloud-8pwg |
+| R6.2 | Publish the guide at a public URL | done | — |
 
 ## Feedback Received and Acted On
 
 | Date | Feedback | Response |
 | --- | --- | --- |
 | 2026-09-09 | "You just created the most boring, the most bare minimum HTML, no creativity whatsoever" | Accepted. The first build was a competent utilitarian layout, which under-read a request that had asked for visual appeal and creativity twice. Rebuilt around the Rosetta Stone idea: three vendor scripts held in a fixed column spine down the whole page, with a visible fracture drawn between columns wherever the translation fails. Tracked as cloud-kml6 |
+
+## Delivered Since the First Build
+
+Recorded here because the requirement table above says what was asked for, not what shipped.
+
+| Merged | What it delivered |
+| --- | --- |
+| #3 | The design system, measured against Tech Interview Handbook and javascript.info |
+| #4 | The rebuild: 15 pages in four groups, sidebar navigation, 620px column, GitHub Pages |
+| #5 | The first six diagrams, a generated pager, on-page contents, and the prose they replaced |
+| #6 | A test suite, a generated-output check, and a standards-mode HTML document |
+| #7 | The Cloud Architecture Atlas, diagrams doubled, source URLs required on every decoder sense |
+| #8 | Deployment architectures, and the first navigation repair |
+| #9 | Link destinations repaired, with a regression test |
+
+### Two Defects Worth Recording
+
+**Chapter links lost their fragments.** The link resolver reduced a target to its filename stem,
+so `02-identity.md#check-your-understanding` arrived without the anchor, and any link into a
+subdirectory or out to a script resolved to nothing. Fixed in #9 with
+[`tests/test_links.py`](../tests/test_links.py) covering fragments, relative paths, subdirectories
+and query strings, so the same class of break fails the build now.
+
+**The guide had no public URL.** The README's "Open the guide" link pointed at a private
+`claude.ai` artifact while the repository was public, so every visitor was sent somewhere they
+could not open. Fixed in #4. The guide now builds and deploys from source on every push to main
+at <https://lensabillion.github.io/cloud-rosetta/>.
+
+## Current State, 15 September 2026
+
+| | |
+| --- | --- |
+| Pages in the guide | 17 |
+| Diagram definitions, figures rendered | 15, 24 |
+| Dataset | 38 graded mappings, 16 terminology collisions, 21 exams |
+| Chapters in `docs/` | 20 |
+| Automated checks | formatter, validator, generated-output check, 7 tests, link crawl |
 
 <!-- This document follows common-doc-guidelines.md. -->
 
