@@ -21,7 +21,11 @@ rows:
       is the closer match for lifting an existing SQL Server across. Picking between Database,
       Managed Instance and SQL on a VM is a recurring AZ-305 question.
     exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, AZ-305, CDL, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://learn.microsoft.com/en-us/azure/azure-sql/azure-sql-iaas-vs-paas-what-is-overview
+      - https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview
+      - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html
+    verified: '2026-09-15'
 
   - id: db.ha-vs-readscale
     concept: High availability versus read scaling on a relational database
@@ -38,22 +42,25 @@ rows:
       url: https://docs.cloud.google.com/sql/docs/mysql/high-availability
     breaks_when: >-
       In RDS, a Multi-AZ DB instance has a non-readable standby, while a Multi-AZ DB cluster has
-      two readable standby instances with semisynchronous replication that also support
-      failover. Ordinary RDS read replicas are a separate asynchronous replication mechanism; do
-      not infer automatic failover from readability. Azure SQL Database zone redundancy and read
-      scale-out depend on service tier; active geo-replication is a separate readable
-      asynchronous copy. Cloud SQL for MySQL regional HA uses a standby for failover; a read
-      replica serves reads separately. Specify the engine, deployment type, and failure scope
-      before choosing.
+      two readable standby instances with semisynchronous replication that also act as failover
+      targets. The cluster form is the constraint that bites: it runs only on RDS for MySQL and
+      PostgreSQL and only on NVMe-backed instance classes, so an engine or class chosen first
+      can rule it out. It also applies flow control, throttling writes on the writer to contain
+      replica lag, which trades write throughput for a shorter failover. Ordinary read replicas
+      are a separate asynchronous mechanism; do not infer automatic failover from readability.
+      Azure SQL Database zone redundancy and read scale-out depend on service tier, and active
+      geo-replication is a separate readable asynchronous copy. Cloud SQL regional HA uses a
+      standby for failover with read replicas added separately. Specify engine, deployment type
+      and failure scope before choosing.
     exam_tags: [CLF-C02, SAA-C03, SOA-C03, AZ-104, AZ-305, ACE]
     sources:
-      - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
+      - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html
+      - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html
       - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html
       - https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla
       - https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview
       - https://docs.cloud.google.com/sql/docs/mysql/high-availability
-      - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html
-    verified: '2026-09-14'
+    verified: '2026-09-15'
 
   - id: db.key-value
     concept: Managed key-value or document NoSQL
@@ -76,7 +83,11 @@ rows:
       than translating a product name. A provider may offer several relevant database products
       beyond this shortlist.
     exam_tags: [SAA-C03, DVA-C02, AZ-305, ACE]
-    verified: '2026-09-10'
+    sources:
+      - https://learn.microsoft.com/en-us/azure/cosmos-db/choose-api
+      - https://docs.cloud.google.com/bigtable/docs/overview
+      - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html
+    verified: '2026-09-15'
 
   - id: db.warehouse
     concept: Analytical data warehouse
@@ -157,4 +168,8 @@ rows:
       acknowledgements, replay/retention, transactions, and delivery semantics for the chosen
       service. A queue requirement does not by itself select a streaming service.
     exam_tags: [SAA-C03, DVA-C02, AZ-305, ACE]
-    verified: '2026-09-10'
+    sources:
+      - https://learn.microsoft.com/en-us/azure/event-grid/compare-messaging-services
+      - https://docs.cloud.google.com/pubsub/docs/overview
+      - https://docs.aws.amazon.com/streams/latest/dev/introduction.html
+    verified: '2026-09-15'

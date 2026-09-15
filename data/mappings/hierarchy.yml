@@ -77,7 +77,9 @@ rows:
     exam_tags: [AZ-900, AZ-104, SAA-C03]
     sources:
       - https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview
-    verified: '2026-09-10'
+      - https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html
+      - https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects
+    verified: '2026-09-15'
 
   - id: hier.virtual-network-scope
     concept: Scope of the virtual network object
@@ -102,7 +104,9 @@ rows:
     exam_tags: [SAA-C03, AZ-104, AZ-700, ACE]
     sources:
       - https://docs.cloud.google.com/vpc/docs/vpc
-    verified: '2026-09-09'
+      - https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html
+      - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview
+    verified: '2026-09-15'
 
   - id: hier.failure-domain
     concept: Independent failure domain within a region

@@ -22,7 +22,11 @@ rows:
       with replication and redundancy configurations in the other providers rather than assuming
       identical placement controls.
     exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
-    verified: '2026-09-10'
+    sources:
+      - https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction
+      - https://docs.cloud.google.com/storage/docs/locations
+      - https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html
+    verified: '2026-09-15'
 
   - id: sto.archive-tier
     concept: Archival storage and retrieval behavior

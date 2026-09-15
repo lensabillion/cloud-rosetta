@@ -37,7 +37,11 @@ rows:
       carries the zone. Note the acronym trap: AWS ASG means Auto Scaling group, while Azure ASG
       means application security group, an unrelated networking object.
     exam_tags: [SAA-C03, SOA-C03, AZ-104, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://docs.cloud.google.com/compute/docs/instance-groups
+      - https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-groups.html
+      - https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups
+    verified: '2026-09-15'
 
   - id: cmp.functions
     concept: Event-driven function as a service
@@ -167,4 +171,8 @@ rows:
       models: the older model has a 24-hour runtime limit; Spot VMs do not have that fixed
       limit. Design for loss of instances and uncertain replacement capacity.
     exam_tags: [CLF-C02, SAA-C03, AZ-900, CDL, ACE]
-    verified: '2026-09-09'
+    sources:
+      - https://docs.cloud.google.com/compute/docs/instances/spot
+      - https://docs.cloud.google.com/compute/docs/instances/preemptible
+      - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html
+    verified: '2026-09-15'

@@ -1,112 +1,365 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" font-family="Roboto, Helvetica, Arial, sans-serif">
-<rect width="1200" height="1500" fill="#16211F"/>
-<text x="56" y="86" fill="#FBFBF9" font-size="52" font-weight="900" letter-spacing="-1.6">Cloud Rosetta</text>
-<text x="56" y="122" fill="#93A6A1" font-size="19">What breaks when you assume AWS, Azure and Google Cloud work the same way.</text>
-<line x1="56" y1="148" x2="1144" y2="148" stroke="#334742"/>
-<text x="56" y="184" fill="#E5A057" font-size="14" font-weight="700" letter-spacing="2.6">THE DIFFERENCES THAT ACTUALLY HURT</text>
-<text x="420" y="216" fill="#E0A05B" font-size="12" font-weight="700" letter-spacing="2">AWS</text>
-<text x="700" y="216" fill="#77B4E4" font-size="12" font-weight="700" letter-spacing="2">AZURE</text>
-<text x="950" y="216" fill="#6DC195" font-size="12" font-weight="700" letter-spacing="2">GOOGLE CLOUD</text>
-<line x1="56" y1="226" x2="1144" y2="226" stroke="#243733"/>
-<text x="56" y="246" fill="#EDF2EF" font-size="15" font-weight="500">High availability versus read scaling on a r</text>
-<text x="420" y="246" fill="#B9C8C4" font-size="13">RDS Multi-AZ DB instance or DB</text>
-<text x="700" y="246" fill="#B9C8C4" font-size="13">Zone-redundant configuration, </text>
-<text x="950" y="246" fill="#B9C8C4" font-size="13">Regional instance, versus read</text>
-<line x1="56" y1="266" x2="1144" y2="266" stroke="#243733"/>
-<text x="56" y="286" fill="#EDF2EF" font-size="15" font-weight="500">The primary workload isolation boundary</text>
-<text x="420" y="286" fill="#B9C8C4" font-size="13">Account</text>
-<text x="700" y="286" fill="#B9C8C4" font-size="13">Subscription</text>
-<text x="950" y="286" fill="#B9C8C4" font-size="13">Project</text>
-<line x1="56" y1="306" x2="1144" y2="306" stroke="#243733"/>
-<text x="56" y="326" fill="#EDF2EF" font-size="15" font-weight="500">Grouping container below the isolation bound</text>
-<text x="420" y="326" fill="#B9C8C4" font-size="13">Resource group</text>
-<text x="700" y="326" fill="#B9C8C4" font-size="13">Resource group</text>
-<text x="950" y="326" fill="#B9C8C4" font-size="13">no equivalent</text>
-<line x1="56" y1="346" x2="1144" y2="346" stroke="#243733"/>
-<text x="56" y="366" fill="#EDF2EF" font-size="15" font-weight="500">Scope of the virtual network object</text>
-<text x="420" y="366" fill="#B9C8C4" font-size="13">VPC, regional</text>
-<text x="700" y="366" fill="#B9C8C4" font-size="13">Virtual network, regional</text>
-<text x="950" y="366" fill="#B9C8C4" font-size="13">VPC network, global</text>
-<line x1="56" y1="386" x2="1144" y2="386" stroke="#243733"/>
-<text x="56" y="406" fill="#EDF2EF" font-size="15" font-weight="500">Independent failure domain within a region</text>
-<text x="420" y="406" fill="#B9C8C4" font-size="13">Availability Zone</text>
-<text x="700" y="406" fill="#B9C8C4" font-size="13">Availability zone</text>
-<text x="950" y="406" fill="#B9C8C4" font-size="13">Zone</text>
-<line x1="56" y1="426" x2="1144" y2="426" stroke="#243733"/>
-<text x="56" y="446" fill="#EDF2EF" font-size="15" font-weight="500">Organization-wide preventive guardrail</text>
-<text x="420" y="446" fill="#B9C8C4" font-size="13">Service control policy</text>
-<text x="700" y="446" fill="#B9C8C4" font-size="13">Azure Policy</text>
-<text x="950" y="446" fill="#B9C8C4" font-size="13">Organization policy constraint</text>
-<line x1="56" y1="466" x2="1144" y2="466" stroke="#243733"/>
-<text x="56" y="486" fill="#EDF2EF" font-size="15" font-weight="500">The object called a "role"</text>
-<text x="420" y="486" fill="#B9C8C4" font-size="13">IAM role</text>
-<text x="700" y="486" fill="#B9C8C4" font-size="13">Azure role definition</text>
-<text x="950" y="486" fill="#B9C8C4" font-size="13">IAM role</text>
-<line x1="56" y1="506" x2="1144" y2="506" stroke="#243733"/>
-<text x="56" y="526" fill="#EDF2EF" font-size="15" font-weight="500">Credentials for compute without stored secre</text>
-<text x="420" y="526" fill="#B9C8C4" font-size="13">IAM role via instance profile</text>
-<text x="700" y="526" fill="#B9C8C4" font-size="13">Managed identity</text>
-<text x="950" y="526" fill="#B9C8C4" font-size="13">Attached service account</text>
-<line x1="56" y1="546" x2="1144" y2="546" stroke="#243733"/>
-<text x="56" y="566" fill="#EDF2EF" font-size="15" font-weight="500">How a permission decision is reached</text>
-<text x="420" y="566" fill="#B9C8C4" font-size="13">IAM policy evaluation by reque</text>
-<text x="700" y="566" fill="#B9C8C4" font-size="13">Deny assignment, then additive</text>
-<text x="950" y="566" fill="#B9C8C4" font-size="13">Deny policy, then additive uni</text>
-<line x1="56" y1="586" x2="1144" y2="586" stroke="#243733"/>
-<text x="56" y="606" fill="#EDF2EF" font-size="15" font-weight="500">Administering the directory versus administe</text>
-<text x="420" y="606" fill="#B9C8C4" font-size="13">IAM Identity Center administra</text>
-<text x="700" y="606" fill="#B9C8C4" font-size="13">Microsoft Entra roles and Azur</text>
-<text x="950" y="606" fill="#B9C8C4" font-size="13">Cloud Identity super administr</text>
-<line x1="56" y1="626" x2="1144" y2="626" stroke="#243733"/>
-<text x="56" y="646" fill="#EDF2EF" font-size="15" font-weight="500">Instance-level traffic filtering</text>
-<text x="420" y="646" fill="#B9C8C4" font-size="13">Security group</text>
-<text x="700" y="646" fill="#B9C8C4" font-size="13">Network security group</text>
-<text x="950" y="646" fill="#B9C8C4" font-size="13">VPC firewall rule</text>
-<line x1="56" y1="666" x2="1144" y2="666" stroke="#243733"/>
-<text x="56" y="686" fill="#EDF2EF" font-size="15" font-weight="500">Reaching a managed service without traversin</text>
-<text x="420" y="686" fill="#B9C8C4" font-size="13">VPC endpoint, gateway or inter</text>
-<text x="700" y="686" fill="#B9C8C4" font-size="13">Private endpoint, and separate</text>
-<text x="950" y="686" fill="#B9C8C4" font-size="13">Private Service Connect, and s</text>
-<line x1="56" y1="706" x2="1144" y2="706" stroke="#243733"/>
-<text x="56" y="726" fill="#EDF2EF" font-size="15" font-weight="500">Archival storage and retrieval behavior</text>
-<text x="420" y="726" fill="#B9C8C4" font-size="13">S3 Glacier Deep Archive</text>
-<text x="700" y="726" fill="#B9C8C4" font-size="13">Archive access tier</text>
-<text x="950" y="726" fill="#B9C8C4" font-size="13">Archive storage class</text>
-<line x1="56" y1="746" x2="1144" y2="746" stroke="#243733"/>
-<text x="56" y="766" fill="#EDF2EF" font-size="15" font-weight="500">Naming the replication and durability settin</text>
-<text x="420" y="766" fill="#B9C8C4" font-size="13">Storage class, with zonal scop</text>
-<text x="700" y="766" fill="#B9C8C4" font-size="13">LRS, ZRS, GRS, GZRS, RA-GRS</text>
-<text x="950" y="766" fill="#B9C8C4" font-size="13">Location type, region, dual-re</text>
-<line x1="56" y1="802" x2="1144" y2="802" stroke="#334742"/>
-<text x="56" y="832" fill="#E28C82" font-size="14" font-weight="700" letter-spacing="2.6">SAME WORD, DIFFERENT KIND OF THING</text>
-<text x="56" y="870" fill="#EDF2EF" font-size="16" font-weight="700">Role</text>
-<text x="420" y="870" fill="#B9C8C4" font-size="13" font-style="italic">identity</text>
-<text x="700" y="870" fill="#B9C8C4" font-size="13" font-style="italic">permission set</text>
-<text x="950" y="870" fill="#B9C8C4" font-size="13" font-style="italic">permission set</text>
-<text x="56" y="908" fill="#EDF2EF" font-size="16" font-weight="700">Resource group</text>
-<text x="420" y="908" fill="#B9C8C4" font-size="13" font-style="italic">saved view</text>
-<text x="700" y="908" fill="#B9C8C4" font-size="13" font-style="italic">ownership container</text>
-<text x="950" y="908" fill="#B9C8C4" font-size="13" font-style="italic">—</text>
-<text x="56" y="946" fill="#EDF2EF" font-size="16" font-weight="700">Policy</text>
-<text x="420" y="946" fill="#B9C8C4" font-size="13" font-style="italic">permissions document</text>
-<text x="700" y="946" fill="#B9C8C4" font-size="13" font-style="italic">configuration governance engin</text>
-<text x="950" y="946" fill="#B9C8C4" font-size="13" font-style="italic">two different things</text>
-<text x="56" y="984" fill="#EDF2EF" font-size="16" font-weight="700">ASG</text>
-<text x="420" y="984" fill="#B9C8C4" font-size="13" font-style="italic">compute</text>
-<text x="700" y="984" fill="#B9C8C4" font-size="13" font-style="italic">networking</text>
-<text x="950" y="984" fill="#B9C8C4" font-size="13" font-style="italic">—</text>
-<text x="56" y="1022" fill="#EDF2EF" font-size="16" font-weight="700">Container</text>
-<text x="420" y="1022" fill="#B9C8C4" font-size="13" font-style="italic">compute packaging</text>
-<text x="700" y="1022" fill="#B9C8C4" font-size="13" font-style="italic">storage grouping</text>
-<text x="950" y="1022" fill="#B9C8C4" font-size="13" font-style="italic">compute packaging</text>
-<text x="56" y="1060" fill="#EDF2EF" font-size="16" font-weight="700">Availability set</text>
-<text x="420" y="1060" fill="#B9C8C4" font-size="13" font-style="italic">no equivalent</text>
-<text x="700" y="1060" fill="#B9C8C4" font-size="13" font-style="italic">intra-datacentre placement</text>
-<text x="950" y="1060" fill="#B9C8C4" font-size="13" font-style="italic">no equivalent</text>
-<text x="56" y="1098" fill="#EDF2EF" font-size="16" font-weight="700">Endpoint</text>
-<text x="420" y="1098" fill="#B9C8C4" font-size="13" font-style="italic">private connectivity</text>
-<text x="700" y="1098" fill="#B9C8C4" font-size="13" font-style="italic">private connectivity, two vari</text>
-<text x="950" y="1098" fill="#B9C8C4" font-size="13" font-style="italic">private connectivity</text>
-<line x1="56" y1="1434" x2="1144" y2="1434" stroke="#334742"/>
-<text x="56" y="1464" fill="#93A6A1" font-size="13">github.com — Cloud Rosetta &#183; latest recorded source check 2026-09-14 &#183; CC BY 4.0</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1684 1440" width="1684" height="1440" font-family="Lato, Helvetica, Arial, sans-serif">
+<rect width="1684" height="1440" fill="#FFFFFF"/>
+<text x="52" y="74" font-size="44" font-weight="900" fill="#20292F">Cloud Rosetta</text>
+<text x="52" y="108" font-size="19" fill="#375174">Every service mapping, graded by how far the equivalence can be trusted.</text>
+<rect x="52" y="132" width="4" height="18" fill="#6D7C90"/>
+<text x="66" y="147" font-size="14" fill="#6D7C90">safe to translate</text>
+<rect x="211.8" y="132" width="4" height="18" fill="#B14E00"/>
+<text x="225.8" y="147" font-size="14" font-weight="700" fill="#B14E00">!</text>
+<text x="241.8" y="147" font-size="14" fill="#6D7C90">behaves differently</text>
+<rect x="402.4" y="132" width="4" height="18" fill="#C02458"/>
+<text x="416.4" y="147" font-size="14" font-weight="700" fill="#C02458">X</text>
+<text x="432.4" y="147" font-size="14" fill="#6D7C90">no honest equivalent</text>
+<line x1="52" y1="152" x2="1632" y2="152" stroke="#CBD4E0"/>
+<text x="52" y="192" font-size="15" font-weight="900" letter-spacing="1.6" fill="#6D7C90">RESOURCE HIERARCHY</text>
+<line x1="52" y1="202" x2="812" y2="202" stroke="#E3E8EF"/>
+<rect x="52" y="220" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="234" font-size="15" font-weight="700" fill="#20292F">The primary workload isolation boundary</text>
+<text x="812" y="234" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="254" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="254" font-size="14" fill="#375174">Account</text>
+<text x="314.66666666666663" y="254" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="254" font-size="14" fill="#375174">Subscription</text>
+<text x="563.3333333333333" y="254" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="254" font-size="14" fill="#375174">Project</text>
+<rect x="52" y="270" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="284" font-size="15" font-weight="700" fill="#20292F">Grouping container above the isolation boundary</text>
+<text x="812" y="284" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="304" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="304" font-size="14" fill="#375174">Organizational unit</text>
+<text x="314.66666666666663" y="304" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="304" font-size="14" fill="#375174">Management group</text>
+<text x="563.3333333333333" y="304" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="304" font-size="14" fill="#375174">Folder</text>
+<rect x="52" y="320" width="3" height="38" fill="#C02458"/>
+<text x="66" y="334" font-size="15" font-weight="700" fill="#20292F">Grouping container below the isolation boundary</text>
+<text x="812" y="334" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="66.0" y="354" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="354" font-size="14" fill="#375174">Resource group</text>
+<text x="314.66666666666663" y="354" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="354" font-size="14" fill="#375174">Resource group</text>
+<text x="563.3333333333333" y="354" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="354" font-size="14" fill="#375174">none</text>
+<rect x="52" y="370" width="3" height="38" fill="#C02458"/>
+<text x="66" y="384" font-size="15" font-weight="700" fill="#20292F">Scope of the virtual network object</text>
+<text x="812" y="384" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="66.0" y="404" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="404" font-size="14" fill="#375174">VPC, regional</text>
+<text x="314.66666666666663" y="404" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="404" font-size="14" fill="#375174">Virtual network, regional</text>
+<text x="563.3333333333333" y="404" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="404" font-size="14" fill="#375174">VPC network, global</text>
+<rect x="52" y="420" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="434" font-size="15" font-weight="700" fill="#20292F">Independent failure domain within a region</text>
+<text x="812" y="434" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="454" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="454" font-size="14" fill="#375174">Availability Zone</text>
+<text x="314.66666666666663" y="454" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="454" font-size="14" fill="#375174">Availability zone</text>
+<text x="563.3333333333333" y="454" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="454" font-size="14" fill="#375174">Zone</text>
+<rect x="52" y="470" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="484" font-size="15" font-weight="700" fill="#20292F">Organization-wide preventive guardrail</text>
+<text x="812" y="484" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="504" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="504" font-size="14" fill="#375174">Service control policy</text>
+<text x="314.66666666666663" y="504" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="504" font-size="14" fill="#375174">Azure Policy</text>
+<text x="563.3333333333333" y="504" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="504" font-size="14" fill="#375174">Organization policy cons…</text>
+<text x="52" y="548" font-size="15" font-weight="900" letter-spacing="1.6" fill="#6D7C90">NETWORKING</text>
+<line x1="52" y1="558" x2="812" y2="558" stroke="#E3E8EF"/>
+<rect x="52" y="576" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="590" font-size="15" font-weight="700" fill="#20292F">Instance-level traffic filtering</text>
+<text x="812" y="590" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="610" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="610" font-size="14" fill="#375174">Security group</text>
+<text x="314.66666666666663" y="610" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="610" font-size="14" fill="#375174">Network security group</text>
+<text x="563.3333333333333" y="610" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="610" font-size="14" fill="#375174">VPC firewall rule</text>
+<rect x="52" y="626" width="3" height="38" fill="#C02458"/>
+<text x="66" y="640" font-size="15" font-weight="700" fill="#20292F">Stateless subnet-level filtering</text>
+<text x="812" y="640" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="66.0" y="660" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="660" font-size="14" fill="#375174">Network ACL</text>
+<text x="314.66666666666663" y="660" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="660" font-size="14" fill="#375174">none</text>
+<text x="563.3333333333333" y="660" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="660" font-size="14" fill="#375174">none</text>
+<rect x="52" y="676" width="3" height="38" fill="#C02458"/>
+<text x="66" y="690" font-size="15" font-weight="700" fill="#20292F">Reaching a managed service without traversing the internet</text>
+<text x="812" y="690" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="66.0" y="710" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="710" font-size="14" fill="#375174">VPC endpoint, gateway or…</text>
+<text x="314.66666666666663" y="710" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="710" font-size="14" fill="#375174">Private endpoint, and se…</text>
+<text x="563.3333333333333" y="710" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="710" font-size="14" fill="#375174">Private Service Connect…</text>
+<rect x="52" y="726" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="740" font-size="15" font-weight="700" fill="#20292F">Global layer 7 load balancing</text>
+<text x="812" y="740" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="760" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="760" font-size="14" fill="#375174">Amazon CloudFront</text>
+<text x="314.66666666666663" y="760" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="760" font-size="14" fill="#375174">Azure Front Door</text>
+<text x="563.3333333333333" y="760" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="760" font-size="14" fill="#375174">Global external Applicat…</text>
+<rect x="52" y="776" width="3" height="38" fill="#6D7C90"/>
+<text x="66" y="790" font-size="15" font-weight="700" fill="#20292F">Regional layer 7 load balancing</text>
+<text x="66.0" y="810" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="810" font-size="14" fill="#375174">Application Load Balancer</text>
+<text x="314.66666666666663" y="810" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="810" font-size="14" fill="#375174">Application Gateway</text>
+<text x="563.3333333333333" y="810" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="810" font-size="14" fill="#375174">Regional external Applic…</text>
+<rect x="52" y="826" width="3" height="38" fill="#6D7C90"/>
+<text x="66" y="840" font-size="15" font-weight="700" fill="#20292F">Connecting two virtual networks</text>
+<text x="66.0" y="860" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="860" font-size="14" fill="#375174">VPC peering</text>
+<text x="314.66666666666663" y="860" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="860" font-size="14" fill="#375174">Virtual network peering</text>
+<text x="563.3333333333333" y="860" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="860" font-size="14" fill="#375174">VPC Network Peering</text>
+<rect x="52" y="876" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="890" font-size="15" font-weight="700" fill="#20292F">Outbound internet for private instances</text>
+<text x="812" y="890" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="910" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="910" font-size="14" fill="#375174">NAT gateway</text>
+<text x="314.66666666666663" y="910" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="910" font-size="14" fill="#375174">Azure NAT Gateway</text>
+<text x="563.3333333333333" y="910" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="910" font-size="14" fill="#375174">Cloud NAT</text>
+<rect x="52" y="926" width="3" height="38" fill="#6D7C90"/>
+<text x="66" y="940" font-size="15" font-weight="700" fill="#20292F">Private circuit to on-premises</text>
+<text x="66.0" y="960" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="960" font-size="14" fill="#375174">AWS Direct Connect</text>
+<text x="314.66666666666663" y="960" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="960" font-size="14" fill="#375174">Azure ExpressRoute</text>
+<text x="563.3333333333333" y="960" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="960" font-size="14" fill="#375174">Cloud Interconnect</text>
+<text x="52" y="1004" font-size="15" font-weight="900" letter-spacing="1.6" fill="#6D7C90">DATABASES AND ANALYTICS</text>
+<line x1="52" y1="1014" x2="812" y2="1014" stroke="#E3E8EF"/>
+<rect x="52" y="1032" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="1046" font-size="15" font-weight="700" fill="#20292F">Managed relational database</text>
+<text x="812" y="1046" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="1066" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="1066" font-size="14" fill="#375174">Amazon RDS</text>
+<text x="314.66666666666663" y="1066" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="1066" font-size="14" fill="#375174">Azure SQL Database, or A…</text>
+<text x="563.3333333333333" y="1066" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="1066" font-size="14" fill="#375174">Cloud SQL</text>
+<rect x="52" y="1082" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="1096" font-size="15" font-weight="700" fill="#20292F">High availability versus read scaling on a relational data</text>
+<text x="812" y="1096" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="1116" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="1116" font-size="14" fill="#375174">RDS Multi-AZ DB instance…</text>
+<text x="314.66666666666663" y="1116" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="1116" font-size="14" fill="#375174">Zone-redundant configura…</text>
+<text x="563.3333333333333" y="1116" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="1116" font-size="14" fill="#375174">Regional instance, versu…</text>
+<rect x="52" y="1132" width="3" height="38" fill="#C02458"/>
+<text x="66" y="1146" font-size="15" font-weight="700" fill="#20292F">Managed key-value or document NoSQL</text>
+<text x="812" y="1146" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="66.0" y="1166" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="1166" font-size="14" fill="#375174">Amazon DynamoDB</text>
+<text x="314.66666666666663" y="1166" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="1166" font-size="14" fill="#375174">Azure Cosmos DB</text>
+<text x="563.3333333333333" y="1166" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="1166" font-size="14" fill="#375174">Firestore, or Bigtable</text>
+<rect x="52" y="1182" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="1196" font-size="15" font-weight="700" fill="#20292F">Analytical data warehouse</text>
+<text x="812" y="1196" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="1216" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="1216" font-size="14" fill="#375174">Amazon Redshift</text>
+<text x="314.66666666666663" y="1216" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="1216" font-size="14" fill="#375174">Microsoft Fabric Warehou…</text>
+<text x="563.3333333333333" y="1216" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="1216" font-size="14" fill="#375174">BigQuery</text>
+<rect x="52" y="1232" width="3" height="38" fill="#B14E00"/>
+<text x="66" y="1246" font-size="15" font-weight="700" fill="#20292F">Managed in-memory cache</text>
+<text x="812" y="1246" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="66.0" y="1266" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="1266" font-size="14" fill="#375174">Amazon ElastiCache</text>
+<text x="314.66666666666663" y="1266" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="1266" font-size="14" fill="#375174">Azure Managed Redis</text>
+<text x="563.3333333333333" y="1266" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="1266" font-size="14" fill="#375174">Memorystore</text>
+<rect x="52" y="1282" width="3" height="38" fill="#C02458"/>
+<text x="66" y="1296" font-size="15" font-weight="700" fill="#20292F">Streaming ingestion and pub/sub messaging</text>
+<text x="812" y="1296" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="66.0" y="1316" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="108.0" y="1316" font-size="14" fill="#375174">Amazon Kinesis Data Stre…</text>
+<text x="314.66666666666663" y="1316" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="356.66666666666663" y="1316" font-size="14" fill="#375174">Azure Event Hubs, and se…</text>
+<text x="563.3333333333333" y="1316" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="605.3333333333333" y="1316" font-size="14" fill="#375174">Pub/Sub</text>
+<text x="872" y="192" font-size="15" font-weight="900" letter-spacing="1.6" fill="#6D7C90">IDENTITY AND ACCESS</text>
+<line x1="872" y1="202" x2="1632" y2="202" stroke="#E3E8EF"/>
+<rect x="872" y="220" width="3" height="38" fill="#C02458"/>
+<text x="886" y="234" font-size="15" font-weight="700" fill="#20292F">The object called a "role"</text>
+<text x="1632" y="234" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="886.0" y="254" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="254" font-size="14" fill="#375174">IAM role</text>
+<text x="1134.6666666666667" y="254" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="254" font-size="14" fill="#375174">Azure role definition</text>
+<text x="1383.3333333333333" y="254" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="254" font-size="14" fill="#375174">IAM role</text>
+<rect x="872" y="270" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="284" font-size="15" font-weight="700" fill="#20292F">Credentials for compute without stored secrets</text>
+<text x="1632" y="284" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="304" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="304" font-size="14" fill="#375174">IAM role via instance pr…</text>
+<text x="1134.6666666666667" y="304" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="304" font-size="14" fill="#375174">Managed identity</text>
+<text x="1383.3333333333333" y="304" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="304" font-size="14" fill="#375174">Attached service account</text>
+<rect x="872" y="320" width="3" height="38" fill="#C02458"/>
+<text x="886" y="334" font-size="15" font-weight="700" fill="#20292F">How a permission decision is reached</text>
+<text x="1632" y="334" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="886.0" y="354" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="354" font-size="14" fill="#375174">IAM policy evaluation by…</text>
+<text x="1134.6666666666667" y="354" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="354" font-size="14" fill="#375174">Deny assignment, then ad…</text>
+<text x="1383.3333333333333" y="354" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="354" font-size="14" fill="#375174">Deny policy, then additi…</text>
+<rect x="872" y="370" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="384" font-size="15" font-weight="700" fill="#20292F">Administering the directory versus administering resources</text>
+<text x="1632" y="384" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="404" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="404" font-size="14" fill="#375174">IAM Identity Center admi…</text>
+<text x="1134.6666666666667" y="404" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="404" font-size="14" fill="#375174">Microsoft Entra roles an…</text>
+<text x="1383.3333333333333" y="404" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="404" font-size="14" fill="#375174">Cloud Identity super adm…</text>
+<rect x="872" y="420" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="434" font-size="15" font-weight="700" fill="#20292F">Workforce single sign-on into the cloud</text>
+<text x="1632" y="434" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="454" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="454" font-size="14" fill="#375174">IAM Identity Center</text>
+<text x="1134.6666666666667" y="454" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="454" font-size="14" fill="#375174">Microsoft Entra ID</text>
+<text x="1383.3333333333333" y="454" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="454" font-size="14" fill="#375174">Cloud Identity, or Workf…</text>
+<rect x="872" y="470" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="484" font-size="15" font-weight="700" fill="#20292F">Storing application secrets</text>
+<text x="1632" y="484" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="504" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="504" font-size="14" fill="#375174">Secrets Manager, or SSM…</text>
+<text x="1134.6666666666667" y="504" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="504" font-size="14" fill="#375174">Azure Key Vault</text>
+<text x="1383.3333333333333" y="504" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="504" font-size="14" fill="#375174">Secret Manager</text>
+<text x="872" y="548" font-size="15" font-weight="900" letter-spacing="1.6" fill="#6D7C90">COMPUTE AND CONTAINERS</text>
+<line x1="872" y1="558" x2="1632" y2="558" stroke="#E3E8EF"/>
+<rect x="872" y="576" width="3" height="38" fill="#6D7C90"/>
+<text x="886" y="590" font-size="15" font-weight="700" fill="#20292F">Infrastructure-as-a-service virtual machine</text>
+<text x="886.0" y="610" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="610" font-size="14" fill="#375174">Amazon EC2</text>
+<text x="1134.6666666666667" y="610" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="610" font-size="14" fill="#375174">Azure Virtual Machines</text>
+<text x="1383.3333333333333" y="610" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="610" font-size="14" fill="#375174">Compute Engine</text>
+<rect x="872" y="626" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="640" font-size="15" font-weight="700" fill="#20292F">Horizontally scaling a pool of virtual machines</text>
+<text x="1632" y="640" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="660" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="660" font-size="14" fill="#375174">Auto Scaling group</text>
+<text x="1134.6666666666667" y="660" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="660" font-size="14" fill="#375174">Virtual Machine Scale Set</text>
+<text x="1383.3333333333333" y="660" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="660" font-size="14" fill="#375174">Managed instance group</text>
+<rect x="872" y="676" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="690" font-size="15" font-weight="700" fill="#20292F">Event-driven function as a service</text>
+<text x="1632" y="690" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="710" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="710" font-size="14" fill="#375174">AWS Lambda</text>
+<text x="1134.6666666666667" y="710" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="710" font-size="14" fill="#375174">Azure Functions</text>
+<text x="1383.3333333333333" y="710" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="710" font-size="14" fill="#375174">Cloud Run functions</text>
+<rect x="872" y="726" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="740" font-size="15" font-weight="700" fill="#20292F">Running a container without managing servers</text>
+<text x="1632" y="740" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="760" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="760" font-size="14" fill="#375174">AWS Fargate</text>
+<text x="1134.6666666666667" y="760" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="760" font-size="14" fill="#375174">Azure Container Apps</text>
+<text x="1383.3333333333333" y="760" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="760" font-size="14" fill="#375174">Cloud Run</text>
+<rect x="872" y="776" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="790" font-size="15" font-weight="700" fill="#20292F">Managed Kubernetes</text>
+<text x="1632" y="790" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="810" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="810" font-size="14" fill="#375174">Amazon EKS</text>
+<text x="1134.6666666666667" y="810" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="810" font-size="14" fill="#375174">Azure Kubernetes Service</text>
+<text x="1383.3333333333333" y="810" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="810" font-size="14" fill="#375174">Google Kubernetes Engine</text>
+<rect x="872" y="826" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="840" font-size="15" font-weight="700" fill="#20292F">Deploy code, platform manages the runtime</text>
+<text x="1632" y="840" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="860" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="860" font-size="14" fill="#375174">AWS Elastic Beanstalk</text>
+<text x="1134.6666666666667" y="860" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="860" font-size="14" fill="#375174">Azure App Service</text>
+<text x="1383.3333333333333" y="860" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="860" font-size="14" fill="#375174">App Engine</text>
+<rect x="872" y="876" width="3" height="38" fill="#6D7C90"/>
+<text x="886" y="890" font-size="15" font-weight="700" fill="#20292F">Interruptible discounted capacity</text>
+<text x="886.0" y="910" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="910" font-size="14" fill="#375174">EC2 Spot Instances</text>
+<text x="1134.6666666666667" y="910" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="910" font-size="14" fill="#375174">Azure Spot Virtual Machi…</text>
+<text x="1383.3333333333333" y="910" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="910" font-size="14" fill="#375174">Spot VMs</text>
+<text x="872" y="954" font-size="15" font-weight="900" letter-spacing="1.6" fill="#6D7C90">STORAGE</text>
+<line x1="872" y1="964" x2="1632" y2="964" stroke="#E3E8EF"/>
+<rect x="872" y="982" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="996" font-size="15" font-weight="700" fill="#20292F">Object storage</text>
+<text x="1632" y="996" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="1016" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="1016" font-size="14" fill="#375174">Amazon S3</text>
+<text x="1134.6666666666667" y="1016" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="1016" font-size="14" fill="#375174">Azure Blob Storage</text>
+<text x="1383.3333333333333" y="1016" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="1016" font-size="14" fill="#375174">Cloud Storage</text>
+<rect x="872" y="1032" width="3" height="38" fill="#C02458"/>
+<text x="886" y="1046" font-size="15" font-weight="700" fill="#20292F">Archival storage and retrieval behavior</text>
+<text x="1632" y="1046" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="886.0" y="1066" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="1066" font-size="14" fill="#375174">S3 Glacier Deep Archive</text>
+<text x="1134.6666666666667" y="1066" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="1066" font-size="14" fill="#375174">Archive access tier</text>
+<text x="1383.3333333333333" y="1066" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="1066" font-size="14" fill="#375174">Archive storage class</text>
+<rect x="872" y="1082" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="1096" font-size="15" font-weight="700" fill="#20292F">Network-attached block storage for a VM</text>
+<text x="1632" y="1096" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="1116" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="1116" font-size="14" fill="#375174">Amazon EBS</text>
+<text x="1134.6666666666667" y="1116" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="1116" font-size="14" fill="#375174">Azure managed disks</text>
+<text x="1383.3333333333333" y="1116" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="1116" font-size="14" fill="#375174">Persistent Disk and Hype…</text>
+<rect x="872" y="1132" width="3" height="38" fill="#B14E00"/>
+<text x="886" y="1146" font-size="15" font-weight="700" fill="#20292F">Shared network file system</text>
+<text x="1632" y="1146" font-size="14" font-weight="900" text-anchor="end" fill="#B14E00">!</text>
+<text x="886.0" y="1166" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="1166" font-size="14" fill="#375174">Amazon EFS, or FSx</text>
+<text x="1134.6666666666667" y="1166" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="1166" font-size="14" fill="#375174">Azure Files</text>
+<text x="1383.3333333333333" y="1166" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="1166" font-size="14" fill="#375174">Filestore</text>
+<rect x="872" y="1182" width="3" height="38" fill="#C02458"/>
+<text x="886" y="1196" font-size="15" font-weight="700" fill="#20292F">Naming the replication and durability setting</text>
+<text x="1632" y="1196" font-size="14" font-weight="900" text-anchor="end" fill="#C02458">X</text>
+<text x="886.0" y="1216" font-size="14" font-weight="700" fill="#B45309">AWS</text>
+<text x="928.0" y="1216" font-size="14" fill="#375174">Storage class, with zona…</text>
+<text x="1134.6666666666667" y="1216" font-size="14" font-weight="700" fill="#3776FF">AZ</text>
+<text x="1176.6666666666667" y="1216" font-size="14" fill="#375174">LRS, ZRS, GRS, GZRS, RA-…</text>
+<text x="1383.3333333333333" y="1216" font-size="14" font-weight="700" fill="#0E8F63">GC</text>
+<text x="1425.3333333333333" y="1216" font-size="14" fill="#375174">Location type, region, d…</text>
+<line x1="52" y1="1382" x2="1632" y2="1382" stroke="#CBD4E0"/>
+<text x="52" y="1410" font-size="14" fill="#6D7C90">38 mappings &#183; newest verification 2026-09-15 &#183; every claim links to vendor documentation in the guide &#183; CC BY 4.0</text>
 </svg>

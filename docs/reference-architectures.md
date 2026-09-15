@@ -128,6 +128,31 @@ For regional recovery, design a second-region data strategy, traffic switching a
 runbook explicitly. Choose the write model and acceptable replication lag before drawing a
 second region. More replicas alone do not solve conflicting writes or accidental deletion.
 
+## What Each Design Gives Up
+
+An architecture that lists only what it provides is a brochure. All three vendors publish a
+review framework and expect a design to be defensible against it:
+[AWS names six pillars](https://docs.aws.amazon.com/wellarchitected/latest/framework/the-pillars-of-the-framework.html)
+(operational excellence, security, reliability, performance efficiency, cost optimization and
+sustainability), with equivalents from
+[Azure](https://learn.microsoft.com/en-us/azure/well-architected/pillars) and
+[Google](https://docs.cloud.google.com/architecture/framework).
+
+These three designs share a requirement, so they share their trade-offs. Each line is a
+deliberate choice, not an oversight.
+
+| The choice | What it buys | What it costs | Pillars in tension |
+| --- | --- | --- | --- |
+| Two zones rather than three | Most of the resilience for two thirds of the footprint | A zone failure removes half your capacity, so either run the remaining zone at double headroom or accept degraded service during recovery | Reliability against cost |
+| Private compute reached through a managed egress path | No inbound path to the application tier, and a single audited route outward | A per-zone charge and a new dependency in the egress path that can itself fail | Security against cost and reliability |
+| One region | No cross-region write conflicts to resolve and no second footprint to pay for | A regional outage is an outage; recovery means the second-region strategy described above, not a redraw | Reliability against cost and operational excellence |
+| Synchronous standby for the database | A failover that does not lose committed writes | Every commit waits for a second zone to acknowledge, and in the non-readable form the standby serves no traffic while it is paid for | Reliability against performance efficiency and cost |
+| Health checks that remove unhealthy targets | Recovery from an instance failure without human action | In-flight requests on that target are lost, so the application must be safe to retry and able to reconnect | Reliability against a requirement placed on the application |
+
+If a requirement makes one of these unacceptable, change the design rather than the diagram.
+Raising the availability target usually means a third zone or a second region, and both move
+cost and operational load before they move availability.
+
 ## Three Things to Explain Back
 
 - Why does a private endpoint still need both DNS and data permissions?

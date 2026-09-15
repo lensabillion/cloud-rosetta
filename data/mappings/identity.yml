@@ -24,7 +24,9 @@ rows:
     exam_tags: [CLF-C02, SAA-C03, AZ-900, AZ-104, CDL, ACE]
     sources:
       - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-    verified: '2026-09-09'
+      - https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions
+      - https://docs.cloud.google.com/iam/docs/roles-overview
+    verified: '2026-09-15'
 
   - id: iam.machine-identity
     concept: Credentials for compute without stored secrets

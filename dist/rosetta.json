@@ -1,5 +1,5 @@
 {
-  "latest_source_verification": "2026-09-14",
+  "latest_source_verification": "2026-09-15",
   "licence": "CC BY 4.0",
   "mappings": [
     {
@@ -54,7 +54,12 @@
         "AZ-104",
         "ACE"
       ],
-      "verified": "2026-09-09",
+      "sources": [
+        "https://docs.cloud.google.com/compute/docs/instance-groups",
+        "https://docs.aws.amazon.com/autoscaling/ec2/userguide/auto-scaling-groups.html",
+        "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
+      ],
+      "verified": "2026-09-15",
       "domain": "compute"
     },
     {
@@ -215,7 +220,12 @@
         "CDL",
         "ACE"
       ],
-      "verified": "2026-09-09",
+      "sources": [
+        "https://docs.cloud.google.com/compute/docs/instances/spot",
+        "https://docs.cloud.google.com/compute/docs/instances/preemptible",
+        "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html"
+      ],
+      "verified": "2026-09-15",
       "domain": "compute"
     },
     {
@@ -245,7 +255,12 @@
         "CDL",
         "ACE"
       ],
-      "verified": "2026-09-09",
+      "sources": [
+        "https://learn.microsoft.com/en-us/azure/azure-sql/azure-sql-iaas-vs-paas-what-is-overview",
+        "https://learn.microsoft.com/en-us/azure/azure-sql/managed-instance/sql-managed-instance-paas-overview",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html"
+      ],
+      "verified": "2026-09-15",
       "domain": "databases"
     },
     {
@@ -265,7 +280,7 @@
         "name": "Regional instance, versus read replica",
         "url": "https://docs.cloud.google.com/sql/docs/mysql/high-availability"
       },
-      "breaks_when": "In RDS, a Multi-AZ DB instance has a non-readable standby, while a Multi-AZ DB cluster has two readable standby instances with semisynchronous replication that also support failover. Ordinary RDS read replicas are a separate asynchronous replication mechanism; do not infer automatic failover from readability. Azure SQL Database zone redundancy and read scale-out depend on service tier; active geo-replication is a separate readable asynchronous copy. Cloud SQL for MySQL regional HA uses a standby for failover; a read replica serves reads separately. Specify the engine, deployment type, and failure scope before choosing.",
+      "breaks_when": "In RDS, a Multi-AZ DB instance has a non-readable standby, while a Multi-AZ DB cluster has two readable standby instances with semisynchronous replication that also act as failover targets. The cluster form is the constraint that bites: it runs only on RDS for MySQL and PostgreSQL and only on NVMe-backed instance classes, so an engine or class chosen first can rule it out. It also applies flow control, throttling writes on the writer to contain replica lag, which trades write throughput for a shorter failover. Ordinary read replicas are a separate asynchronous mechanism; do not infer automatic failover from readability. Azure SQL Database zone redundancy and read scale-out depend on service tier, and active geo-replication is a separate readable asynchronous copy. Cloud SQL regional HA uses a standby for failover with read replicas added separately. Specify engine, deployment type and failure scope before choosing.",
       "exam_tags": [
         "CLF-C02",
         "SAA-C03",
@@ -275,14 +290,14 @@
         "ACE"
       ],
       "sources": [
-        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html",
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html",
         "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html",
         "https://learn.microsoft.com/en-us/azure/azure-sql/database/high-availability-sla",
         "https://learn.microsoft.com/en-us/azure/azure-sql/database/active-geo-replication-overview",
-        "https://docs.cloud.google.com/sql/docs/mysql/high-availability",
-        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html"
+        "https://docs.cloud.google.com/sql/docs/mysql/high-availability"
       ],
-      "verified": "2026-09-14",
+      "verified": "2026-09-15",
       "domain": "databases"
     },
     {
@@ -309,7 +324,12 @@
         "AZ-305",
         "ACE"
       ],
-      "verified": "2026-09-10",
+      "sources": [
+        "https://learn.microsoft.com/en-us/azure/cosmos-db/choose-api",
+        "https://docs.cloud.google.com/bigtable/docs/overview",
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html"
+      ],
+      "verified": "2026-09-15",
       "domain": "databases"
     },
     {
@@ -404,7 +424,12 @@
         "AZ-305",
         "ACE"
       ],
-      "verified": "2026-09-10",
+      "sources": [
+        "https://learn.microsoft.com/en-us/azure/event-grid/compare-messaging-services",
+        "https://docs.cloud.google.com/pubsub/docs/overview",
+        "https://docs.aws.amazon.com/streams/latest/dev/introduction.html"
+      ],
+      "verified": "2026-09-15",
       "domain": "databases"
     },
     {
@@ -499,9 +524,11 @@
         "SAA-C03"
       ],
       "sources": [
-        "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview"
+        "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview",
+        "https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html",
+        "https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects"
       ],
-      "verified": "2026-09-10",
+      "verified": "2026-09-15",
       "domain": "hierarchy"
     },
     {
@@ -529,9 +556,11 @@
         "ACE"
       ],
       "sources": [
-        "https://docs.cloud.google.com/vpc/docs/vpc"
+        "https://docs.cloud.google.com/vpc/docs/vpc",
+        "https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html",
+        "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview"
       ],
-      "verified": "2026-09-09",
+      "verified": "2026-09-15",
       "domain": "hierarchy"
     },
     {
@@ -628,9 +657,11 @@
         "ACE"
       ],
       "sources": [
-        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html"
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html",
+        "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions",
+        "https://docs.cloud.google.com/iam/docs/roles-overview"
       ],
-      "verified": "2026-09-09",
+      "verified": "2026-09-15",
       "domain": "identity"
     },
     {
@@ -854,7 +885,11 @@
         "SAA-C03",
         "SOA-C03"
       ],
-      "verified": "2026-09-10",
+      "sources": [
+        "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html",
+        "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+      ],
+      "verified": "2026-09-15",
       "domain": "networking"
     },
     {
@@ -874,7 +909,7 @@
         "name": "Private Service Connect, and separately Private Google Access",
         "url": "https://docs.cloud.google.com/vpc/docs/private-service-connect"
       },
-      "breaks_when": "A private endpoint provides a private destination address for a supported service; routing, DNS, authorization and service configuration must still permit access. Azure service endpoints instead retain the service public address and do not extend to on-premises clients. AWS gateway endpoints provide route-based access to S3 and DynamoDB without an endpoint fee; they are not reachable through VPN, Direct Connect or peering. Interface endpoints use PrivateLink and have service-specific support and charges. Google Private Service Connect and Private Google Access are different mechanisms.",
+      "breaks_when": "The mechanism decides the limits. An AWS gateway endpoint adds a prefix-list route and the instance still reaches the service on its public address, so there is no private address to route to: that is why it cannot be used from on-premises over VPN or Direct Connect, or from a peered VPC. Its route is also regional, so traffic to the same service in another Region leaves through the internet gateway instead. Gateway endpoints serve only S3 and DynamoDB and carry no endpoint charge. An interface endpoint uses PrivateLink to place an address from your subnet in front of the service, which is what makes it reachable from on-premises, and it is billed. Azure draws the same line: a service endpoint keeps the service's public address and does not extend to on-premises clients, while a private endpoint gives it an address in your VNet. Google Private Service Connect and Private Google Access are different mechanisms again. Routing, DNS and authorization must still permit access in every case.",
       "exam_tags": [
         "SAA-C03",
         "AZ-104",
@@ -882,11 +917,13 @@
         "ACE"
       ],
       "sources": [
-        "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview",
         "https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html",
+        "https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html",
+        "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview",
+        "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview",
         "https://docs.cloud.google.com/vpc/docs/private-service-connect"
       ],
-      "verified": "2026-09-14",
+      "verified": "2026-09-15",
       "domain": "networking"
     },
     {
@@ -970,7 +1007,12 @@
         "AZ-700",
         "ACE"
       ],
-      "verified": "2026-09-10",
+      "sources": [
+        "https://docs.aws.amazon.com/vpc/latest/peering/invalid-peering-configurations.html",
+        "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview",
+        "https://docs.cloud.google.com/vpc/docs/vpc-peering"
+      ],
+      "verified": "2026-09-15",
       "domain": "networking"
     },
     {
@@ -1059,7 +1101,12 @@
         "CDL",
         "ACE"
       ],
-      "verified": "2026-09-10",
+      "sources": [
+        "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction",
+        "https://docs.cloud.google.com/storage/docs/locations",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html"
+      ],
+      "verified": "2026-09-15",
       "domain": "storage"
     },
     {
