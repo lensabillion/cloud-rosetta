@@ -75,10 +75,11 @@ def row_html(row: dict, domain: str) -> str:
     tags = "".join(f'<span class="tag">{esc(t)}</span>' for t in row.get("exam_tags") or [])
     hay = " ".join([row.get("concept", ""), domain, div, bite, " ".join(row.get("exam_tags") or [])]
                    + [str((row.get(k) or {}).get("name") or "") for k, _ in CLOUDS]
-                   + [row.get("breaks_when", ""), row.get("shared_trap", "")]).lower()
+                   + [row.get("breaks_when", ""), row.get("shared_trap", "")]
+                   + [str((row.get(k) or {}).get("note") or "") for k, _ in CLOUDS]).lower()
 
-    return f"""<article class="row" data-bite="{esc(bite)}" data-div="{esc(div)}" data-find="{esc(hay)}">
-<div class="rhead"><h3>{esc(row.get('concept'))}</h3><span class="marks">
+    return f"""<article id="mapping-{esc(row['id'])}" class="row" data-bite="{esc(bite)}" data-div="{esc(div)}" data-find="{esc(hay)}">
+<div class="rhead"><h3><a href="#mapping-{esc(row['id'])}">{esc(row.get('concept'))}</a></h3><span class="marks">
 <span class="mk b-{esc(bite)}" title="{esc(BITE_HELP[bite])}">{esc(BITE[bite])}</span>
 <span class="mk d-{esc(div)}">{esc(DIVERGENCE[div])}</span></span></div>
 <div class="svcs">{services}</div>
@@ -87,7 +88,7 @@ def row_html(row: dict, domain: str) -> str:
 </article>"""
 
 
-def term_html(term: dict) -> str:
+def term_html(term: dict, known_terms: set[str]) -> str:
     sev = term.get("severity", "low")
     senses = ""
     for key, label in CLOUDS:
@@ -100,18 +101,22 @@ def term_html(term: dict) -> str:
                    f'<span><span class="cat">{cat}</span><p>{flat(s.get("meaning"))}</p></span></div>')
     hay = (term.get("term", "") + " " + term.get("why_it_hurts", "") + " " +
            " ".join(str((term.get(k) or {}).get("meaning") or "") for k, _ in CLOUDS)).lower()
+    related = " · ".join(f'<a href="#term-{mdlite.slug(name)}">{esc(name)}</a>'
+                         for name in term.get("see_also", []) if name in known_terms)
+    related = f'<p>Related terms: {related}</p>' if related else ''
     label = {"high": "Different kind of thing", "medium": "Materially different", "low": "Naming difference"}[sev]
-    return f"""<article class="term s-{esc(sev)}" data-find="{esc(hay)}">
-<h3>{esc(term.get('term'))}</h3><span class="sev">{esc(label)}</span>
+    return f"""<article id="term-{mdlite.slug(term['term'])}" class="term s-{esc(sev)}" data-find="{esc(hay)}">
+<h3><a href="#term-{mdlite.slug(term['term'])}">{esc(term.get('term'))}</a></h3><span class="sev">{esc(label)}</span>
 <div class="senses">{senses}</div>
-<details class="note" open><summary>Why the distinction matters</summary><p>{flat(term.get('why_it_hurts'))}</p></details>
+<details class="note" open><summary>Why the distinction matters</summary><p>{flat(term.get('why_it_hurts'))}</p></details>{related}
 </article>"""
 
 
 def toolbar(scope: str, extra: str = "") -> str:
     return (f'<div class="toolbar"><input type="search" data-scope="{scope}" '
-            f'placeholder="Search this page" aria-label="Search this page">{extra}'
-            f'<span class="tcount" data-count="{scope}"></span></div>')
+            f'placeholder="Search this page" aria-label="Search this page" aria-description="Search names and explanations on this page">{extra}'
+            f'<button type="button" data-clear>Clear search and filters</button>'
+            f'<span class="tcount" role="status" aria-live="polite" data-count="{scope}"></span></div>')
 
 
 # --------------------------------------------------------------------- pages
@@ -184,7 +189,7 @@ def page_reference(domain: str, title: str, rows: list[dict]) -> str:
 equivalence can be trusted; open a note to see what actually differs.</p>
 {toolbar('ref-' + domain, extra)}
 <div class="list">{body}</div>
-<p class="empty hide">Nothing on this page matches.</p>
+<p class="empty hide">Nothing on this page matches. <button type="button" data-clear>Show all entries</button></p>
 </section>"""
 
 
@@ -192,7 +197,7 @@ def page_decoder(terms: list[dict]) -> str:
     order = {"high": 0, "medium": 1, "low": 2}
     terms = sorted(terms, key=lambda t: (order[t["severity"]], t["term"].lower()))
     high = sum(1 for t in terms if t["severity"] == "high")
-    body = "".join(term_html(t) for t in terms)
+    body = "".join(term_html(t, {term["term"] for term in terms}) for t in terms)
     return f"""<section class="page hide" id="p-decoder">
 <p class="eyebrow">Look it up</p>
 <h1>The word means something else here</h1>
@@ -201,7 +206,7 @@ def page_decoder(terms: list[dict]) -> str:
 comparison table cannot hold them.</p>
 {toolbar('decoder')}
 <div class="list">{body}</div>
-<p class="empty hide">No term matches.</p>
+<p class="empty hide">No term matches. <button type="button" data-clear>Show all terms</button></p>
 </section>"""
 
 
@@ -279,83 +284,7 @@ def nav(groups: list) -> str:
     return "<nav id=\"nav\">" + "".join(out) + "</nav>"
 
 
-ROUTER = """
-<script>
-(function(){
-  var pages=[].slice.call(document.querySelectorAll('.page'));
-  var links=[].slice.call(document.querySelectorAll('.side a.nl'));
-  function has(id){return !!document.getElementById('p-'+id);}
-
-  function show(id){
-    var anchor = has(id) ? null : document.getElementById(id);
-    var owner = anchor && anchor.closest('.page');
-    if(owner) id=owner.id.slice(2);
-    if(!has(id)) id='home';
-    var target=document.getElementById('p-'+id);
-    pages.forEach(function(p){p.classList.toggle('hide',p!==target);});
-    links.forEach(function(a){
-      if(a.getAttribute('href')==='#'+id){a.setAttribute('aria-current','page');}
-      else{a.removeAttribute('aria-current');}
-    });
-    var h1=target.querySelector('h1');
-    document.title=(h1?h1.textContent+' \u2014 ':'')+'Cloud Rosetta';
-    if(anchor && owner) anchor.scrollIntoView(); else window.scrollTo(0,0);
-    var n=document.getElementById('nav'); if(n) n.classList.remove('open');
-  }
-
-  // Route on the click itself. Some sandboxes refuse hash navigation, and the
-  // guide must not depend on it; the hash is a nicety for deep links, not the
-  // mechanism.
-  document.addEventListener('click',function(e){
-    var a=e.target.closest('a[href^="#"]');
-    if(a){
-      var id=a.getAttribute('href').slice(1);
-      if(has(id) || document.getElementById(id)){
-        e.preventDefault(); show(id);
-        try{history.pushState(null,'','#'+id);}catch(_){}
-      }
-      return;
-    }
-    var b=e.target.closest('.toolbar button');
-    if(b){
-      var on=b.getAttribute('aria-pressed')==='true';
-      b.setAttribute('aria-pressed',String(!on));
-      var box=b.closest('.page').querySelector('input[type=search]');
-      box.dispatchEvent(new Event('input',{bubbles:true}));
-      return;
-    }
-    if(e.target.closest('.menutog')){document.getElementById('nav').classList.toggle('open');return;}
-    if(e.target.closest('.themetog')){
-      var cur=document.documentElement.getAttribute('data-theme');
-      var next=cur==='dark'?'light':(cur==='light'?'dark':(matchMedia('(prefers-color-scheme: dark)').matches?'light':'dark'));
-      document.documentElement.setAttribute('data-theme',next);
-      try{localStorage.setItem('cr-theme',next);}catch(_){}
-    }
-  });
-
-  window.addEventListener('hashchange',function(){show((location.hash||'#home').slice(1));});
-
-  document.addEventListener('input',function(e){
-    var box=e.target.closest('input[type=search]'); if(!box) return;
-    var page=box.closest('.page'), q=box.value.trim().toLowerCase();
-    var items=[].slice.call(page.querySelectorAll('[data-find]')), shown=0;
-    var only=page.querySelector('.toolbar button[aria-pressed="true"]');
-    items.forEach(function(it){
-      var ok=(!q||it.dataset.find.indexOf(q)!==-1)&&(!only||it.dataset.bite==='serious');
-      it.classList.toggle('hide',!ok); if(ok)shown++;
-    });
-    page.querySelector('.tcount').textContent=shown+' / '+items.length;
-    page.querySelector('.empty').classList.toggle('hide',shown>0);
-  });
-
-  try{var th=localStorage.getItem('cr-theme'); if(th)document.documentElement.setAttribute('data-theme',th);}catch(_){}
-  document.querySelectorAll('.tcount').forEach(function(c){
-    var p=c.closest('.page'); c.textContent=p.querySelectorAll('[data-find]').length+' items';
-  });
-  show(((location.hash||'#home').slice(1))||'home');
-})();
-</script>
-"""
+ROUTER = "<script>\n" + pathlib.Path(__file__).with_name("router.js").read_text(encoding="utf-8") + "\n</script>"
 
 
 REPO = "https://github.com/lensabillion/cloud-rosetta/blob/main/docs"
@@ -382,8 +311,14 @@ def _page_id(markup: str) -> str:
     return m.group(1) if m else ""
 
 
-def resolve(stem: str) -> str:
-    return f"#{ROUTES[stem]}" if stem in ROUTES else f"{REPO}/{stem}.md"
+def resolve(href: str) -> str:
+    from urllib.parse import urljoin
+
+    path, _, fragment = href.partition("#")
+    stem = path[:-3] if path.endswith(".md") else path
+    if stem in ROUTES and (not fragment or ROUTES[stem] == stem):
+        return "#" + ROUTES[stem] + ("--" + fragment if fragment else "")
+    return urljoin(REPO + "/", href)
 
 
 def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathlib.Path) -> dict:
@@ -448,7 +383,7 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
   <aside class="side">
     <div class="brand"><a href="#home"><b>Cloud Rosetta</b></a>
       <span>AWS, Azure and Google Cloud, side by side</span></div>
-    <button class="menutog">Contents</button>
+    <button class="menutog" aria-controls="nav" aria-expanded="false">Contents</button>
     {nav(groups)}
   </aside>
   <main class="doc">
