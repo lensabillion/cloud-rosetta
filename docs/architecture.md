@@ -8,11 +8,9 @@ For network placement and recovery decisions, continue to the
 [three deployment reference architectures](reference-architectures.md). They connect ingress,
 private application access, database availability and operational responsibilities.
 
-## Diagram Standard
+## How to Read These Architectures
 
-We follow the [C4 notation guidance](https://c4model.com/diagrams/notation) on titles, scope,
-meaningful element labels, directional relationships and a legend. These views use a consistent
-project notation; they do not claim formal C4 conformance or vendor approval.
+Follow the labelled arrows, then check which network and failure boundaries they cross.
 
 | Visual element | Meaning |
 | --- | --- |
@@ -26,14 +24,6 @@ Ownership views omit geographic containment. Network views keep managed services
 consumer subnet. Application views show logical service relationships, not hidden provider
 infrastructure. Full-size SVGs remain readable when opened separately; the web guide also allows
 horizontal scrolling without shrinking labels on a phone. Text descriptions accompany each view.
-Editable source: [`scripts/diagrams.py`](../scripts/diagrams.py).
-
-Official service artwork is available from [AWS architecture icons](https://aws.amazon.com/architecture/icons/),
-[Azure architecture icons](https://learn.microsoft.com/en-us/azure/architecture/icons/) and the
-[Google Cloud product icon library](https://cloud.google.com/icons). The current drawings use
-project-drawn labelled boxes. Provider icons should supplement product names and explicit
-relationships; their color and shape do not establish security or availability guarantees.
-
 ## One Application, Three Implementations
 
 A user uploads a photo through an authenticated HTTPS endpoint. Application code checks ownership

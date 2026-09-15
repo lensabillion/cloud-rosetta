@@ -1,0 +1,450 @@
+deployment-aws:
+  title: AWS · Keep the application private; recover within a region
+  subtitle: DEPLOYMENT VIEW  /  HTTPS → application pool → one database writer
+  description: Two zones contain private application and database subnets. A regional ALB reaches either app pool.
+    Both pools use the RDS writer endpoint. The synchronous standby can be promoted but cannot serve application
+    reads.
+  provider: aws
+  elements:
+    region:
+      kind: boundary
+      title: AWS account · selected region
+    vpc:
+      kind: boundary
+      title: VPC · public ingress and private application/data subnets
+    az-a:
+      kind: boundary
+      title: AZ A · VPC resources shown
+    az-b:
+      kind: boundary
+      title: AZ B · VPC resources shown
+    client:
+      kind: card
+      title: Application user
+      detail: Authenticated HTTPS client
+    alb:
+      kind: card
+      title: Application Load Balancer
+      detail: HTTPS listener; AWS WAF policy
+      icon: aws-elb.svg
+    app-a:
+      kind: card
+      title: Amazon EC2
+      detail: Private app subnet A; Auto Scaling pool
+      icon: aws-ec2.svg
+    app-b:
+      kind: card
+      title: Amazon EC2
+      detail: Private app subnet B; same Auto Scaling group
+      icon: aws-ec2.svg
+    db-a:
+      kind: card
+      title: Amazon RDS · writer
+      detail: Private DB subnet A; Multi-AZ DB instance
+      icon: aws-rds.svg
+    db-b:
+      kind: card
+      title: Amazon RDS · standby
+      detail: Private DB subnet B; no application reads
+      icon: aws-rds.svg
+    routes:
+      kind: note
+      title: Ingress prerequisites
+      detail: ALB subnets in both zones. Their internet routes use an internet gateway. App and DB subnets have
+        no direct internet ingress.
+    https:
+      kind: edge
+      title: 1  HTTPS
+      control: false
+    targets-a:
+      kind: edge
+      title: 2  HTTPS
+      control: false
+    targets-b:
+      kind: edge
+      title: 2  HTTPS
+      control: false
+    sql-a:
+      kind: edge
+      title: 3  SQL / TLS
+      control: false
+    sql-b:
+      kind: edge
+      title: 3  same writer
+      control: false
+    replication:
+      kind: edge
+      title: Synchronous replication
+      control: false
+    failure:
+      kind: note
+      title: When AZ A fails
+      detail: ALB health checks remove failed targets. RDS promotes the standby. Applications reconnect through
+        the DB endpoint and retry safely; retain capacity in AZ B.
+    tradeoff:
+      kind: note
+      title: Decision and trade-off
+      detail: EC2 gives runtime control, but you own images and patching. The extra zone costs capacity. This handles
+        a zone outage; backups and regional recovery remain separate.
+deployment-azure:
+  title: Azure · Private ingress and private egress are separate paths
+  subtitle: DEPLOYMENT VIEW  /  WAF → inbound endpoint → App Service → outbound integration
+  description: Application Gateway reaches App Service through an inbound private endpoint. App Service uses a separate
+    delegated integration subnet to reach the SQL private endpoint. App Service and SQL remain outside the consumer
+    VNet.
+  provider: azure
+  elements:
+    owner:
+      kind: boundary
+      title: Azure subscription · selected region
+    vnet:
+      kind: boundary
+      title: Consumer virtual network · regional
+    gateway-subnet:
+      kind: boundary
+      title: Gateway subnet
+    app-pe-subnet:
+      kind: boundary
+      title: App private-endpoint subnet
+    integration-subnet:
+      kind: boundary
+      title: App integration subnet · delegated
+    data-pe-subnet:
+      kind: boundary
+      title: Data private-endpoint subnet
+    client:
+      kind: card
+      title: Application user
+      detail: HTTPS to the public gateway
+    gateway:
+      kind: card
+      title: Application Gateway
+      detail: WAF_v2; zone redundant
+      icon: azure-gateway.svg
+    inbound-pe:
+      kind: card
+      title: App private endpoint
+      detail: Inbound HTTPS path
+      icon: azure-endpoint.svg
+    app:
+      kind: card
+      title: App Service
+      detail: Zone-redundant plan; public access disabled
+      icon: azure-app.svg
+    integration:
+      kind: card
+      title: VNet integration
+      detail: Outbound path; not inbound Private Link
+    sql-pe:
+      kind: card
+      title: SQL private endpoint
+      detail: Private destination address
+      icon: azure-endpoint.svg
+    sql:
+      kind: card
+      title: Azure SQL Database
+      detail: Supported tier; zone redundancy enabled
+      icon: azure-sql.svg
+    dns:
+      kind: note
+      title: Private DNS is required
+      detail: Link the app and SQL private DNS zones to the VNet. Resolve their service names to endpoint IPs. An
+        endpoint does not configure every DNS path or grant data access.
+    client-gateway:
+      kind: edge
+      title: 1  HTTPS
+      control: false
+    gateway-pe:
+      kind: edge
+      title: 2  HTTPS
+      control: false
+    pe-app:
+      kind: edge
+      title: 3  Private Link
+      control: false
+    app-integration:
+      kind: edge
+      title: 4  outbound route
+      control: false
+    integration-pe:
+      kind: edge
+      title: 5  SQL / TLS
+      control: false
+    pe-sql:
+      kind: edge
+      title: 6  Private Link
+      control: false
+    failure:
+      kind: note
+      title: Zone resilience is a configuration
+      detail: Enable it in the gateway, App Service plan and SQL tier. Keep serving capacity after a zone loss and
+        test connection retries during database failover.
+    tradeoff:
+      kind: note
+      title: Decision and trade-off
+      detail: App Service reduces server operations. Private Link adds endpoint and DNS management. Use managed
+        identity with database grants; private reachability alone is insufficient.
+deployment-gcp:
+  title: Google Cloud · Global ingress still has regional dependencies
+  subtitle: DEPLOYMENT VIEW  /  global HTTPS → regional MIG → Cloud SQL HA
+  description: A global external Application Load Balancer sends traffic to a regional managed instance group. The
+    drawing shows a regional slice of a global VPC. SQL traffic uses private services access to the Cloud SQL service
+    network.
+  provider: gcp
+  elements:
+    project:
+      kind: boundary
+      title: Google Cloud project · workload ownership
+    region:
+      kind: boundary
+      title: Selected region
+    vpc:
+      kind: boundary
+      title: Global VPC · regional slice shown
+    subnet:
+      kind: boundary
+      title: Regional subnet
+    service-network:
+      kind: boundary
+      title: Cloud SQL service network
+    client:
+      kind: card
+      title: Application user
+      detail: HTTPS to a global address
+    lb:
+      kind: card
+      title: External Application Load Balancer
+      detail: Global frontend and backend service
+      icon: gcp-category-networking.svg
+    armor:
+      kind: card
+      title: Cloud Armor
+      detail: Policy on the backend service
+      icon: gcp-category-networking.svg
+    app-a:
+      kind: card
+      title: Compute Engine
+      detail: VMs in zone A; no public IPs
+      icon: gcp-compute.svg
+    app-b:
+      kind: card
+      title: Compute Engine
+      detail: VMs in zone B; same regional MIG
+      icon: gcp-compute.svg
+    writer:
+      kind: card
+      title: Cloud SQL · primary
+      detail: HA configured; public IP disabled
+      icon: gcp-sql.svg
+    standby:
+      kind: card
+      title: Cloud SQL · standby
+      detail: Second zone; not a read target
+      icon: gcp-sql.svg
+    mig:
+      kind: note
+      title: Private services access
+      detail: Reserved range and private connection; SQL authentication is separate.
+    https:
+      kind: edge
+      title: 1  HTTPS
+      control: false
+    armor-policy:
+      kind: edge
+      title: Policy evaluation
+      control: true
+    backend-a:
+      kind: edge
+      title: 2  HTTPS + health checks
+      control: false
+    backend-b:
+      kind: edge
+      title: 2  HTTPS + health checks
+      control: false
+    sql-a:
+      kind: edge
+      title: 3  SQL / TLS over private connection
+      control: false
+    sql-b:
+      kind: edge
+      title: SQL / TLS
+      control: false
+    replicate:
+      kind: edge
+      title: Synchronous replication
+      control: false
+    failure:
+      kind: note
+      title: What survives a zone loss
+      detail: Regional MIG capacity can continue in another zone. Cloud SQL HA promotes the standby and closes existing
+        connections; clients reconnect. Load-balancer and autohealing checks serve different purposes.
+    tradeoff:
+      kind: note
+      title: What does not survive a region loss
+      detail: The global address remains, but this design has no second regional backend or database recovery target.
+        Global ingress is not a multi-region application. Plan backups and test restore separately.
+application-aws:
+  title: AWS · Authorize the user, then write two kinds of data
+  subtitle: LOGICAL VIEW  /  private data access does not mean a private application endpoint
+  description: An authenticated user calls application code. Code authorizes access, writes object bytes and then
+    metadata using its workload identity. The writes are separate operations and need idempotency and partial-failure
+    recovery.
+  provider: aws
+  elements:
+    owner:
+      kind: boundary
+      title: AWS workload ownership · logical services, not VPC placement
+    client:
+      kind: card
+      title: Application user
+      detail: Signed-in client; HTTPS request
+    api:
+      kind: card
+      title: Amazon API Gateway
+      detail: Configured API authorization
+      icon: aws-api.svg
+    client-api:
+      kind: edge
+      title: HTTPS
+      control: false
+    api-code:
+      kind: edge
+      title: Invoke
+      control: false
+    code:
+      kind: card
+      title: AWS Lambda
+      detail: Validate input; enforce object ownership
+      icon: aws-lambda.svg
+    objects:
+      kind: card
+      title: Amazon S3
+      detail: Photo bytes; workload data permissions
+      icon: aws-s3.svg
+    metadata:
+      kind: card
+      title: Amazon DynamoDB
+      detail: Owner, caption and object key
+      icon: aws-dynamodb.svg
+    write-object:
+      kind: edge
+      title: 2  write bytes
+      control: false
+    write-data:
+      kind: edge
+      title: 3  write metadata
+      control: false
+    identity:
+      kind: note
+      title: Two separate authorization decisions
+      detail: The application checks the end user. Lambda execution role grants the code only the object and database
+        operations it needs. A successful login is not a grant to every object.
+    failure:
+      kind: note
+      title: Design for a partial write
+      detail: If the object write succeeds but metadata fails, retry idempotently or reconcile the orphan. For large
+        files, issue a short-lived signed upload URL after authorization; that alternate path is not drawn.
+application-azure:
+  title: Azure · Authorize the user, then write two kinds of data
+  subtitle: LOGICAL VIEW  /  private data access does not mean a private application endpoint
+  description: An authenticated user calls application code. Code authorizes access, writes object bytes and then
+    metadata using its workload identity. The writes are separate operations and need idempotency and partial-failure
+    recovery.
+  provider: azure
+  elements:
+    owner:
+      kind: boundary
+      title: Azure workload ownership · logical services, not subnet placement
+    client:
+      kind: card
+      title: Application user
+      detail: Signed-in client; HTTPS request
+    client-code:
+      kind: edge
+      title: 1  HTTPS · authenticate user
+      control: false
+    code:
+      kind: card
+      title: Azure Functions
+      detail: Validate input; enforce object ownership
+      icon: azure-functions.svg
+    objects:
+      kind: card
+      title: Azure Blob Storage
+      detail: Photo bytes; workload data permissions
+      icon: azure-storage.svg
+    metadata:
+      kind: card
+      title: Azure Cosmos DB
+      detail: Owner, caption and object key
+      icon: azure-cosmos.svg
+    write-object:
+      kind: edge
+      title: 2  write bytes
+      control: false
+    write-data:
+      kind: edge
+      title: 3  write metadata
+      control: false
+    identity:
+      kind: note
+      title: Two separate authorization decisions
+      detail: The application checks the end user. Managed identity grants the code only the object and database
+        operations it needs. A successful login is not a grant to every object.
+    failure:
+      kind: note
+      title: Design for a partial write
+      detail: If the object write succeeds but metadata fails, retry idempotently or reconcile the orphan. For large
+        files, issue a short-lived signed upload URL after authorization; that alternate path is not drawn.
+application-gcp:
+  title: Google Cloud · Authorize the user, then write two kinds of data
+  subtitle: LOGICAL VIEW  /  private data access does not mean a private application endpoint
+  description: An authenticated user calls application code. Code authorizes access, writes object bytes and then
+    metadata using its workload identity. The writes are separate operations and need idempotency and partial-failure
+    recovery.
+  provider: gcp
+  elements:
+    owner:
+      kind: boundary
+      title: Google Cloud workload ownership · logical services, not VPC placement
+    client:
+      kind: card
+      title: Application user
+      detail: Signed-in client; HTTPS request
+    client-code:
+      kind: edge
+      title: 1  HTTPS · authenticate user
+      control: false
+    code:
+      kind: card
+      title: Cloud Run
+      detail: Validate input; enforce object ownership
+      icon: gcp-run.svg
+    objects:
+      kind: card
+      title: Cloud Storage
+      detail: Photo bytes; workload data permissions
+      icon: gcp-storage.svg
+    metadata:
+      kind: card
+      title: Firestore
+      detail: Owner, caption and object key
+      icon: gcp-category-databases.svg
+    write-object:
+      kind: edge
+      title: 2  write bytes
+      control: false
+    write-data:
+      kind: edge
+      title: 3  write metadata
+      control: false
+    identity:
+      kind: note
+      title: Two separate authorization decisions
+      detail: The application checks the end user. Service account grants the code only the object and database
+        operations it needs. A successful login is not a grant to every object.
+    failure:
+      kind: note
+      title: Design for a partial write
+      detail: If the object write succeeds but metadata fails, retry idempotently or reconcile the orphan. For large
+        files, issue a short-lived signed upload URL after authorization; that alternate path is not drawn.
