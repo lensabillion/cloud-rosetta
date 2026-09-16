@@ -270,19 +270,48 @@ def pager(order: list[tuple[str, str]]) -> dict[str, str]:
     return out
 
 
+CHEVRON = ('<svg class="chev" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">'
+           '<path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" '
+           'stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
+
 def nav(groups: list) -> str:
+    """The sidebar, composed the way shadcn/ui composes it.
+
+    SidebarGroup > SidebarGroupLabel > SidebarMenu > SidebarMenuItem >
+    SidebarMenuButton, with SidebarMenuSub for nested items and SidebarMenuBadge
+    for counts. data-slot names match the shadcn source so the structure is
+    recognisable to anyone who knows the library. Group labels are buttons that
+    collapse their group, as shadcn does by wrapping a group in Collapsible.
+    """
     out = []
-    for title, items in groups:
-        links = ""
+    for gi, (title, items) in enumerate(groups):
+        menu = ""
         for item in items:
             if isinstance(item, tuple) and item[0] == "sub":
-                kids = "".join(f'<a class="nl" href="#{esc(s)}">{esc(l)}</a>' for s, l in item[2])
-                links += f'<div class="sub">{kids}</div>'
+                subs = ""
+                for entry in item[2]:
+                    slug, label = entry[0], entry[1]
+                    badge = (f'<span data-slot="sidebar-menu-badge" aria-label="{entry[2]} mappings">'
+                             f'{entry[2]}</span>') if len(entry) > 2 else ""
+                    subs += (f'<li data-slot="sidebar-menu-sub-item">'
+                             f'<a data-slot="sidebar-menu-sub-button" href="#{esc(slug)}">'
+                             f'<span>{esc(label)}</span>{badge}</a></li>')
+                menu += (f'<li data-slot="sidebar-menu-item">'
+                         f'<span data-slot="sidebar-menu-button" data-static="true"><span>{esc(item[1])}</span></span>'
+                         f'<ul data-slot="sidebar-menu-sub">{subs}</ul></li>')
             else:
                 slug, label = item
-                links += f'<a class="nl" href="#{esc(slug)}">{esc(label)}</a>'
-        out.append(f'<div class="grp"><h2>{esc(title)}</h2>{links}</div>')
-    return "<nav id=\"nav\">" + "".join(out) + "</nav>"
+                menu += (f'<li data-slot="sidebar-menu-item">'
+                         f'<a data-slot="sidebar-menu-button" href="#{esc(slug)}"><span>{esc(label)}</span></a></li>')
+        gid = f"sb-group-{gi}"
+        out.append(
+            f'<div data-slot="sidebar-group" data-state="open">'
+            f'<button data-slot="sidebar-group-label" aria-expanded="true" aria-controls="{gid}">'
+            f'<span>{esc(title)}</span>{CHEVRON}</button>'
+            f'<ul data-slot="sidebar-menu" id="{gid}">{menu}</ul></div>'
+        )
+    return '<nav id="nav" data-slot="sidebar-content" aria-label="Guide">' + "".join(out) + "</nav>"
 
 
 ROUTER = "<script>\n" + pathlib.Path(__file__).with_name("router.js").read_text(encoding="utf-8") + "\n</script>"
@@ -350,7 +379,7 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
     for doc in domains:
         slug, title = doc["domain"], doc.get("title", doc["domain"].title())
         pages.append(page_reference(slug, title, doc["rows"]))
-        refs.append((f"ref-{slug}", title))
+        refs.append((f"ref-{slug}", title, len(doc["rows"])))
 
     if exams:
         pages.append(page_exams(exams))
@@ -370,7 +399,7 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
     for _, items in groups:
         for item in items:
             if isinstance(item, tuple) and item[0] == "sub":
-                order += [(s, l) for s, l in item[2]]
+                order += [(e[0], e[1]) for e in item[2]]
             else:
                 order.append(item)
     pagers = pager(order)
@@ -388,12 +417,16 @@ def build(domains: list[dict], terms: list[dict], exams: list[dict], out: pathli
     body = f"""
 <button class="themetog" title="Switch light and dark" aria-label="Switch light and dark">&#9681;</button>
 <div class="app">
-  <aside class="side">
-    <div class="brand"><a href="#home"><b>Cloud Rosetta</b></a>
-      <span>AWS, Azure and Google Cloud, side by side</span></div>
-    <button class="menutog" aria-controls="nav" aria-expanded="false">Contents</button>
+  <aside class="side" data-slot="sidebar" data-state="expanded">
+    <div data-slot="sidebar-header">
+      <a class="brand" href="#home"><b>Cloud Rosetta</b><span>AWS, Azure and Google Cloud</span></a>
+      <button class="menutog" aria-controls="nav" aria-expanded="false">Contents</button>
+    </div>
     {nav(groups)}
   </aside>
+  <button class="sidebar-trigger" data-slot="sidebar-trigger" aria-controls="nav" aria-label="Toggle sidebar" aria-keyshortcuts="Control+B Meta+B" title="Toggle sidebar (Ctrl+B)">
+    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="6" y1="2.5" x2="6" y2="13.5" stroke="currentColor" stroke-width="1.4"/></svg>
+  </button>
   <main class="doc">
 {"".join(pages)}
   </main>

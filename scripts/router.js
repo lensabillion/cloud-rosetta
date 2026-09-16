@@ -1,7 +1,9 @@
 (function () {
   'use strict';
   const pages = Array.from(document.querySelectorAll('.page'));
-  const links = Array.from(document.querySelectorAll('.side a.nl'));
+  const links = Array.from(document.querySelectorAll(
+    'a[data-slot="sidebar-menu-button"], a[data-slot="sidebar-menu-sub-button"]'));
+  const app = document.querySelector('.app');
   const menu = document.querySelector('.menutog');
   const nav = document.getElementById('nav');
   let pendingScroll;
@@ -9,6 +11,26 @@
   function setMenu(open) {
     nav.classList.toggle('open', open);
     menu.setAttribute('aria-expanded', String(open));
+  }
+
+  function setGroup(group, open) {
+    group.dataset.state = open ? 'open' : 'closed';
+    group.querySelector('[data-slot="sidebar-group-label"]').setAttribute('aria-expanded', String(open));
+  }
+
+  function saveGroups() {
+    const closed = Array.from(document.querySelectorAll('[data-slot="sidebar-group"]'))
+      .map((group, index) => group.dataset.state === 'closed' ? index : null)
+      .filter(index => index !== null);
+    try { localStorage.setItem('cr-groups', JSON.stringify(closed)); } catch (_) { /* Groups still toggle. */ }
+  }
+
+  function setSidebar(collapsed, persist) {
+    app.dataset.sidebar = collapsed ? 'collapsed' : 'expanded';
+    document.querySelector('[data-slot="sidebar"]').dataset.state = collapsed ? 'collapsed' : 'expanded';
+    if (persist) {
+      try { localStorage.setItem('cr-sidebar', collapsed ? 'collapsed' : 'expanded'); } catch (_) { /* Toggle still works. */ }
+    }
   }
 
   function readRoute() {
@@ -44,8 +66,17 @@
     setMenu(false);
     pages.forEach(item => item.classList.toggle('hide', item !== page));
     links.forEach(link => {
-      if (link.getAttribute('href') === '#' + page.id.slice(2)) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
+      const current = link.getAttribute('href') === '#' + page.id.slice(2);
+      if (current) {
+        link.setAttribute('aria-current', 'page');
+        link.setAttribute('data-active', 'true');
+        // an active item inside a collapsed group would be invisible, so open it
+        const group = link.closest('[data-slot="sidebar-group"]');
+        if (group && group.dataset.state === 'closed') setGroup(group, true);
+      } else {
+        link.removeAttribute('aria-current');
+        link.removeAttribute('data-active');
+      }
     });
     const input = page.querySelector('input[type=search]');
     if (input) {
@@ -96,6 +127,16 @@
     const button = event.target.closest('button');
     if (!button) return;
     if (button.matches('.menutog')) { setMenu(!nav.classList.contains('open')); return; }
+    if (button.matches('[data-slot="sidebar-group-label"]')) {
+      const group = button.closest('[data-slot="sidebar-group"]');
+      setGroup(group, group.dataset.state === 'closed');
+      saveGroups();
+      return;
+    }
+    if (button.matches('[data-slot="sidebar-trigger"]')) {
+      setSidebar(app.dataset.sidebar !== 'collapsed', true);
+      return;
+    }
     if (button.matches('.themetog')) {
       const current = document.documentElement.getAttribute('data-theme');
       const dark = current ? current === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
@@ -121,6 +162,11 @@
   });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); menu.focus(); }
+    const typing = event.target.matches && event.target.matches('input, textarea, [contenteditable="true"]');
+    if (!typing && (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === 'b') {
+      event.preventDefault();
+      setSidebar(app.dataset.sidebar !== 'collapsed', true);
+    }
   });
   window.addEventListener('hashchange', show);
   window.addEventListener('popstate', show);
@@ -129,6 +175,12 @@
     const theme = localStorage.getItem('cr-theme');
     if (theme === 'dark' || theme === 'light') document.documentElement.setAttribute('data-theme', theme);
   } catch (_) { /* The system theme remains available. */ }
+  try {
+    if (localStorage.getItem('cr-sidebar') === 'collapsed') setSidebar(true, false);
+    const closed = JSON.parse(localStorage.getItem('cr-groups') || '[]');
+    const groups = document.querySelectorAll('[data-slot="sidebar-group"]');
+    closed.forEach(index => { if (groups[index]) setGroup(groups[index], false); });
+  } catch (_) { /* Everything starts expanded without storage. */ }
   pages.forEach(applyFilter);
   show();
 })();
