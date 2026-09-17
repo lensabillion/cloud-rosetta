@@ -43,8 +43,10 @@ type:
 
 layout:
   architecture-width: 1440px
-  prose: 640px
-  wide: 880px
+  prose: 100%
+  wide: 100%
+  page-gutter: 24px
+  page-gutter-mobile: 20px
   side: 256px
   # Sidebar and table chrome, taken from the shadcn/ui component source
   # (sidebar.tsx, table.tsx, new-york-v4) on 16 September 2026. Tailwind
@@ -118,6 +120,11 @@ palette_extra:
   mint: '#34DDA9'
 
 deviations:
+  - what: Every page uses the available content width
+    why: >-
+      Requested on 17 September 2026. Prose, home, reference tables and diagrams
+      fill the space beside the sidebar, with modest page gutters. This supersedes
+      the earlier fixed reading-column limits. Mobile retains its own gutter.
   - what: Sidebar and table structure follow shadcn/ui, reproduced without React
     why: >-
       shadcn/ui is a set of React components installed with a JavaScript package
