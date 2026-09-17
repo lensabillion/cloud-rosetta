@@ -85,6 +85,26 @@ Taken from the Elegant Themes blog, measured from computed styles at a 1280px vi
   action is never ambiguous.
 - **One hue per cloud**, used identically in every table, diagram and card, and for nothing else.
 
+## Archify
+
+The globally installed `archify` skill draws good standalone diagrams and **must not be used for
+diagrams embedded in this guide**. Those come from `scripts/diagrams.py`. The evaluation behind
+this is in [`docs/reviews/2026-09-17-archify-evaluation.md`](../../../docs/reviews/2026-09-17-archify-evaluation.md).
+
+It conflicts with this project on the points that matter:
+
+- Its output is an 804KB standalone viewer; extracting the drawing strips its styling.
+- It uses its own fonts and 139 colours, not `data/design.yml`, and colours by component type
+  rather than by cloud.
+- It has no AWS, Azure or Google service icons.
+- Its boundaries are only `region` and `security-group`, so availability zones, VPCs and subnets
+  cannot be drawn truthfully. A subnet drawn with it renders as a security group.
+
+**Use it for:** sequence and lifecycle diagrams, such as a failover sequence or a request's path
+through a load balancer, and for an interactive companion linked from a chapter alongside the
+embedded drawing. Its output is deterministic, so it can be checked in, but it sits outside
+`check_design.py` and must not be mistaken for a design-system drawing.
+
 ## Deviations Are Recorded, Not Made Silently
 
 `data/design.yml` has a `deviations` list explaining each place this guide departs from its
