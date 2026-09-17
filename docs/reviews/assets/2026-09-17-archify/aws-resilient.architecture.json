@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "AWS resilient web application",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1120,
+      640
+    ]
+  },
+  "components": [
+    {
+      "id": "client",
+      "type": "external",
+      "label": "Client",
+      "sublabel": "HTTPS",
+      "pos": [
+        40,
+        280
+      ],
+      "size": [
+        130,
+        64
+      ]
+    },
+    {
+      "id": "alb",
+      "type": "security",
+      "label": "Application Load Balancer",
+      "sublabel": "WAF attached",
+      "pos": [
+        250,
+        280
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "app_a",
+      "type": "backend",
+      "label": "EC2 pool",
+      "sublabel": "Zone A, private",
+      "pos": [
+        520,
+        170
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "app_b",
+      "type": "backend",
+      "label": "EC2 pool",
+      "sublabel": "Zone B, private",
+      "pos": [
+        520,
+        390
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "rds_writer",
+      "type": "database",
+      "label": "RDS writer",
+      "sublabel": "Zone A",
+      "pos": [
+        800,
+        170
+      ],
+      "size": [
+        150,
+        64
+      ]
+    },
+    {
+      "id": "rds_standby",
+      "type": "database",
+      "label": "RDS standby",
+      "sublabel": "Zone B, not readable",
+      "pos": [
+        800,
+        390
+      ],
+      "size": [
+        150,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "AWS Region",
+      "wraps": [
+        "alb",
+        "app_a",
+        "app_b",
+        "rds_writer",
+        "rds_standby"
+      ],
+      "pad": 24
+    },
+    {
+      "kind": "security-group",
+      "label": "Private application subnets",
+      "wraps": [
+        "app_a",
+        "app_b"
+      ],
+      "pad": 14
+    }
+  ],
+  "connections": [
+    {
+      "id": "client-alb",
+      "from": "client",
+      "to": "alb",
+      "label": "HTTPS"
+    },
+    {
+      "id": "alb-a",
+      "from": "alb",
+      "to": "app_a",
+      "label": "healthy targets"
+    },
+    {
+      "id": "alb-b",
+      "from": "alb",
+      "to": "app_b",
+      "label": "healthy targets"
+    },
+    {
+      "id": "a-writer",
+      "from": "app_a",
+      "to": "rds_writer",
+      "label": "SQL over TLS"
+    },
+    {
+      "id": "b-writer",
+      "from": "app_b",
+      "to": "rds_writer",
+      "label": "SQL over TLS"
+    },
+    {
+      "id": "replicate",
+      "from": "rds_writer",
+      "to": "rds_standby",
+      "label": "synchronous",
+      "variant": "dashed",
+      "labelDy": 98
+    }
+  ],
+  "cards": [
+    {
+      "dot": "amber",
+      "title": "Failure behaviour",
+      "items": [
+        "Health checks remove unhealthy targets",
+        "The app must reconnect when RDS fails over"
+      ]
+    }
+  ]
+}

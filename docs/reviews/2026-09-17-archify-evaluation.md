@@ -16,6 +16,30 @@ architecture specification, validated, delivered, rendered twice, checked in a b
 Archify's `visual-check`, and inspected in its 1440 by 900 light screenshot. No project file was
 changed during the trial.
 
+## The Diagram
+
+> **This drawing is kept as evidence of an error. Do not copy it into the guide.** The
+> red "Private application subnets" box spans both zones. An AWS subnet resides in exactly one
+> Availability Zone, so the correct design has one private subnet per zone.
+
+![Archify rendering of the AWS resilient web application, with a single private subnet box wrongly spanning Zone A and Zone B](assets/2026-09-17-archify/aws-resilient.png)
+
+Captured by Archify's `visual-check` at 1440 by 900 in the light theme.
+
+| File | Purpose | SHA-256 | Bytes |
+| --- | --- | --- | --- |
+| [`aws-resilient.architecture.json`](assets/2026-09-17-archify/aws-resilient.architecture.json) | The specification, as evaluated | `006a17a4c6d55eb6…` | 2,913 |
+| [`aws-resilient.html`](assets/2026-09-17-archify/aws-resilient.html) | The delivered interactive viewer; download to open it | `9851ba93382ff4df…` | 804,580 |
+| [`aws-resilient.png`](assets/2026-09-17-archify/aws-resilient.png) | The screenshot above | — | 80,962 |
+
+The trial files were deleted after the evaluation and rebuilt from the recorded specification for
+this record. Because Archify's delivery is deterministic, the rebuilt viewer is byte-identical to
+the one evaluated: both hashes above match the original run. GitHub displays the HTML as source
+rather than rendering it, which is why the screenshot is included.
+
+These files sit outside the guide and outside `scripts/check_design.py`. Nothing in the build reads
+them.
+
 ## What Works
 
 | Check | Result |
