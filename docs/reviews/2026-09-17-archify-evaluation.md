@@ -75,15 +75,17 @@ Archify did not force that choice; two boxes could have been drawn. Each would s
 appear in the legend, as a security group. A subnet is not a security group, so the drawing would
 teach the confusion the guide exists to prevent.
 
-## Recommendation
+## Decision
 
-- **Keep `scripts/diagrams.py` for every diagram embedded in the guide.**
-- **Use Archify for sequence and lifecycle diagrams**, which the guide does not yet have, such as
-  an RDS failover sequence or a request's path through a load balancer. The boundary limitation
-  does not apply there.
-- **Use Archify for interactive companions**, linked from a chapter as an optional exploration
-  alongside the embedded drawing, never in place of it.
-- The update check makes one outbound request; it is disabled on this machine through
-  `ARCHIFY_UPDATE_CHECK_DISABLED=1` in `~/.zshenv`.
+**Archify was removed on 17 September 2026 and is not used on this project.** The skill was
+uninstalled from every agent it had been installed for, and the setting that disabled its update
+check was removed from the shell profile.
+
+The evaluation above recommended keeping `scripts/diagrams.py` for embedded diagrams while using
+Archify for sequence and lifecycle diagrams and for interactive companions. That use is not being
+taken up. Every diagram comes from `scripts/diagrams.py`.
+
+The diagram and its files above are kept as the record of what was evaluated and why it was not
+adopted.
 
 <!-- This document follows common-doc-guidelines.md. -->
