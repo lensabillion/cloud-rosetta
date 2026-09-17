@@ -1,14 +1,77 @@
 # Design System
 
-## Current Width Decision — 17 September 2026
+## Current Layout: react.dev — 17 September 2026
 
-The user requested that every page use most of the available screen space. All pages now
-fill the content area beside the sidebar, with responsive gutters defined in `data/design.yml`.
-Home, prose, reference tables and figures share this fluid width. Tables and figures no longer
-need negative-margin breakouts. The sidebar collapse expands the content area further.
+The layout and navigation are copied from [react.dev](https://react.dev/learn), read from
+[its source](https://github.com/reactjs/react.dev) rather than measured by eye. The palette,
+the Lato typeface and the type scale are unchanged: only the frame moved.
 
-This decision supersedes the fixed reading-column recommendations and measurements below,
-which remain a historical record of the earlier design. Typography and colors are unchanged.
+### Why react.dev
+
+Six documentation sites that are repeatedly named as the best were opened at a 1280px viewport
+and measured from computed styles on 17 September 2026. The shortlist came from two Hacker News
+threads, the 9.5k-star [beautiful-docs](https://github.com/matheusfelipeog/beautiful-docs) list
+and three practitioner round-ups, where Stripe appears almost everywhere and Docker, Django,
+MDN, Vue and react.dev recur.
+
+| Site | Text column | Body | Outline column | Breadcrumbs | Previous/next | Reusable source |
+| --- | --- | --- | --- | --- | --- | --- |
+| react.dev | 864px | 17px | ≥1536px only | Yes | Yes | Yes, CC BY 4.0 |
+| Stripe | 684px | 16px | Yes | Yes | No | No |
+| Vue.js | 624px | 16px | Yes | No | Yes | Theme is MIT |
+| Docker | 576px | 16px | Yes | Yes | No | Yes, Apache 2.0 |
+| MDN | 704px | 16px | Yes | Yes | Top and bottom | Yes |
+| Tailwind | 560px | 14px | Yes | No | No | No licence |
+| This guide, before | 960px | 19px | A card at the top | No | A single card | — |
+
+react.dev was chosen because it is a *learning* site with a reference half, which is the shape
+of this guide, and because its top-level split between Learn and Reference is the separation of
+journey from reference that this document already required. Its page furniture maps onto content
+that exists here: a pitfall callout onto the "what breaks" notes, a deep-dive disclosure onto the
+caveats, challenges onto the practice drills.
+
+### What was taken, in pixels
+
+From `tailwind.config.js`, `Layout/Page.tsx`, `TopNav.tsx`, `Sidebar/SidebarLink.tsx`, `Toc.tsx`
+and `DocsFooter.tsx`, with Tailwind classes resolved to pixels. The values live in
+[`data/design.yml`](../data/design.yml); this is what they mean.
+
+| Part | react.dev | Here |
+| --- | --- | --- |
+| Grid | `20rem auto`, then `20rem auto 20rem` | 320px sidebar, then a 320px outline column |
+| Breakpoints | lg 1024px, 2xl 1536px | Same, plus sm 640px and md 768px for gutters and search |
+| Top bar | `h-16`, sticky, blurred, shadow on scroll | 64px, sticky, blurred, hairline on scroll |
+| Reading column | `max-w-4xl`, left-aligned until 2xl | 896px, centred from 1536px |
+| Drawings | `max-w-4xl`, `2xl:max-w-6xl` | Column width, growing to 1152px from 1536px |
+| Page gutters | `px-5 sm:px-12` | 20px, 48px from 640px |
+| Sidebar item | `p-2 ps-5`, `rounded-e-2xl`, nested `ps-6` | 8px padding, 20px indent, 16px end radius, 24px nested |
+| Outline | `pt-20 sticky`, items `rounded-s-xl`, active highlighted | Sticky under the bar, same shape |
+| Previous/next | Two cards, `md:grid-cols-2`, label above title | Same |
+
+### What was kept, and what deviates
+
+The palette, Lato, Roboto Mono and the six-step type scale stay. react.dev's own typefaces,
+Optimistic Display and Optimistic Text, are Meta's and are not licensed for reuse; its colours
+were not wanted. Sidebar and outline text therefore use this guide's scale at the same
+*proportion* of body text that react.dev uses: 17px where react.dev sets 15px, 14px where it
+sets 13px, which keeps the 14px floor.
+
+Two behaviours are deliberately not react.dev's:
+
+- **Drawings scale instead of scrolling.** They were in a horizontally scrolling frame; now they
+  fit the column, and on a 1920px screen they grow to 1152px. Text inside a drawing shrinks with
+  it, so every figure keeps its "Open full-size SVG" link.
+- **Search is built into the page.** react.dev uses Algolia DocSearch, which is a hosted service.
+  The dialog here indexes the document it is in: page titles, headings, mapping rows and terms,
+  opened with ⌘K, Ctrl+K or `/`.
+
+Not copied: the "Copy page" button, difficulty tags, and the interactive sandboxes and challenge
+widgets, which have no content behind them here.
+
+This decision supersedes the full-width decision of earlier the same day, the shadcn/ui sidebar
+of 16 September, and the fixed reading-column recommendations below, which remain as a record of
+the earlier design. [`tests/test_navigation.py`](../tests/test_navigation.py) holds the structure
+to the description above.
 
 
 > **The design itself lives in [`data/design.yml`](../data/design.yml).** That file is the only
