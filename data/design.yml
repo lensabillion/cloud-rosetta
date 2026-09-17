@@ -4,15 +4,18 @@
 # and renders the Design page that shows every token in use. Change a value here
 # and both follow; there is no second place to edit.
 #
-# Provenance: the palette, type scale and spacing are taken from the Elegant
-# Themes blog, measured from computed styles at a 1280px viewport on
-# 15 September 2026. Deviations from that source are recorded in `deviations`
+# Provenance: the palette and type scale are taken from the Elegant Themes blog,
+# measured from computed styles at a 1280px viewport on 15 September 2026. The
+# layout and navigation are taken from react.dev, read from its source on
+# 17 September 2026. Deviations from either source are recorded in `deviations`
 # below rather than made silently.
 
 meta:
   name: Cloud Rosetta
   source: https://www.elegantthemes.com/blog/resources/git-and-github-a-beginners-guide-for-complete-newbies
   measured: '2026-09-15'
+  layout_source: https://github.com/reactjs/react.dev
+  layout_read: '2026-09-17'
 
 fonts:
   stacks:
@@ -42,27 +45,41 @@ type:
     lh-tight: '1.2'
 
 layout:
-  architecture-width: 1440px
-  prose: 100%
-  wide: 100%
-  page-gutter: 24px
-  page-gutter-mobile: 20px
-  side: 256px
-  # Sidebar and table chrome, taken from the shadcn/ui component source
-  # (sidebar.tsx, table.tsx, new-york-v4) on 16 September 2026. Tailwind
-  # classes resolved to pixels: h-8 32px, h-7 28px, h-10 40px, p-2 8px, gap-1 4px.
-  side-collapsed: 0px
-  side-item: 32px
-  side-sub-item: 28px
-  side-pad: 8px
-  side-gap: 4px
-  side-sub-indent: 14px
+  # The frame, from react.dev's source: tailwind.config.js, Layout/Page.tsx,
+  # TopNav.tsx, Sidebar/SidebarLink.tsx, Toc.tsx and DocsFooter.tsx. Tailwind
+  # classes resolved to pixels.
+  nav-height: 64px          # h-16, the sticky top bar
+  side: 320px               # grid column sidebar-content, 20rem
+  toc: 320px                # third grid column sidebar-content-toc, 20rem
+  content: 896px            # max-w-4xl, the reading column
+  content-frame: 1280px     # max-w-7xl, what the column centres within on wide screens
+  figure-wide: 1152px       # max-w-6xl, how wide a drawing may grow on wide screens
+  gutter: 20px              # px-5
+  gutter-wide: 48px         # sm:px-12
+  control: 48px             # w-12 h-12, round icon buttons in the top bar
+  search-height: 40px       # h-10, the search button
+  tab-pad-y: 6px            # py-1.5, section tabs
+  tab-pad-x: 16px           # px-4
+  nav-item-pad: 8px         # p-2, sidebar and outline items
+  nav-indent: 20px          # ps-5, top-level sidebar items and group headings
+  nav-indent-sub: 24px      # ps-6, nested sidebar items
+  radius-nav: 16px          # rounded-e-2xl, the selected sidebar item
+  # Table chrome, taken from the shadcn/ui component source (table.tsx,
+  # new-york-v4) on 16 September 2026: h-10 40px header row, p-2 8px cells.
   table-head: 40px
   table-pad: 8px
   gap-section: 69px
   gap-para: 24px
   radius: 6px
   radius-pill: 100px
+
+# react.dev's Tailwind screens. Media queries cannot read custom properties, so
+# scripts/guide.py writes these into the stylesheet's {{bp-*}} placeholders.
+breakpoints:
+  bp-sm: 640px              # wider gutters
+  bp-md: 768px              # the search button replaces the search icon
+  bp-lg: 1024px             # the sidebar is always visible; tabs move into the top bar
+  bp-2xl: 1536px            # the page outline appears as a third column
 
 colour:
   light:
@@ -74,9 +91,7 @@ colour:
     ink3: '#6D7C90'
     rule: '#E3E8EF'
     rule2: '#CBD4E0'
-    side-bg: '#F8FAFC'
     side-accent: '#EEF2F7'
-    side-border: '#E3E8EF'
     row-hover: '#F5F7FA'
     accent: '#FF4A9E'
     accent-ink: '#FFFFFF'
@@ -97,9 +112,7 @@ colour:
     ink3: '#8FA0B8'
     rule: '#2B3747'
     rule2: '#3B4A5E'
-    side-bg: '#18202B'
     side-accent: '#243041'
-    side-border: '#2B3747'
     row-hover: '#1F2937'
     accent: '#FF6FB2'
     accent-ink: '#1A0A12'
@@ -120,28 +133,46 @@ palette_extra:
   mint: '#34DDA9'
 
 deviations:
-  - what: Every page uses the available content width
+  - what: The frame is react.dev's, the colours and typeface are not
     why: >-
-      Requested on 17 September 2026. Prose, home, reference tables and diagrams
-      fill the space beside the sidebar, with modest page gutters. This supersedes
-      the earlier fixed reading-column limits. Mobile retains its own gutter.
-  - what: Sidebar and table structure follow shadcn/ui, reproduced without React
+      Requested on 17 September 2026. The layout and navigation are copied from
+      react.dev, read from its source, because it is a learning site with a reference
+      half and the same journey-then-reference split this guide needs. Its palette was
+      not wanted, and its typefaces, Optimistic Display and Optimistic Text, are Meta's
+      and not licensed for reuse. The palette, Lato and the type scale stay as measured
+      from the Elegant Themes blog. This supersedes the full-width decision made earlier
+      the same day.
+  - what: Sidebar and outline text use this guide's scale, not react.dev's sizes
+    why: >-
+      react.dev sets sidebar items at 15px and nested items, group headings and the
+      outline at 13px, below this guide's 14px floor. Each one instead takes the step of
+      this scale at the same proportion of body text, so the hierarchy reads the same at
+      19px body: 17px for a top-level item, 14px for everything below it.
+  - what: Drawings scale to the column instead of scrolling sideways
+    why: >-
+      Requested on 17 September 2026. A 1440px drawing used to sit in a horizontally
+      scrolling frame. It now fits the column and grows to 1152px from the 1536px
+      breakpoint, as react.dev widens an illustration past its reading column. Labels
+      shrink with the drawing, so every figure keeps its full-size SVG link.
+  - what: Search is part of the page rather than a hosted service
+    why: >-
+      react.dev searches through Algolia DocSearch. This guide is one static document
+      with no backend, so the dialog indexes the document it is in: page titles,
+      headings, mapping rows and terms.
+  - what: Table structure follows shadcn/ui, reproduced without React
     why: >-
       shadcn/ui is a set of React components installed with a JavaScript package
       manager. This guide is static HTML generated by Python and published as a single
-      document, so the components cannot be installed. Their composition, states and
-      dimensions are reproduced instead, read from the component source rather than
-      eyeballed, and expressed through this file.
+      document, so the components cannot be installed. The table's composition, states
+      and dimensions are reproduced instead, read from the component source rather than
+      eyeballed, and expressed through this file. The sidebar followed shadcn until
+      17 September 2026 and now follows react.dev.
   - what: Table cells wrap rather than staying on one line
     why: >-
       The shadcn table sets whitespace-nowrap on every head and cell, because it is
       built for short data values. Cells in this guide carry explanatory prose, and
       forcing one line would push every table metres wide. Headers stay on one line;
       cells wrap.
-  - what: Sidebar group labels are 14px, not 12px
-    why: >-
-      shadcn sets group labels at text-xs, 12px, dimmed to 70 percent. That falls below
-      this guide's 14px floor, so labels use the floor and a secondary colour instead.
   - what: Official vendor artwork retains its original colors
     why: >-
       Service icons are unmodified provider assets, not interface colors. Recoloring

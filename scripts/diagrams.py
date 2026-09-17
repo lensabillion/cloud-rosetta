@@ -250,8 +250,9 @@ def render(name: str, instance: str = "") -> str:
     instance = instance or name
     svg = drawing.svg().replace(name + "-", instance + "-")
     figure_class = "fig service-architecture" if isinstance(drawing, architecture_art.ArchitectureDrawing) else "fig"
-    return (f'<figure class="{figure_class}" id="fig-{instance}"><div class="diagram-scroll" tabindex="0" '
-            f'role="region" aria-label="{esc(drawing.title)}; scroll horizontally on small screens">'
+    # The drawing scales to the column rather than scrolling sideways; the
+    # full-size file stays one link away for reading the detail.
+    return (f'<figure class="{figure_class}" id="fig-{instance}"><div class="fig-frame">'
             + svg + '</div>'
             + f'<figcaption>{esc(drawing.description)} '
             + f'<a href="assets/architecture/{name}.svg">Open full-size SVG</a></figcaption></figure>')
