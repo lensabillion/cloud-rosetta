@@ -1,5 +1,16 @@
 # Design System
 
+## Current Width Decision — 17 September 2026
+
+The user requested that every page use most of the available screen space. All pages now
+fill the content area beside the sidebar, with responsive gutters defined in `data/design.yml`.
+Home, prose, reference tables and figures share this fluid width. Tables and figures no longer
+need negative-margin breakouts. The sidebar collapse expands the content area further.
+
+This decision supersedes the fixed reading-column recommendations and measurements below,
+which remain a historical record of the earlier design. Typography and colors are unchanged.
+
+
 > **The design itself lives in [`data/design.yml`](../data/design.yml).** That file is the only
 > place a colour, size or spacing value is defined; `scripts/design.py` turns it into the page's
 > CSS custom properties *and* into the Design page of the guide, so the two cannot disagree.

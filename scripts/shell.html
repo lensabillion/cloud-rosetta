@@ -93,7 +93,7 @@ a[data-slot="sidebar-menu-button"]:hover,[data-slot="sidebar-menu-sub-button"]:h
 .app[data-sidebar="collapsed"] .sidebar-trigger{display:inline-flex}
 
 /* ---------- document ---------- */
-.doc{padding:0 32px 96px; min-width:0}
+.doc{padding:0 var(--page-gutter) 96px; min-width:0}
 .page{max-width:var(--prose); margin:0 auto; padding-top:52px}
 .page.wide{max-width:var(--wide)}
 .page > * + *{margin-top:var(--gap-para)}
@@ -149,21 +149,7 @@ a[data-slot="sidebar-menu-button"]:hover,[data-slot="sidebar-menu-sub-button"]:h
 .fig svg text{font-family:var(--sans)}
 .fig figcaption{font-size:var(--t-label); line-height:1.6; color:var(--ink2);
   border-left:2px solid var(--rule2); padding-left:14px}
-/* Drawings render 1:1 only if the figure is as wide as its viewBox, so break
-   them out of the prose column where there is room for it. */
-@media (min-width:1180px){
-  .page > .fig{width:var(--wide); margin-left:calc((var(--wide) - var(--prose)) / -2)}
-}
-
-/* A table may break out of the prose column to the wide width, but only from a
-   prose-width page and only when the viewport has room. The old rule applied on
-   pages that were already wide, where 100% resolved to the wide width and pushed
-   the table a further 120px left, under the sidebar: the first column of every
-   exam table was clipped on the published site. */
 .tw{overflow-x:auto}
-@media (min-width:1180px){
-  .page:not(.wide) .tw{margin-inline:calc((var(--prose) - var(--wide)) / 2)}
-}
 /* ---------- table, as shadcn/ui builds it ----------
    Sentence-case headers in the foreground colour rather than muted capitals,
    a 40px header row, 8px cell padding, a row hover, and no rule under the last
@@ -200,7 +186,7 @@ pre code{background:none; padding:0; font-size:inherit}
 .row:first-of-type{border-top:1px solid var(--rule2)}
 .rhead{display:flex; gap:14px; align-items:baseline; justify-content:space-between; flex-wrap:wrap; margin-bottom:14px}
 .rhead h3{font-family:var(--serif); font-size:var(--t-body); font-weight:700; margin:0; letter-spacing:-.012em; line-height:1.3}
-.marks{display:inline-flex; gap:12px; align-items:baseline; white-space:nowrap}
+.marks{display:inline-flex; flex-wrap:wrap; gap:12px; align-items:baseline}
 .mk{font-family:var(--sans); font-size:var(--t-label); font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--calm)}
 .mk.b-serious,.mk.d-none{color:var(--void)}
 .mk.b-regular,.mk.d-partial{color:var(--fault)}
@@ -274,7 +260,7 @@ details.note p{margin-top:10px; font-size:var(--t-body); line-height:1.6; color:
     font-size:var(--t-label); letter-spacing:.1em; text-transform:uppercase; color:var(--ink2);
     background:var(--sunk); border:1px solid var(--rule2); border-radius:var(--radius); padding:9px 14px;
   }
-  .doc{padding:0 20px 72px}
+  .doc{padding:0 var(--page-gutter-mobile) 72px}
   .hero{padding-top:44px} .hero h1{font-size:var(--t-title-sm)}
   .page h1{font-size:var(--t-title-sm)}
   .page h2{font-size:var(--t-section-sm)}
